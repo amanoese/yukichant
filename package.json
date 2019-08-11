@@ -1,0 +1,15 @@
+{
+  "name": "yukichant",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "amanoese",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^24.8.0",
+    "jest-extended": "^0.11.2"
+  }
+}
