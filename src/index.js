@@ -1,12 +1,12 @@
 const util  = require('util')
 
-const meisi = require('./data/meisi.json')
-const dousi = require('./data/dousi.json')
+const meisi = require('../data/meisi.json')
+const dousi = require('../data/dousi.json')
 
 
 let default_encoder = (text,{ meisi, dousi }) => {
   let uint8text = (new util.TextEncoder()).encode(text)
-  let textCode = [ ...uint8text ].map(v=>(+v).toString(16).toUpperCase())
+  let textCode = [ ...uint8text ].map(v=>`0${(+v).toString(16).toUpperCase()}`.slice(-2))
 
   let heads = textCode.slice(0,-1).map((code,i)=> (i + 1) % 4 ? meisi[code] : dousi[code] + '。' )
   let last  = textCode.slice(-1).map(code=> dousi[code] + '。' )

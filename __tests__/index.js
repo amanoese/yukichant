@@ -1,4 +1,4 @@
-const chant = require('../index.js')
+const chant = require('../src/index.js')
 
 describe('chant',()=>{
   test('encode',()=>{
