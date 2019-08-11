@@ -4,8 +4,7 @@ const meisi = require('../data/meisi.json')
 const dousi = require('../data/dousi.json')
 
 
-let default_encoder = (text,{ meisi, dousi }) => {
-  let uint8text = (new util.TextEncoder()).encode(text)
+let default_encoder = (uint8text,{ meisi, dousi }) => {
   let textCode = [ ...uint8text ].map(v=>`0${(+v).toString(16).toUpperCase()}`.slice(-2))
 
   let heads = textCode.slice(0,-1).map((code,i)=> (i + 1) % 4 ? meisi[code] : dousi[code] + '。' )
@@ -24,11 +23,12 @@ let default_decoder = (encodeText,{ meisi, dousi }) => {
   let textCodeList = encodeText
     .replace('。','')
     .match(decodeRegExp) || []
+
   let textCode = textCodeList
     .map(v=>decodeHash[v])
     .map(v=>parseInt(v,16))
 
-  return (new util.TextDecoder()).decode(Uint8Array.from(textCode))
+  return Uint8Array.from(textCode)
 }
 
 module.exports = {
@@ -36,10 +36,17 @@ module.exports = {
     meisi,
     dousi
   },
+  generate(length, data = this.data, generater = default_encoder) {
+    let rand = n => (Math.random() * n).toFixed()
+    let uint8text = Uint8Array.from({length:length || +rand(12) + 4}).map(_=>rand(255))
+    return generater(uint8text,data)
+  },
   encode( text, data = this.data, encoder = default_encoder ){
-    return encoder(text,data)
+    let uint8text = (new util.TextEncoder()).encode(text)
+    return encoder(uint8text,data)
   },
   decode( text, data = this.data, decoder = default_decoder ){
-    return decoder(text,data)
+    let uint8text = decoder(text,data)
+    return (new util.TextDecoder()).decode(uint8text)
   }
 }

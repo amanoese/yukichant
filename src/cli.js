@@ -6,10 +6,12 @@ const chant = require('./index.js')
 prog
 .version(require('../package.json').version)
 .argument('[text]','input text',null,'')
-.option('-d','decode option')
+.option('-d','decode flag')
 .action(async (args,option)=>{
   let inputText = args.text || (await getStdin())
-  if (option.d){
+  if (inputText == '') {
+    console.log(chant.generate())
+  } else if (option.d){
     console.log(chant.decode(inputText))
   } else {
     console.log(chant.encode(inputText))
