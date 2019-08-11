@@ -18,5 +18,10 @@
   "dependencies": {
     "caporal": "^1.3.0",
     "get-stdin": "^7.0.0"
-  }
+  },
+  "keywords": [
+    "cli",
+    "terminal",
+    "unicode"
+  ]
 }
