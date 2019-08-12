@@ -4,6 +4,9 @@ const getStdin = require('get-stdin')
 const chant = require('./index.js')
 
 prog
+.name('yukichant')
+.description('yukichant is convert text to magic spell.')
+.bin('chant')
 .version(require('../package.json').version)
 .argument('[text]','input text',null,'')
 .option('-d','decode flag')

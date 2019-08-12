@@ -1,16 +1,18 @@
 {
   "name": "yukichant",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "",
+  "license": "MIT",
+  "repository": "amanoese/yukichant",
+  "author": "Seito Taka",
   "main": "src/index.js",
   "bin": {
     "chant": "./src/cli.js"
   },
   "scripts": {
+    "dev": "src/cli.js",
     "test": "jest"
   },
-  "author": "amanoese",
-  "license": "MIT",
   "devDependencies": {
     "jest": "^24.8.0",
     "jest-extended": "^0.11.2"
