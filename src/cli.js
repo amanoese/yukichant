@@ -15,7 +15,7 @@ prog
   if (inputText == '') {
     console.log(chant.generate())
   } else if (option.d){
-    console.log(chant.decode(inputText))
+    process.stdout.write(chant.decode(inputText))
   } else {
     console.log(chant.encode(inputText))
   }
