@@ -2,7 +2,7 @@
   "name": "yukichant",
   "version": "1.0.0",
   "description": "",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "repository": "amanoese/yukichant",
   "author": "Seito Taka",
   "main": "src/index.js",
