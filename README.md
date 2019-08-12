@@ -30,4 +30,10 @@ $ npm run dev unko
 $ npm run dev unko | npm run dev -- -d
 ```
 
+## LICENSE
+Apache-2.0
+
+## Thanks
+I named "yukichant" by Nagato Yuki-chan + chant .
+becouse I want to chant magic words like her.
 
