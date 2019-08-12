@@ -16,7 +16,8 @@ genarate_json(){
   ## genarate json
   cut -d' ' -f2-|
   head -256|
-  paste <(seq 0 255|xargs -L1 -I@ bash -c 'echo 0$(echo "obase=16;@"|bc)|grep -o "..$"') - |
+  paste <((seq 32 255;seq 0 31)|xargs -L1 -I@ bash -c 'echo 0$(echo "obase=16;@"|bc)|grep -o "..$"') - |
+  sort -k1,1 |
   sed -r 's/^(.*)\t/\"\1\":/;s/:(.*)/:"\1",/'|
   sed '1s/^/{\n/;256s/,/\n}/'
 }
