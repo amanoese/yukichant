@@ -10,8 +10,6 @@ $ npm install -g yukichant
 
 ## Usage
 
-### genarate
-
 ```bash
 $ chant
 冠を御手を絢爛汚れ。我を意思に雫よ現れよ。仕打ち契約に羽根よ刻み。此処に剣に貫き。
