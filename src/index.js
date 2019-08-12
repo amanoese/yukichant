@@ -28,11 +28,26 @@ let default_encoder = (uint8text,{ meisi, dousi }) => {
 
 let default_decoder = (encodeText,{ meisi, dousi }) => {
   // 元の名詞、動詞のハッシュマップのキーとバリューを逆にすることでデコード用のハッシュマップとする。
-  // エンコードに使用しているハッシュマップの値はリストのため、後続の正規表現化のために先に結合する。
-  let decodeHash = Object.fromEntries([
-    ...Object.entries(meisi).map(([k,v])=>[v.join('|'),k]),
-    ...Object.entries(dousi).map(([k,v])=>[v.join('|'),k])
-  ])
+  // エンコードに使用しているハッシュマップの値はリストのため、リストの要素をそれぞれコードと紐付ける。
+  // ex:
+  //   from:
+  //     "0A":["汚し。", "踊れ。", "歌え。", "紡げ。"]
+  //   to:
+  //     "汚し。" : "0A"
+  //     "踊れ。" : "0A"
+  //     "歌え。" : "0A"
+  //     "紡げ。" : "0A"
+  let decodeHash = {}
+  Object.entries(meisi).forEach(([k,v])=> {
+    v.forEach(v2=> {
+      decodeHash[v2] = k
+    })
+  })
+  Object.entries(dousi).forEach(([k,v])=> {
+    v.forEach(v2=> {
+      decodeHash[v2] = k
+    })
+  })
 
   // デコード用の正規表現に変換。
   // ex: /さざ波|その者|ほうき星よ/g
