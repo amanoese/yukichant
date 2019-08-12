@@ -34,12 +34,12 @@ grep -P '\p{Han}' > "$MEISI_TEMP"
 cat spell.txt |
 mecab |
 tr '\t' ,|
-awk -F, '$2~/動詞/&&$2!~/助動詞/{print $1}'|
+awk -F, '$2~/動詞/|| $1~/EOF/{print s;a=1;s=$1}a==2{a=0;s=""}a==1&&$2~/助詞/{a=0;if($3~/連体化/){a=2}s=s$1}'|
 sort -u |
 sed -n '/../p'|
 grep -P '\p{Han}' > "$DOUSI_TEMP"
 
 
 genarate_json $MEISI_TEMP > ../meisi.json
-genarate_json $DOUSI_TEMP | 
-sed '/0A/s/"[^"]*/"命ず/3' > ../dousi.json
+genarate_json $DOUSI_TEMP |
+sed '/0A/s/"[^"]*/"具現化せよ/3' > ../dousi.json
