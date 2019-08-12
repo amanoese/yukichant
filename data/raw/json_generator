@@ -6,15 +6,23 @@ MEISI_TEMP=`mktemp`
 DOUSI_TEMP=`mktemp`
 
 genarate_json(){
+  local TEMP=`mktemp`
+
   ## remove near distance words
   cat "$1" |
   grep -v -f spell_NG_word.txt |
   xargs -L1 -I@ bash -c "agrep '@' ${1}|wc -l;echo @" 2>/dev/null |
   xargs -L2 |
-  sort -nrs -k1,1 |
+  sort -nrs -k1,1 > "$TEMP"
+
+  ## remove partial match
+  cat "$TEMP" |
+  cut -d' ' -f2-|
+  xargs -L1 -I@ bash -c "grep '@' '${TEMP}'|wc -l;echo @"|
+  xargs -L2 |
+  awk '$1==1{print $2}'|
 
   ## genarate json
-  cut -d' ' -f2-|
   head -256|
   paste <((seq 32 255;seq 0 31)|xargs -L1 -I@ bash -c 'echo 0$(echo "obase=16;@"|bc)|grep -o "..$"') - |
   sort -k1,1 |
@@ -34,10 +42,11 @@ grep -P '\p{Han}' > "$MEISI_TEMP"
 cat spell.txt |
 mecab |
 tr '\t' ,|
-awk -F, '$2~/動詞/|| $1~/EOF/{print s;a=1;s=$1}a==2{a=0;s=""}a==1&&$2~/助詞/{a=0;if($3~/連体化/){a=2}s=s$1}'|
+awk -F, '$2~/動詞/&&$2!~/助動詞/{print $1}'|
 sort -u |
 sed -n '/../p'|
-grep -P '\p{Han}' > "$DOUSI_TEMP"
+grep -P '\p{Han}' | 
+grep -v -f <(cat "$MEISI_TEMP" | cut -d'"' -f 4) > "$DOUSI_TEMP"
 
 
 genarate_json $MEISI_TEMP > ../meisi.json
