@@ -11,6 +11,7 @@
   },
   "scripts": {
     "dev": "src/cli.js",
+    "json-generate": "data/raw/json_generator",
     "test": "jest"
   },
   "devDependencies": {
