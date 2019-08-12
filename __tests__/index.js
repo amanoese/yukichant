@@ -1,13 +1,22 @@
 const chant = require('../src/index.js')
+const meisi = require('../data/meisi.json')
+const dousi = require('../data/dousi.json')
 
 describe('chant',()=>{
   test('encode',()=>{
-    expect(chant.encode('こんにちは'))
-      .toBe('雫よ狭間の剣に渡れ。狭霧剣に雫よ囚われ。光を雫よ狭間の触れ。雫よ狭間の澄ませ。')
+    let magic_word_head = ['75','6E','6B','6F']
+      .map(num=>num.toString(16).toUpperCase())
+      .map((key,i)=>(i + 1) % 4 ? meisi[key] : dousi[key] + '。')
+      .join('')
+
+    let magic_word = magic_word_head + dousi['0A'] + '。'
+
+    expect(chant.encode('unko\n'))
+      .toBe(magic_word)
   })
 
   test('decode',()=>{
-    expect(chant.decode('雫よ狭間の剣に渡れ。狭霧剣に雫よ囚われ。光を雫よ狭間の触れ。雫よ狭間の澄ませ。'))
+    expect(chant.decode(chant.encode('こんにちは')))
       .toBe('こんにちは')
   })
 
