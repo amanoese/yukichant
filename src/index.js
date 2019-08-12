@@ -1,3 +1,4 @@
+require('core-js')
 const util  = require('util')
 
 const meisi = require('../data/meisi.json')
