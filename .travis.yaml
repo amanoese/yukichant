@@ -1,0 +1,16 @@
+language: node_js
+
+node_js:
+  - '7'
+  - '8'
+
+cache:
+  directories:
+    - "node_modules"
+
+install:
+  - npm i
+
+script:
+  - npm run dev unko
+  - npm run dev unko | npm run dev -- -d
