@@ -1,9 +1,13 @@
 const chant = require('../src/index.js')
+const meisi = require('../data/meisi.json')
+const dousi = require('../data/dousi.json')
 
 describe('chant',()=>{
   test('encode',()=>{
-    expect(chant.encode('こんにちは'))
-      .toBe('雫よ狭間の剣に渡れ。狭霧剣に雫よ囚われ。光を雫よ狭間の触れ。雫よ狭間の澄ませ。')
+    for (let i=0; i<1000; i++) {
+      expect(chant.encode('unko\n'))
+        .toMatch(/^その者力を竜の響き。(命ず|踊れ|歌え|紡げ)。$/)
+    }
   })
 
   test('encode 改行文字込',()=>{
@@ -11,20 +15,20 @@ describe('chant',()=>{
     // 乱数を考慮して複数回テストを実行する。
     for (let i=0; i<1000; i++) {
       expect(chant.encode('こんにちは\n'))
-        .toMatch(/^雫よ狭間の剣に渡れ。狭霧剣に雫よ囚われ。光を雫よ狭間の触れ。雫よ狭間の刻印よ(汚し|踊れ|歌え|紡げ)。$/)
+        .toMatch(/^狂乱の闇の雨を清め。闇へ雨を狂乱の呼び戻す。乙女よ狂乱の闇の賜え。狂乱の闇の加護に(命ず|踊れ|歌え|紡げ)。$/)
     }
   })
 
   test('decode',()=>{
-    expect(chant.decode('雫よ狭間の剣に渡れ。狭霧剣に雫よ囚われ。光を雫よ狭間の触れ。雫よ狭間の澄ませ。'))
+    expect(chant.decode(chant.encode('こんにちは')))
       .toBe('こんにちは')
   })
 
   test('decode 改行文字込',()=>{
-    expect(chant.decode('雫よ狭間の剣に渡れ。狭霧剣に雫よ囚われ。光を雫よ狭間の触れ。雫よ狭間の刻印よ汚し。')).toBe('こんにちは\n')
-    expect(chant.decode('雫よ狭間の剣に渡れ。狭霧剣に雫よ囚われ。光を雫よ狭間の触れ。雫よ狭間の刻印よ踊れ。')).toBe('こんにちは\n')
-    expect(chant.decode('雫よ狭間の剣に渡れ。狭霧剣に雫よ囚われ。光を雫よ狭間の触れ。雫よ狭間の刻印よ歌え。')).toBe('こんにちは\n')
-    expect(chant.decode('雫よ狭間の剣に渡れ。狭霧剣に雫よ囚われ。光を雫よ狭間の触れ。雫よ狭間の刻印よ紡げ。')).toBe('こんにちは\n')
+    expect(chant.decode('狂乱の闇の雨を清め。闇へ雨を狂乱の呼び戻す。乙女よ狂乱の闇の賜え。狂乱の闇の加護に命ず。')).toBe('こんにちは\n')
+    expect(chant.decode('狂乱の闇の雨を清め。闇へ雨を狂乱の呼び戻す。乙女よ狂乱の闇の賜え。狂乱の闇の加護に踊れ。')).toBe('こんにちは\n')
+    expect(chant.decode('狂乱の闇の雨を清め。闇へ雨を狂乱の呼び戻す。乙女よ狂乱の闇の賜え。狂乱の闇の加護に歌え。')).toBe('こんにちは\n')
+    expect(chant.decode('狂乱の闇の雨を清め。闇へ雨を狂乱の呼び戻す。乙女よ狂乱の闇の賜え。狂乱の闇の加護に紡げ。')).toBe('こんにちは\n')
   })
 
   test('dumpされた文字が途中でもdecodeできるかの確認',()=>{
