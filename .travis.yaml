@@ -12,5 +12,6 @@ install:
   - npm i
 
 script:
+  - npm test
   - npm run dev unko
   - npm run dev unko | npm run dev -- -d
