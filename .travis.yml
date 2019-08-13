@@ -14,3 +14,10 @@ script:
   - npm test
   - npm run dev unko
   - npm run dev unko | npm run dev -- -d
+
+deploy:
+  provider: npm
+  email: amanoese@gmail.com
+  on:
+    tags: true
+  api_key: $NPM_TOKEN
