@@ -11,8 +11,9 @@
   },
   "scripts": {
     "dev": "src/cli.js",
-    "json-generate": "data/raw/json_generator",
-    "test": "jest"
+    "json-generate": "raw_data/json_generator",
+    "test": "jest",
+    "deploy": "npm version patch && git push origin $(git describe --tags --abbrev=0)"
   },
   "devDependencies": {
     "jest": "^24.8.0",
