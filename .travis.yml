@@ -20,5 +20,4 @@ deploy:
   email: amanoese@gmail.com
   on:
     branch: master
-    tags: true
   api_key: $NPM_TOKEN
