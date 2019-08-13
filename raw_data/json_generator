@@ -53,7 +53,7 @@ grep -P '\p{Han}' |
 grep -v -f <(cat "$MEISI_TEMP" | cut -d'"' -f 4)  > "$DOUSI_TEMP"
 
 
-genarate_json $MEISI_TEMP > ${SCRIPT_DIR}/../meisi.json
+genarate_json $MEISI_TEMP > ${SCRIPT_DIR}/../data/meisi.json
 genarate_json $DOUSI_TEMP |
 sed 's/"/。"/4' |
-sed '/0A/s/\[.*]/["具現化せよ。", "踊れ。", "歌え。", "紡げ。"]/' > ${SCRIPT_DIR}/../dousi.json
+sed '/0A/s/\[.*]/["具現化せよ。", "踊れ。", "歌え。", "紡げ。"]/' > ${SCRIPT_DIR}/../data/dousi.json
