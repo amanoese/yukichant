@@ -1,10 +1,10 @@
-yukichant
----
+# yukichant
 
 [![Build Status](https://travis-ci.org/amanoese/yukichant.svg?branch=master)](https://travis-ci.org/amanoese/yukichant)
 [![npm version](http://img.shields.io/npm/v/yukichant.svg)](https://npmjs.org/package/yukichant)
 
-yukichantは、テキストデータを呪文に変換するコマンドです。
+yukichantは、テキストデータを詠唱呪文に変換するコマンドです。  
+また変換した詠唱呪文は、元のテキストデータにデコードすることができます。  
 
 ## Install
 
@@ -15,8 +15,16 @@ $ npm install -g yukichant
 ## Usage
 
 ```bash
-$ chant
-冠を御手を絢爛汚れ。我を意思に雫よ現れよ。仕打ち契約に羽根よ刻み。此処に剣に貫き。
+## encode text
+$ echo Hello,World | chant
+破壊の瘴気の誘惑の轟け。明鏡汝は自在に差す。平穏の誘いより贄に踊れ。
+
+## decode text
+$ echo 破壊の瘴気の誘惑の轟け。明鏡汝は自在に差す。平穏の誘いより贄に踊れ。 | chant
+Hello,World
+
+## Random Geneate Magic Words.
+癒や万物の御身の逃れる。静か揺らぎ竜と守れ。強欲の霊の刀剣に閉じ。永劫の散らす。
 ```
 
 ## Develop
