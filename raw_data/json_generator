@@ -4,7 +4,6 @@ set -eu
 
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
 
-MEISI_TEMP=`mktemp`
 DOUSI_TEMP=`mktemp`
 
 genarate_json(){
@@ -13,7 +12,7 @@ genarate_json(){
   ## remove near distance words
   cat "$1" |
   grep -v -f ${SCRIPT_DIR}/spell_NG_word.txt |
-  xargs -L1 -I@ bash -c "agrep '@' ${1}|wc -l;echo @" 2>/dev/null |
+  xargs -L1 -I@ bash -c "mecab ${1}|cut -d, -f8| agrep -c -1 '@';echo @" 2>/dev/null |
   xargs -L2 |
   sort -nrs -k1,1 > "$TEMP"
 
@@ -32,15 +31,7 @@ genarate_json(){
   sed '1s/^/{\n/;256s/,/\n}/'
 }
 
-cat ${SCRIPT_DIR}/spell.txt |
-base64 -d |
-mecab |
-tr '\t' ,|
-awk -F, '$2~/名詞/|| $1~/EOF/{print s;a=1;s=$1}a==2{a=0;s=""}a==1&&$2~/助詞/{a=0;if($3~/連体化/){a=2}s=s$1}'|
-sort -u |
-sed -n '/../p'|
-grep -P '\p{Han}' > "$MEISI_TEMP"
-
+MEISI_TEMP=`${SCRIPT_DIR}/meisi_json_generator | sed -n 2p`
 
 cat ${SCRIPT_DIR}/spell.txt |
 base64 -d |
@@ -53,7 +44,6 @@ grep -P '\p{Han}' |
 grep -v -f <(cat "$MEISI_TEMP" | cut -d'"' -f 4)  > "$DOUSI_TEMP"
 
 
-genarate_json $MEISI_TEMP > ${SCRIPT_DIR}/../data/meisi.json
 genarate_json $DOUSI_TEMP |
 sed 's/"/。"/4' |
 sed '/0A/s/\[.*]/["具現化せよ。", "踊れ。", "歌え。", "紡げ。"]/' > ${SCRIPT_DIR}/../data/dousi.json

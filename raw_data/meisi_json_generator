@@ -19,7 +19,7 @@ grep -P '\p{Han}' > "$MEISI_TEMP"
 ## 部分一致指定舞う単語の排除
 MEISI_UNIQ_TEMP=`mktemp`
 cat "$MEISI_TEMP" |
-xargs -L1 -I@ bash -c 'echo $(grep -c @ meisi.txt) @'|
+xargs -L1 -I@ bash -c "echo \$(grep -c @ $MEISI_TEMP) @"|
 awk '$1==1{print $2}' > $MEISI_UNIQ_TEMP
 
 ## 同じ漢字で始まる単語をグルーピング
@@ -44,6 +44,6 @@ sed -r 's/^(.*)\t/  \"\1\":/;s/:(.*)/: ["\1"],/'|
 sed '1s/^/{\n/;256s/,/\n}/' > ${SCRIPT_DIR}/../data/meisi.json
 
 ## DEBUG用？
-#echo $MEISI_TEMP
-#echo $MEISI_UNIQ_TEMP
-#echo $MEISI_RESULT_TEMP
+echo $MEISI_TEMP
+echo $MEISI_UNIQ_TEMP
+echo $MEISI_RESULT_TEMP
