@@ -41,7 +41,7 @@ awk -F, '$2~/動詞/&&$2!~/助動詞/{print $1}'|
 sort -u |
 sed -n '/../p'|
 grep -P '\p{Han}' |
-grep -v -f <(cat "$MEISI_TEMP" | cut -d'"' -f 4)  > "$DOUSI_TEMP"
+grep -v -f "$MEISI_TEMP"  > "$DOUSI_TEMP"
 
 
 genarate_json $DOUSI_TEMP |
