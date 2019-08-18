@@ -8,7 +8,7 @@ describe('chant',()=>{
     // 乱数を考慮して複数回テストを実行する。
     for (let i=0; i<1000; i++) {
       expect(chant.encode('unko\n'))
-        .toMatch(/^(姫よ|姫君よ)(野山|野卑)(揺の|揺らぎ)(差す。)(具現化せよ。|踊れ。|歌え。|紡げ。)$/)
+        .toMatch(/^(女の|女王|女神の)(風が|風に|風ば)(幽鬼|幽玄の|幽冥に)(極め。)(具現化せよ。|踊れ。|歌え。|紡げ。)$/)
     }
   })
 
@@ -19,10 +19,10 @@ describe('chant',()=>{
 
   test('decode 改行文字込',()=>{
 
-    expect(chant.decode('姫君よ野山揺の差す。具現化せよ。')).toBe('unko\n')
-    expect(chant.decode('姫よ野卑揺の差す。踊れ。'        )).toBe('unko\n')
-    expect(chant.decode('姫君よ野山揺の差す。踊れ。'      )).toBe('unko\n')
-    expect(chant.decode('姫よ野山揺の差す。紡げ。'        )).toBe('unko\n')
+    expect(chant.decode('女王風ば幽鬼極め。具現化せよ。')).toBe('unko\n')
+    expect(chant.decode('女王風ば幽鬼極め。踊れ。'        )).toBe('unko\n')
+    expect(chant.decode('女王風ば幽鬼極め。踊れ。'      )).toBe('unko\n')
+    expect(chant.decode('女王風ば幽鬼極め。紡げ。'        )).toBe('unko\n')
   })
 
   test('dumpされた文字が途中でもdecodeできるかの確認',()=>{
