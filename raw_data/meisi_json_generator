@@ -20,7 +20,10 @@ grep -P '\p{Han}' > "$MEISI_TEMP"
 MEISI_UNIQ_TEMP=`mktemp`
 cat "$MEISI_TEMP" |
 xargs -L1 -I@ bash -c "echo \$(grep -c @ $MEISI_TEMP) @"|
-awk '$1==1{print $2}' > $MEISI_UNIQ_TEMP
+awk '$1==1{print $2}'|
+## NG単語の排除
+grep -v -f $SCRIPT_DIR/spell_NG_word.txt |
+cat > $MEISI_UNIQ_TEMP
 
 ## 同じ漢字で始まる単語をグルーピング
 MEISI_RESULT_TEMP=`mktemp`
@@ -41,7 +44,7 @@ paste <((echo 10;seq 32 255;seq 0 31|grep -v 10)| xargs -L1 -I@ bash -c 'echo 0$
 sort -k1,1 |
 sed 's/ /","/g' |
 sed -r 's/^(.*)\t/  \"\1\":/;s/:(.*)/: ["\1"],/'|
-sed '1s/^/{\n/;256s/,/\n}/' > ${SCRIPT_DIR}/../data/meisi.json
+sed '1s/^/{\n/;$s/,$/\n}/' > ${SCRIPT_DIR}/../data/meisi.json
 
 ## DEBUG用？
 echo $MEISI_TEMP
