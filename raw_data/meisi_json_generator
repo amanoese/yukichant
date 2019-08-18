@@ -40,7 +40,7 @@ cut -d' ' -f2- > $MEISI_RESULT_TEMP
 ## genarate json
 cat $MEISI_RESULT_TEMP|
 head -256|
-paste <((echo 10;seq 32 255;seq 0 31|grep -v 10)| xargs -L1 -I@ bash -c 'echo 0$(echo "obase=16;@"|bc)|grep -o "..$"') - |
+paste <((echo 10 227 {129..131}|tr ' ' \\n;seq 32 255|grep -v -e 129 -e 130 -e 131 -e 223;seq 0 31|grep -v 10)| xargs -L1 -I@ bash -c 'echo 0$(echo "obase=16;@"|bc)|grep -o "..$"') - |
 sort -k1,1 |
 sed 's/ /","/g' |
 sed -r 's/^(.*)\t/  \"\1\":/;s/:(.*)/: ["\1"],/'|
