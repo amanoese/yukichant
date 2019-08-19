@@ -17,15 +17,15 @@ $ npm install -g yukichant
 ```bash
 ## encode text
 $ echo Hello,World | chant
-破壊の瘴気の誘惑の轟け。明鏡汝は自在に差す。平穏の誘いより贄に踊れ。
+巫女よ五行に元に斬る。戦慄の貪欲使命を隠し。嵐は記憶の行く手を砕ける。
 
 ## decode text
-$ echo 破壊の瘴気の誘惑の轟け。明鏡汝は自在に差す。平穏の誘いより贄に踊れ。 | chant -d
+$ echo 巫女よ五行に元に斬る。戦慄の貪欲使命を隠し。嵐は記憶の行く手を砕ける。 | chant -d
 Hello,World
 
 ## Random Geneate Magic Words.
 $ chant
-癒や万物の御身の逃れる。静か揺らぎ竜と守れ。強欲の霊の刀剣に閉じ。永劫の散らす。
+水面も灰塵に蒼穹を抗え。
 ```
 
 ## Develop
