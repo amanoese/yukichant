@@ -1,24 +1,31 @@
 require('core-js')
 const util  = require('util')
+const simpleEnigma = require('./machine-encrypt')
 
 const meisi = require('../data/meisi.json')
 const dousi = require('../data/dousi.json')
 
 
 let default_encoder = (uint8text,{ meisi, dousi }) => {
+
+  //機械式暗号（ロータ型）の仕組みを利用したスクランブラーを配置
+  //バイトコードは連続しやすい性質があるが、
+  //これによって単語頻出頻度の偏りを少なくし自然な文章を生み出す
+  let encryptCode = simpleEnigma.uint8ArrayEncrypt([ ...uint8text ])
+
   // 2桁の16進数コードへ変換。
   // 名詞、動詞データのキーは2桁の16進数のコードである。
-  let textCode = [ ...uint8text ].map(v=>`0${(+v).toString(16).toUpperCase()}`.slice(-2))
+  let encryptCode16 = encryptCode.map(v=>`0${(+v).toString(16).toUpperCase()}`.slice(-2))
 
   // 先頭から最後の文字の1つ手前までを先頭として文字列を生成。
   // 生成する文字列は 名詞 名詞 名詞 動詞 + 。 といった規則性になる。
-  let heads = textCode
+  let heads = encryptCode16
     .slice(0,-1)
     .map((code,i)=> (i + 1) % 4 ? meisi[code] : dousi[code])
     .map(v=> v[Math.floor(Math.random() * v.length)])
 
   // 最後の文字列を必ず動詞で終えることで呪文詠唱となる。
-  let last = textCode
+  let last = encryptCode16
     .slice(-1)
     .map(code=> dousi[code])
     .map(v=> v[Math.floor(Math.random() * v.length)])
@@ -58,10 +65,11 @@ let default_decoder = (encodeText,{ meisi, dousi }) => {
     .match(decodeRegExp) || []
 
   // デコード用のハッシュマップからエンコード前の2桁16進数のコードを復元。
-  let textCode = textCodeList
+  let encryptCode = textCodeList
     .map(v=>decodeHash[v])
     .map(v=>parseInt(v,16))
 
+  let textCode = simpleEnigma.uint8ArrayEncrypt(encryptCode)
   return Uint8Array.from(textCode)
 }
 
