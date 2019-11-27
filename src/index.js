@@ -21,13 +21,13 @@ let default_encoder = (uint8text,{ meisi, dousi }) => {
   // 生成する文字列は 名詞 名詞 名詞 動詞 + 。 といった規則性になる。
   let heads = encryptCode16
     .slice(0,-1)
-    .map((code,i)=> (i + 1) % 4 ? meisi[code] : dousi[code])
+    .map((code,i)=> (i + 1) % 4 ? meisi[code] : dousi[code].map(d=>`${d}。`)) //読みやすさのため動詞の最後には読点を入れる
     .map(v=> v[Math.floor(Math.random() * v.length)])
 
   // 最後の文字列を必ず動詞で終えることで呪文詠唱となる。
   let last = encryptCode16
     .slice(-1)
-    .map(code=> dousi[code])
+    .map(code=> dousi[code].map(d=>`${d}。`)) //読みやすさのため動詞の最後には読点を入れる
     .map(v=> v[Math.floor(Math.random() * v.length)])
 
   return [ ...heads , last ].join('')
@@ -38,7 +38,7 @@ let default_decoder = (encodeText,{ meisi, dousi }) => {
   // エンコードに使用しているハッシュマップの値はリストのため、リストの要素をそれぞれコードと紐付ける。
   // ex:
   //   from:
-  //     "0A":["汚し。", "踊れ。", "歌え。", "紡げ。"]
+  //     "0A":["汚し", "踊れ", "歌え", "紡げ"]
   //   to:
   //     "汚し。" : "0A"
   //     "踊れ。" : "0A"
@@ -60,8 +60,11 @@ let default_decoder = (encodeText,{ meisi, dousi }) => {
   // ex: /さざ波|その者|ほうき星よ/g
   let decodeRegExp = new RegExp(Object.keys(decodeHash).join('|'),'g')
 
+  // 読みやすさのために含まれている読点を削除
+  let cleanEncodeText = encodeText.replace(/。/g,'')
+
   // 正規表現にマッチするもののみに絞り込み。
-  let textCodeList = encodeText
+  let textCodeList = cleanEncodeText
     .match(decodeRegExp) || []
 
   // デコード用のハッシュマップからエンコード前の2桁16進数のコードを復元。
