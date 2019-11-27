@@ -17,17 +17,24 @@ let default_encoder = (uint8text,{ meisi, dousi }) => {
   // 名詞、動詞データのキーは2桁の16進数のコードである。
   let encryptCode16 = encryptCode.map(v=>`0${(+v).toString(16).toUpperCase()}`.slice(-2))
 
+  //読みやすさのため動詞の最後には読点を入れる
+  let _dousi = Object.fromEntries(
+    Object.entries(dousi).map(([k,dousiList])=> {
+      return [k,dousiList.map(d=>`${d}。`) ]
+    })
+  )
+
   // 先頭から最後の文字の1つ手前までを先頭として文字列を生成。
   // 生成する文字列は 名詞 名詞 名詞 動詞 + 。 といった規則性になる。
   let heads = encryptCode16
     .slice(0,-1)
-    .map((code,i)=> (i + 1) % 4 ? meisi[code] : dousi[code].map(d=>`${d}。`)) //読みやすさのため動詞の最後には読点を入れる
+    .map((code,i)=> (i + 1) % 4 ? meisi[code] : _dousi[code])
     .map(v=> v[Math.floor(Math.random() * v.length)])
 
   // 最後の文字列を必ず動詞で終えることで呪文詠唱となる。
   let last = encryptCode16
     .slice(-1)
-    .map(code=> dousi[code].map(d=>`${d}。`)) //読みやすさのため動詞の最後には読点を入れる
+    .map(code=> _dousi[code])
     .map(v=> v[Math.floor(Math.random() * v.length)])
 
   return [ ...heads , last ].join('')
