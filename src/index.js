@@ -94,11 +94,11 @@ module.exports = {
     return generater(uint8text,data)
   },
   encode( text, data = this.data, encoder = default_encoder ){
-    let uint8text = (TextEncoder ? new TextEncoder() : new util.TextEncoder()).encode(text)
+    let uint8text = (global.TextEncoder ? new TextEncoder() : new util.TextEncoder()).encode(text)
     return encoder(uint8text,data)
   },
   decode( text, data = this.data, decoder = default_decoder ){
     let uint8text = decoder(text,data)
-    return (TextDecoder ? new TextDecoder() : new util.TextDecoder()).decode(uint8text)
+    return (global.TextDecoder ? new TextDecoder() : new util.TextDecoder()).decode(uint8text)
   }
 }
