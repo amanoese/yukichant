@@ -1,7 +1,9 @@
 import simpleEnigma from './machine-encrypt.js'
 import fs from 'fs'
-const meisi = JSON.parse(fs.readFileSync('./data/meisi.json', 'utf8'));
-const dousi = JSON.parse(fs.readFileSync('./data/dousi.json', 'utf8'));
+import path from 'path'
+const dirname = path.dirname(new URL(import.meta.url).pathname)
+const meisi = JSON.parse(fs.readFileSync(`${dirname}/../data/meisi.json`, 'utf8'));
+const dousi = JSON.parse(fs.readFileSync(`${dirname}/../data/dousi.json`, 'utf8'));
 
 
 let default_encoder = (uint8text,{ meisi, dousi }) => {
