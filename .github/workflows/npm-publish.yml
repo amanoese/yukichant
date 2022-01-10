@@ -21,7 +21,7 @@ jobs:
       - name: Can Publish
         run : npx can-npm-publish --verbose
         env :
-          NODE_AUTH_TOKEN: ${{ secrets.npm_token }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Install
         run : npm install
@@ -29,4 +29,4 @@ jobs:
       - name: Publish
         run : npm publish --access=public
         env :
-          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
