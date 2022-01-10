@@ -20,7 +20,6 @@
     "jest-extended": "^1.2.0"
   },
   "dependencies": {
-    "caporal": "^1.0.0",
     "commander": "^8.3.0",
     "get-stdin": "^9.0.0"
   },
@@ -30,5 +29,5 @@
     "unicode"
   ],
   "type": "module",
-  "node" : ">=12.22.8"
+  "node": ">=12.22.8"
 }
