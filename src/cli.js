@@ -2,7 +2,9 @@
 import getStdin from 'get-stdin'
 import chant from './index.js'
 import fs from 'fs'
-const { version } = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+import path from 'path'
+const dirname = path.dirname(new URL(import.meta.url).pathname)
+const { version } = JSON.parse(fs.readFileSync(`${dirname}/../package.json`));
 
 import { Command } from 'commander/esm.mjs';
 const program = new Command();
