@@ -4,7 +4,8 @@ import chant from './index.js'
 import fs from 'fs'
 const { version } = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 
-import program from 'commander';
+import { Command } from 'commander/esm.mjs';
+const program = new Command();
 
 program
 .name('yukichant')
