@@ -1,4 +1,4 @@
-name: jest-test
+name: Node CI
 
 on:
   pull_request:
