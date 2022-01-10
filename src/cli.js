@@ -1,17 +1,19 @@
 #!/usr/bin/env node
-const prog = require('caporal')
-const getStdin = require('get-stdin')
-const chant = require('./index.js')
+import getStdin from 'get-stdin'
+import chant from './index.js'
+import fs from 'fs'
+const { version } = JSON.parse(fs.readFileSync('package.json', 'utf8'));
 
-prog
+import program from 'commander';
+
+program
 .name('yukichant')
 .description('yukichant is convert text to magic spell.')
-.bin('chant')
-.version(require('../package.json').version)
-.argument('[text]','input text',null,'')
+.version(version)
+.argument('[text]','input text','')
 .option('-d','decode flag')
-.action(async (args,option)=>{
-  let inputText = args.text || (await getStdin())
+.action(async (text,option)=>{
+  let inputText = text || (await getStdin())
   if (inputText == '') {
     console.log(chant.generate())
   } else if (option.d){
@@ -20,5 +22,4 @@ prog
     console.log(chant.encode(inputText))
   }
 })
-
-prog.parse(process.argv)
+.parse(process.argv);

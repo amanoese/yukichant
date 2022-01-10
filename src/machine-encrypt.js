@@ -14,11 +14,12 @@ let encrypt = (uint8array,roter,refrector) => {
   return [fase_3, ...(uint8array.length <= 1 ? [] : encrypt(uint8array.slice(1),nextRotor,refrector)) ]
 }
 
-module.exports = {
+export default  {
   default_roter,
   refrector,
   encrypt,
-  uint8ArrayEncrypt(uint8array){
-    return this.encrypt(uint8array,this.default_roter,this.refrector)
+  uint8ArrayEncrypt(uint8array) {
+    return this.encrypt(uint8array,this.default_roter,this.refrector);
   }
 }
+

@@ -1,4 +1,4 @@
-const simpleEnigma = require('../src/machine-encrypt.js')
+import simpleEnigma from '../src/machine-encrypt.js'
 
 
 describe('simpleEnigma',()=>{

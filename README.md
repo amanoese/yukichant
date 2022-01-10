@@ -1,6 +1,6 @@
 # yukichant
 
-[![Build Status](https://travis-ci.org/amanoese/yukichant.svg?branch=master)](https://travis-ci.org/amanoese/yukichant)
+[![Actions Status](https://github.com/amanoese/yukichant/workflows/Node%20CI/badge.svg)](https://github.com/amanoese/yukichant/actions)
 [![npm version](http://img.shields.io/npm/v/yukichant.svg)](https://npmjs.org/package/yukichant)
 
 yukichantは、テキストデータを詠唱呪文に変換するコマンドです。  
