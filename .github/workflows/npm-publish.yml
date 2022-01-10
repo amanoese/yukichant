@@ -7,16 +7,20 @@ on:
 
 jobs:
   publish-to-npm:
+    if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
       - name: Use Node.js And Setup .npmrc
         uses: actions/setup-node@v2
         with:
           node-version: '12.x'
           registry-url: 'https://registry.npmjs.org'
           always-auth : true
+        env :
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Can Publish
         run : npx can-npm-publish --verbose
@@ -26,7 +30,7 @@ jobs:
       - name: Install
         run : npm install
 
-      - name: Publish
-        run : npm publish --access=public
-        env :
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+     - name: Publish
+       run : npm publish --access=public
+       env :
+         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
