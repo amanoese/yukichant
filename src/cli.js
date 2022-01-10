@@ -1,13 +1,16 @@
 #!/usr/bin/env node
-const prog = require('caporal')
-const getStdin = require('get-stdin')
-const chant = require('./index.js')
+import prog from 'caporal'
+import getStdin from 'get-stdin'
+import chant from './index.js'
+import fs from 'fs'
+const { version } = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+console.log({version})
 
 prog
 .name('yukichant')
 .description('yukichant is convert text to magic spell.')
 .bin('chant')
-.version(require('../package.json').version)
+.version(version)
 .argument('[text]','input text',null,'')
 .option('-d','decode flag')
 .action(async (args,option)=>{
