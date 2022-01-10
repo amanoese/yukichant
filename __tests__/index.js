@@ -1,6 +1,7 @@
-const chant = require('../src/index.js')
-const meisi = require('../data/meisi.json')
-const dousi = require('../data/dousi.json')
+import chant from '../src/index'
+import fs from 'fs'
+const meisi = JSON.parse(fs.readFileSync('./data/meisi.json', 'utf8'));
+const dousi = JSON.parse(fs.readFileSync('./data/dousi.json', 'utf8'));
 
 describe('chant',()=>{
   test('encode',()=>{

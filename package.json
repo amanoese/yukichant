@@ -12,7 +12,7 @@
   "scripts": {
     "dev": "src/cli.js",
     "json-generate": "raw_data/json_generator",
-    "test": "jest",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "deploy": "npm version patch && git push origin $(git describe --tags --abbrev=0)"
   },
   "devDependencies": {
@@ -20,7 +20,7 @@
     "jest-extended": "^1.2.0"
   },
   "dependencies": {
-    "caporal": "^1.4.0",
+    "caporal": "^1.0.0",
     "get-stdin": "^9.0.0"
   },
   "keywords": [
