@@ -29,5 +29,6 @@
     "terminal",
     "unicode"
   ],
-  "type": "module"
+  "type": "module",
+  "node" : ">=12.22.8"
 }
