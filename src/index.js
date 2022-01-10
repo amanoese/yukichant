@@ -1,9 +1,7 @@
-require('core-js')
-const util  = require('util')
-const simpleEnigma = require('./machine-encrypt')
-
-const meisi = require('../data/meisi.json')
-const dousi = require('../data/dousi.json')
+import simpleEnigma from './machine-encrypt.js'
+import fs from 'fs'
+const meisi = JSON.parse(fs.readFileSync('./data/meisi.json', 'utf8'));
+const dousi = JSON.parse(fs.readFileSync('./data/dousi.json', 'utf8'));
 
 
 let default_encoder = (uint8text,{ meisi, dousi }) => {
@@ -83,7 +81,7 @@ let default_decoder = (encodeText,{ meisi, dousi }) => {
   return Uint8Array.from(textCode)
 }
 
-module.exports = {
+export default {
   data : {
     meisi,
     dousi
@@ -94,11 +92,11 @@ module.exports = {
     return generater(uint8text,data)
   },
   encode( text, data = this.data, encoder = default_encoder ){
-    let uint8text = (global.TextEncoder ? new TextEncoder() : new util.TextEncoder()).encode(text)
+    let uint8text = (new TextEncoder()).encode(text)
     return encoder(uint8text,data)
   },
   decode( text, data = this.data, decoder = default_decoder ){
     let uint8text = decoder(text,data)
-    return (global.TextDecoder ? new TextDecoder() : new util.TextDecoder()).decode(uint8text)
+    return (new TextDecoder()).decode(uint8text)
   }
 }
