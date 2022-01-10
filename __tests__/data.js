@@ -6,9 +6,9 @@ data/dousi.jsonとdata/meisi.jsonのバリュー(呪文)の文字列は重複し
 後から要素を追加した際に、重複が発生すると正常にdecodeできなくなる懸念があるためである。
 
 */
-
-const meisi = require('../data/meisi.json')
-const dousi = require('../data/dousi.json')
+import fs from 'fs'
+const meisi = JSON.parse(fs.readFileSync('./data/meisi.json', 'utf8'));
+const dousi = JSON.parse(fs.readFileSync('./data/dousi.json', 'utf8'));
 
 describe('meisi', () => {
   test('meisiの値に重複するものが存在しない', () => {
