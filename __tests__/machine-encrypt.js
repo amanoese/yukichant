@@ -28,4 +28,11 @@ describe('simpleEnigma',()=>{
     expect(Math.max(...result_count))
       .toBeLessThan(15)
   })
+  
+  test('大きなバイト列をエンコードできるか確認', () => {
+    let arr = Array.from((new Array(1000000)).keys()).map((_, i) => i % 256)
+    let decoded = simpleEnigma.uint8ArrayEncrypt(simpleEnigma.uint8ArrayEncrypt(arr))
+    
+    expect(arr).toEqual(decoded)
+  })
 })
