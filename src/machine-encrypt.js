@@ -5,13 +5,21 @@ let toNumber    = (list,input) => list[input]
 let revToNumber = (list,input) => list.indexOf(input)
 
 let encrypt = (uint8array,roter,refrector) => {
-  let fase_1 = toNumber(roter,uint8array[0])
-  let fase_2 = toNumber(refrector,fase_1)
-  let fase_3 = revToNumber(roter,fase_2)
+  let phase_1, phase_2, phase_3;
+  let nextRotor = roter;
+  const ret = [];
 
-  let nextRotor = [ ...roter.slice(1) , roter[0] ]
+  for (let v of uint8array) {
+    phase_1 = toNumber(nextRotor,v);
+    phase_2 = toNumber(refrector,phase_1);
+    phase_3 = revToNumber(nextRotor,phase_2);
 
-  return [fase_3, ...(uint8array.length <= 1 ? [] : encrypt(uint8array.slice(1),nextRotor,refrector)) ]
+    nextRotor = [ ...nextRotor.slice(1) , nextRotor[0] ];
+    
+    ret.push(phase_3);
+  }
+
+  return ret;
 }
 
 export default  {
@@ -20,6 +28,5 @@ export default  {
   encrypt,
   uint8ArrayEncrypt(uint8array) {
     return this.encrypt(uint8array,this.default_roter,this.refrector);
-  }
+  },
 }
-
