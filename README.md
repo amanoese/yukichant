@@ -48,5 +48,5 @@ Apache-2.0
 
 ## Thanks
 I named "yukichant" by Nagato Yuki-chan + chant .
-becouse I want to chant magic words like her.
+because I want to chant magic words like her.
 
