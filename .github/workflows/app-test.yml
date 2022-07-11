@@ -6,8 +6,7 @@ on:
       - master
 
 jobs:
-  jest-test:
-    name: build
+  jest:
     runs-on: ubuntu-latest
 
     strategy:
@@ -25,8 +24,7 @@ jobs:
     - run: npm ci
     - run: npm test
 
-  check-on-volta:
-    name: build
+  test-on-volta:
     runs-on: ubuntu-latest
 
     strategy:
@@ -45,8 +43,15 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm install
-    - run: npm install -g ../yukichant
+
+    - name: install yukichant on local
+      run: |
+        npm install
+        npm install -g ../yukichant
+
+    - name: mkdir sandbox
+      run: mkdir -p ./exec_dir
 
     - run: chant
+      working-directory: ./exec_dir
 
