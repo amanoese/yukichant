@@ -1,0 +1,57 @@
+name: Node CI
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  jest:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 12.x, 14.x, 16.x ]
+
+    steps:
+    - run: node -v
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: node -v
+    - run: npm ci
+    - run: npm test
+
+  test-on-volta:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [ 12.x, 14.x, 16.x ]
+
+    steps:
+    - uses: actions/checkout@v1
+    - uses: volta-cli/action@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - run: node -v
+    - uses: actions/checkout@v2
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+
+    - name: install yukichant on local
+      run: |
+        npm install
+        npm install -g ../yukichant
+
+    - name: mkdir sandbox
+      run: mkdir -p ./exec_dir
+
+    - run: chant
+      working-directory: ./exec_dir
+
