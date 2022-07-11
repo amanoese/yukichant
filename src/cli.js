@@ -2,7 +2,7 @@
 import getStdin from 'get-stdin'
 import chant from './index.js'
 import fs from 'fs'
-const { version } = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+const { version } = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 
 import { Command } from 'commander/esm.mjs';
 const program = new Command();
