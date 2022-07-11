@@ -48,6 +48,10 @@ jobs:
     - name: mkdir sandbox
       run: mkdir -p ./exec_dir
 
+    - name: check cli path
+      run: which chant
+      working-directory: ./exec_dir
+
     - run: chant
       working-directory: ./exec_dir
 
