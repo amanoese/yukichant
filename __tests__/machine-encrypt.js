@@ -7,8 +7,8 @@ describe('simpleEnigma',()=>{
     let input = [1,2,3,4,5,6,7,8,9,10]
     let encryptData = simpleEnigma.uint8ArrayEncrypt(input)
 
-    // toBeだとオブジェクト同士の参照が一致しているかまで
-    //調べてしまうためtoEqualを使う
+    // toBeだとオブジェクト同士の参照が一致しているかまで調べてしまうためtoEqualを使う
+    // enigmaと同じ仕組みのため初期位置が同じencoderは,decoderになる
     expect(simpleEnigma.uint8ArrayEncrypt(encryptData))
       .toEqual(input)
   })
@@ -27,6 +27,17 @@ describe('simpleEnigma',()=>{
 
     expect(Math.max(...result_count))
       .toBeLessThan(15)
+  })
+
+  test('辞書にあるすべての単語を出力して問題ないかの確認',()=>{
+    // 辞書は名詞が256単語周期、動詞が 256*4単語周期になっている
+    // 257 * 4 回 同じデータを入れるとすべてのデータが取り出せる
+    let input = Array.from({ length : (257 * 4) }).map(_=> 0)
+    let encryptData = simpleEnigma.uint8ArrayEncrypt(input)
+
+    // enigmaと同じ仕組みのため初期位置が同じencoderは,decoderになる
+    expect(simpleEnigma.uint8ArrayEncrypt(encryptData))
+      .toEqual(input)
   })
   
   test('大きなバイト列をエンコードできるか確認', () => {
