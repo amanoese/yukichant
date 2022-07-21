@@ -28,25 +28,13 @@ $ chant
 水面も灰塵に蒼穹を抗え。
 ```
 
-## Develop
-
-install dependency
-```bash
-$ npm install
-```
-
-execute command
-```bash
-## run encode
-$ npm run dev unko
-## run decode
-$ npm run dev unko | npm run dev -- -d
-```
-
-## LICENSE
-Apache-2.0
+## Documentation for Developers
+[develop](/doc/develop.md)
 
 ## Thanks
 I named "yukichant" by Nagato Yuki-chan + chant .
 because I want to chant magic words like her.
+
+## LICENSE
+Apache-2.0
 
