@@ -34,14 +34,15 @@ xargs -L1 -I@ bash -c "grep '^@' $MEISI_UNIQ_TEMP |xargs"|
 sort -u|
 awk '{print NF,$0}'|
 sort -nr -k1,1|
-head -256|
+head -257|
 cut -d' ' -f2- > $MEISI_RESULT_TEMP
 
 ## genarate json
 cat $MEISI_RESULT_TEMP|
-head -256|
-paste <((echo 10 227 {129..131}|tr ' ' \\n;seq 32 255|grep -v -e 129 -e 130 -e 131 -e 223;seq 0 31|grep -v 10)| xargs -L1 -I@ bash -c 'echo 0$(echo "obase=16;@"|bc)|grep -o "..$"') - |
+head -257|
+paste <((echo 10 227 {129..131}|tr ' ' \\n;seq 32 255|grep -v -e 129 -e 130 -e 131 -e 223;seq 0 31|grep -v 10;echo 223)| xargs -L1 -I@ bash -c 'echo 0$(echo "obase=16;@"|bc)|grep -o "..$"') - |
 sort -k1,1 |
+tee /dev/stderr |
 sed 's/ /","/g' |
 sed -r 's/^(.*)\t/  \"\1\":/;s/:(.*)/: ["\1"],/'|
 sed '1s/^/{\n/;$s/,$/\n}/' > ${SCRIPT_DIR}/../data/meisi.json
