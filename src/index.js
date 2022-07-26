@@ -5,7 +5,6 @@ const dirname = path.dirname(new URL(import.meta.url).pathname)
 const meisi = JSON.parse(fs.readFileSync(`${dirname}/../data/meisi.json`, 'utf8'));
 const dousi = JSON.parse(fs.readFileSync(`${dirname}/../data/dousi.json`, 'utf8'));
 
-
 let default_encoder = (uint8text,{ meisi, dousi }) => {
 
   //機械式暗号（ロータ型）の仕組みを利用したスクランブラーを配置
@@ -24,12 +23,45 @@ let default_encoder = (uint8text,{ meisi, dousi }) => {
     })
   )
 
+  // 最後の文字が異なるようにする関数
+  let difference = (arr1,arr2) => arr1.filter(x => {
+    return !arr2
+      .map(y=>[ ...y ].slice(-1)[0])
+      .some(y => new RegExp(`${y}$`).test(x) )
+  });
+
   // 先頭から最後の文字の1つ手前までを先頭として文字列を生成。
   // 生成する文字列は 名詞 名詞 名詞 動詞 + 。 といった規則性になる。
-  let heads = encryptCode16
-    .slice(0,-1)
-    .map((code,i)=> (i + 1) % 4 ? meisi[code] : _dousi[code])
-    .map(v=> v[Math.floor(Math.random() * v.length)])
+  let heads = []
+  for (let i=0,prev_word=[],v="";i < encryptCode16.length;i++) {
+    let code = encryptCode16[i]
+    // 名詞の場合
+    if ( (i+1) % 4 ) {
+      // 同じ助動詞を避けるための実装
+      let words = difference(meisi[code],prev_word)
+      if (words.lenth == 0) { words = meisi[code] }
+
+      let select_w = Math.floor(Math.random() * words.length)
+      v = words[select_w]
+      heads.push(v)
+
+      // console.log({ prev_word, original:meisi[code], words , selected:v})
+      prev_word.push(v)
+
+    // 動詞の場合
+    } else {
+      // 同じ助動詞を避けるための実装
+      let words = difference(_dousi[code],prev_word)
+      if (words.lenth == 0) { words = _dousi[code] }
+
+      let select_w = Math.floor(Math.random() * words.length)
+      v = words[select_w]
+      heads.push(v)
+
+      // console.log({ prev_word, original:_dousi[code], words , selected:v})
+      prev_word = []
+    }
+  }
 
   // 最後の文字列を必ず動詞で終えることで呪文詠唱となる。
   let last = encryptCode16
