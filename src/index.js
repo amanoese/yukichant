@@ -33,7 +33,7 @@ let default_encoder = (uint8text,{ meisi, dousi }) => {
   // 先頭から最後の文字の1つ手前までを先頭として文字列を生成。
   // 生成する文字列は 名詞 名詞 名詞 動詞 + 。 といった規則性になる。
   let heads = []
-  for (let i=0,prev_word=[],v="";i < encryptCode16.length;i++) {
+  for (let i=0,prev_word=[],v="";i < encryptCode16.length - 1;i++) {
     let code = encryptCode16[i]
     // 名詞の場合
     if ( (i+1) % 4 ) {
