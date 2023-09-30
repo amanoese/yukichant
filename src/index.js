@@ -74,7 +74,7 @@ let default_decoder = async (encodeText,option = {} ,{ meisi, dousi }) => {
 
   let tokenizer = await new Promise((resolve,reject) => {
     kuromoji
-    .builder({ dicPath: 'dic/' })
+    .builder({ dicPath: `${dirname}/../dic/` })
     .build(function (err, tokenizer) {
       if(err != null) {
         reject(err)
