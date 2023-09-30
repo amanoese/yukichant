@@ -13,24 +13,30 @@ describe('chant',()=>{
     }
   })
 
-  test('decode',()=>{
-    expect(chant.decode(chant.encode('こんにちは')))
+  test('decode',async ()=>{
+    expect(await chant.decode(chant.encode('こんにちは')))
       .toBe('こんにちは')
   })
 
-  test('decode 改行文字込',()=>{
-    expect(chant.decode('回廊に凍結冥界借り。血塗ら。')).toBe('unko\n')
+  test('decode 改行文字込',async ()=>{
+    expect(await chant.decode('回廊に凍結冥界借り。血塗ら。')).toBe('unko\n')
   })
 
-  test('dumpされた文字が途中でもdecodeできるかの確認',()=>{
+  test('dumpされた文字が途中でもdecodeできるかの確認',async ()=>{
     // chant.encode('')
-    expect(chant.decode(chant.encode('💩💩').slice(0,-4)))
+    expect(await chant.decode(chant.encode('💩💩').slice(0,-4)))
       .toEqual(expect.stringContaining('💩'))
   })
-  test('関係ない文字でもエラーが出ないことの確認',()=>{
+  test('関係ない文字でもエラーが出ないことの確認',async ()=>{
     // chant.encode('')
-    expect(()=>chant.decode('💩')).not.toThrow()
+    expect(()=> chant.decode('💩')).not.toThrow()
     //下のテストは無理になった
     //expect(chant.decode('💩')).toBe('')
+  })
+
+  test('decode 文字の間違いをある程度修正できるか',async ()=>{
+    //                   回廊に凍結冥界借り。血塗ら。
+    //                   回      結            塗
+    expect(await chant.decode('廻廊に凍吉冥界借り。血土ら。')).toBe('unko\n')
   })
 })
