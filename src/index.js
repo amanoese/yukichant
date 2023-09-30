@@ -72,9 +72,6 @@ let default_decoder = async (encodeText,option = {} ,{ meisi, dousi }) => {
 
   let textCodeList = []
 
-  //console.log(allWord)
-  //console.log(closest('fast', allWord))
-
   let tokenizer = await new Promise((resolve,reject) => {
     kuromoji
     .builder({ dicPath: 'dic/' })
@@ -88,10 +85,6 @@ let default_decoder = async (encodeText,option = {} ,{ meisi, dousi }) => {
   const han = /^[\p{scx=Han}]$/u;
   const allHan = Array.from(new Set(allWord.join('').match(/[\p{scx=Han}]/ug)))
   const allFirstHan = Array.from(new Set(allWord.map(v=>v[0]).join('').match(/[\p{scx=Han}]/ug)))
-
-  //if (option.Vv == true) { console.log(allHan) }
-  //[ ... "感じ文字列".match(/[\p{scx=Han}]/ug) ]
-
 
   // 読みやすさのために含まれている読点を削除(+英字と空白)
   let cleanEncodeText = encodeText.replaceAll(/[。\sA-z]/g,'')
