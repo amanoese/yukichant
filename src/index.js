@@ -85,6 +85,13 @@ let default_decoder = async (encodeText,option = {} ,{ meisi, dousi }) => {
       resolve(tokenizer)
     });
   });
+  const han = /^[\p{scx=Han}]$/u;
+  const allHan = Array.from(new Set(allWord.join('').match(/[\p{scx=Han}]/ug)))
+  const allFirstHan = Array.from(new Set(allWord.map(v=>v[0]).join('').match(/[\p{scx=Han}]/ug)))
+
+  //if (option.Vv == true) { console.log(allHan) }
+  //[ ... "感じ文字列".match(/[\p{scx=Han}]/ug) ]
+
 
   // 読みやすさのために含まれている読点を削除(+英字と空白)
   let cleanEncodeText = encodeText.replaceAll(/[。\sA-z]/g,'')
@@ -103,7 +110,7 @@ let default_decoder = async (encodeText,option = {} ,{ meisi, dousi }) => {
         let heads = list.slice(0,-1)
         let last = list[list.length -1]
         let adverb = false
-        if(['副詞','助詞','記号'].includes(token.pos)){
+        if(['副詞','助詞','助動詞','記号'].includes(token.pos)){
           adverb = true
         }
         if (option.Vv == true) { console.log(token.surface_form,token.pos,token.pos_detail_1, token.pos_detail_2, token.pos_detail_3) }
@@ -114,10 +121,25 @@ let default_decoder = async (encodeText,option = {} ,{ meisi, dousi }) => {
         return [ ...heads, { i:last.i, v:last.v + token.surface_form , old:last.old + token.surface_form, adverb } ]
       },[])
       .filter(token=>token.pos != '記号')
+      .map((token,i)=> {
+        let first = token.v[0]
+        if(han.test(first) && !allHan.includes(first)) {
+          let point = first.codePointAt()
+          //allHan.sort((a,b)=>Math.abs(a.codePointAt() - point) - Math.abs(b.codePointAt() - point))
+          allFirstHan.sort((a,b)=>Math.abs(a.codePointAt() - point) - Math.abs(b.codePointAt() - point))
+          //if (option.Vv == true) console.log(first,'->',allHan.slice(0,5))
+          if (option.Vv == true) console.log(first,'->',allFirstHan.slice(0,5))
+          return { ...token , v: token.v.replace(/./,allFirstHan[0]) }
+        }
+        return token
+      })
+      .map((token,i)=> ( { ...token , v: closest(token.v, allWord) }) )
       .map((v,i)=>{ option.Vv && console.log(i,v); return v})
-      .map((token,i)=> ( { ...token , v: closest(token.v, allWord) }) );
     let fixedTokens = [...ptokens,...fixTokens].sort((a,b)=> a.i - b.i);
-    if(option.v) { console.error(fixedTokens.map(token=>(token.old ? pc.green(token.v): token.v)).join('')) }
+    if(option.v) {
+      console.error(cleanEncodeText)
+      console.error(fixedTokens.map(token=>(token.old ? pc.green(token.v): token.v)).join(''))
+    }
     cleanEncodeText = fixedTokens.map(v=>v.v).join('')
   }
   // デコード用の正規表現に変換。
