@@ -1,6 +1,4 @@
-.gitignore
-.travis.yml
-LICENSE
-node_modules
-raw_data
-__tests__
+.github/
+dic/
+word.csv
+yukichant.dic

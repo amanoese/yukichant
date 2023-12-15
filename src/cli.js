@@ -13,12 +13,16 @@ program
 .version(version)
 .argument('[text]','input text','')
 .option('-d','decode flag')
+.option('-s','strict decode mode flag')
+.option('-v','verbose mode flag')
+.option('-vv','more verbose') // なぜかVv
 .action(async (text,option)=>{
+  if (option.Vv) { option.v = true }
   let inputText = text || (await getStdin())
   if (inputText == '') {
     console.log(chant.generate())
   } else if (option.d){
-    process.stdout.write(chant.decode(inputText))
+    process.stdout.write(await chant.decode(inputText,option))
   } else {
     console.log(chant.encode(inputText))
   }

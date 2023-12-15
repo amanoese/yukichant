@@ -8,6 +8,9 @@ Arguments:
 Options:
   -V, --version  output the version number
   -d             decode flag
+  -s             strict decode mode flag
+  -v             verbose mode flag
+  -vv            more verbose
   -h, --help     display help for command
 `
 export default message
