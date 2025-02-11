@@ -14,10 +14,15 @@ program
 .argument('[text]','input text','')
 .option('-d','decode flag')
 .option('-s','strict decode mode flag')
+.option('--no-tfidf','disable tfidf mode flag when strict decode mode flag is enabled')
 .option('-v','verbose mode flag')
 .option('-vv','more verbose') // なぜかVv
 .action(async (text,option)=>{
+  if (option.tfidf) {
+    option.is_tfidf = option.tfidf
+  }
   if (option.Vv) { option.v = true }
+  if (option.v) { console.log({option}) }
   let inputText = text || (await getStdin())
   if (inputText == '') {
     console.log(chant.generate())

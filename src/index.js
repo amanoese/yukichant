@@ -1,4 +1,5 @@
 import simpleEnigma from './machine-encrypt.js'
+import typoCorrection from './typo-correction.js'
 import fs from 'fs'
 import path from 'path'
 import {distance, closest} from 'fastest-levenshtein'
@@ -89,51 +90,13 @@ let default_decoder = async (encodeText,option = {} ,{ meisi, dousi }) => {
   // 読みやすさのために含まれている読点を削除(+英字と空白)
   let cleanEncodeText = encodeText.replaceAll(/[。\sA-z]/g,'')
 
-  // tokenizer is ready
-  let tokens = tokenizer.tokenize(cleanEncodeText);
-  let ptokens = tokens
-    .filter(token=>token.pos_detail_1 == '引用文字列')
-    .map((token,i)=> ({ i:token.word_position, v:token.surface_form }) )
-  let ntokens = tokens
-    .filter(token=>token.pos_detail_1 != '引用文字列')
+  // オプションによっては、文字列を修正する。
+  if(option.s != true) {
+    cleanEncodeText = typoCorrection.exec(cleanEncodeText,option)
+  }
 
-  if(option.s != true && ntokens.length > 0) {
-    let fixTokens = ntokens
-      .reduce((list,token)=>{
-        let heads = list.slice(0,-1)
-        let last = list[list.length -1]
-        let adverb = false
-        if(['副詞','助詞','助動詞','記号'].includes(token.pos)){
-          adverb = true
-        }
-        if (option.Vv == true) { console.log(token.surface_form,token.pos,token.pos_detail_1, token.pos_detail_2, token.pos_detail_3) }
-
-        if (list.length == 0 || (last.adverb == true && adverb == false) || last.i + last.v.length != token.word_position) {
-          return [ ...list, { i:token.word_position, v: token.surface_form, old: token.surface_form, pos:token.pos, adverb } ]
-        }
-        return [ ...heads, { i:last.i, v:last.v + token.surface_form , old:last.old + token.surface_form, adverb } ]
-      },[])
-      .filter(token=>token.pos != '記号')
-      .map((token,i)=> {
-        let first = token.v[0]
-        if(han.test(first) && !allHan.includes(first)) {
-          let point = first.codePointAt()
-          //allHan.sort((a,b)=>Math.abs(a.codePointAt() - point) - Math.abs(b.codePointAt() - point))
-          allFirstHan.sort((a,b)=>Math.abs(a.codePointAt() - point) - Math.abs(b.codePointAt() - point))
-          //if (option.Vv == true) console.log(first,'->',allHan.slice(0,5))
-          if (option.Vv == true) console.log(first,'->',allFirstHan.slice(0,5))
-          return { ...token , v: token.v.replace(/./,allFirstHan[0]) }
-        }
-        return token
-      })
-      .map((token,i)=> ( { ...token , v: closest(token.v, allWord) }) )
-      .map((v,i)=>{ option.Vv && console.log(i,v); return v})
-    let fixedTokens = [...ptokens,...fixTokens].sort((a,b)=> a.i - b.i);
-    if(option.v) {
-      console.error(cleanEncodeText)
-      console.error(fixedTokens.map(token=>(token.old ? pc.green(token.v): token.v)).join(''))
-    }
-    cleanEncodeText = fixedTokens.map(v=>v.v).join('')
+  if(option.v) {
+    console.error(cleanEncodeText)
   }
   // デコード用の正規表現に変換。
   // ex: /さざ波|その者|ほうき星よ/g
