@@ -1,6 +1,6 @@
 {
   "name": "yukichant",
-  "version": "v3.1.0-beta.7",
+  "version": "v3.1.0-beta.9",
   "description": "",
   "license": "Apache-2.0",
   "repository": "amanoese/yukichant",
@@ -13,7 +13,8 @@
     "dev": "src/cli.js",
     "json-generate": "raw_data/json_generator",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "deploy": "npm version patch && git push origin $(git describe --tags --abbrev=0)"
+    "deploy": "npm version patch && git push origin $(git describe --tags --abbrev=0)",
+    "install": "git clone https://github.com/yagays/kanjivg-radical.git -b master node_modules/kanjivg-radical"
   },
   "devDependencies": {
     "jest": "^27.4.7",
@@ -24,6 +25,7 @@
     "fastest-levenshtein": "^1.0.16",
     "get-stdin": "^9.0.0",
     "kuromoji": "^0.1.2",
+    "natural": "^6.10.4",
     "picocolors": "^1.0.0",
     "yukidic": "git+https://github.com/amanoese/yukidic.git"
   },
