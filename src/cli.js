@@ -15,6 +15,7 @@ program
 .option('-d','decode flag')
 .option('-s','strict decode mode flag')
 .option('--no-tfidf','disable tfidf mode flag when strict decode mode flag is enabled')
+.option('--levenshtein','use Levenshtein distance algorithm instead of Jaro-Winkler')
 .option('-v','verbose mode flag')
 .option('-vv','more verbose') // なぜかVv
 .action(async (text,option)=>{

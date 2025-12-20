@@ -111,25 +111,55 @@ let default_decoder = async (encodeText,option = {} ,{ meisi, dousi }) => {
     .map(v=>parseInt(v,16))
 
   let textCode = simpleEnigma.uint8ArrayEncrypt(encryptCode)
+  // バイト配列として返却
   return Uint8Array.from(textCode)
 }
 
 export default {
+  // 名詞と動詞のデータセット
   data : {
     meisi,
     dousi
   },
+  /**
+   * ランダムな呪文を生成する
+   * @param {number} length - 生成するバイト長
+   * @param {Object} data - 使用する名詞と動詞のデータ
+   * @param {Function} generater - エンコード処理を行う関数
+   * @returns {string} 生成された呪文
+   */
   generate(length, data = this.data, generater = default_encoder) {
+    // ランダムな数値を生成する関数
     let rand = n => (Math.random() * n).toFixed()
+    // 指定された長さ（またはランダムな長さ）のランダムなバイト配列を生成
     let uint8text = Uint8Array.from({length:length || +rand(12) + 4}).map(_=>rand(255))
     return generater(uint8text,data)
   },
+  /**
+   * テキストを呪文に変換する
+   * @param {string} text - エンコードするテキスト
+   * @param {Object} option - エンコードオプション
+   * @param {Object} data - 使用する名詞と動詞のデータ
+   * @param {Function} encoder - エンコード処理を行う関数
+   * @returns {string} 変換された呪文
+   */
   encode( text, option, data = this.data, encoder = default_encoder ){
+    // 文字列をUTF-8バイト配列に変換
     let uint8text = (new TextEncoder()).encode(text)
     return encoder(uint8text,data)
   },
+  /**
+   * 呪文をテキストに復号する
+   * @param {string} text - デコードする呪文
+   * @param {Object} option - デコードオプション
+   * @param {Object} data - 使用する名詞と動詞のデータ
+   * @param {Function} decoder - デコード処理を行う関数
+   * @returns {string} 復号されたテキスト
+   */
   async decode( text, option, data = this.data, decoder = default_decoder ){
+    // 呪文からバイト配列に変換
     let uint8text = await decoder(text,option,data)
+    // バイト配列を文字列に変換して返却
     return (new TextDecoder()).decode(uint8text)
   }
 }
