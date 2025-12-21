@@ -8,6 +8,7 @@ import { JaroWinklerDistance } from './jaro-winkler.js'; // Jaro-Winkler実装�
 
 import pc from 'picocolors';
 import kuromoji from 'kuromoji';
+import log from './logger.js';
 
 import fkm from './fuzzy-kanji-match.js';
 
@@ -68,16 +69,14 @@ function findClosestWord(word, wordList, useLevenshtein = false, option = { v: f
     score = maxSimilarity;
   }
   
-  // デバッグ情報の表示（一箇所にまとめる）
-  if (option.v || option.Vv) {
-    const color = useLevenshtein ? pc.cyan : pc.yellow;
-    console.log(color(`[${algorithmName}]`), {
-      word,
-      closestWord,
-      [useLevenshtein ? 'distance' : 'similarity']: score,
-      wordCount: wordList.length
-    });
-  }
+  // デバッグ情報の表示（loglevelを使用）
+  const color = useLevenshtein ? pc.cyan : pc.yellow;
+  log.debug(color(`[${algorithmName}]`), {
+    word,
+    closestWord,
+    [useLevenshtein ? 'distance' : 'similarity']: score,
+    wordCount: wordList.length
+  });
   
   return closestWord;
 }
@@ -93,13 +92,11 @@ const exec = (text, option = { is_tfidf: false, v: false, Vv: false, Levenshtein
     return text;
   }
 
-  if (option.Vv === true) {
-    console.log('☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆');
-    console.log('ntokens', ntokens.filter((token) => token.pos !== '記号'));
-    console.log('☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆');
-    console.log('ptokens', ptokens);
-    console.log('☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆');
-  }
+  log.trace('☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆');
+  log.trace('ntokens', ntokens.filter((token) => token.pos !== '記号'));
+  log.trace('☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆');
+  log.trace('ptokens', ptokens);
+  log.trace('☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆');
 
   let fixTokens = organizeUnknownTokens(ntokens, option);
   let fixedTokens = fixTokens
@@ -110,7 +107,7 @@ const exec = (text, option = { is_tfidf: false, v: false, Vv: false, Levenshtein
       let fixText = token.v.replace(/。$/, '');
       if (option.is_tfidf === true) {
         fixText = nearTokenMatch(fixText, option);
-        console.log('fixText', fixText);
+        log.debug('fixText', fixText);
       } else {
         fixText = closest(fixText, fkm.allWord);
       }
@@ -149,16 +146,14 @@ const exec = (text, option = { is_tfidf: false, v: false, Vv: false, Levenshtein
 const nearTokenMatch = (tokenStr, option = { isJaroWinklerDistance: false, v: false, Vv: false, Levenshtein: false }) => {
   let minDistance = Infinity;
 
-  if (option.Vv === true) {
-    console.log('tokenStr', tokenStr);
-  }
+  log.trace('tokenStr', tokenStr);
+  
   let tokens = [...tokenStr];
   for (let i = 0; i < tokens.length; i++) {
     let kanji = tokens[i];
     if (fkm.han.test(kanji)) {
-      if (option.Vv === true) {
-        console.log('kanji', fkm.maxTfidfSocres(kanji));
-      }
+      log.trace('kanji', fkm.maxTfidfSocres(kanji));
+      
       for (const result of fkm.maxTfidfSocres(kanji)) {
         let newKanji = result.kanji;
         let text = [...tokens.slice(0, i), newKanji, ...tokens.slice(i + 1)].join('');
@@ -166,16 +161,14 @@ const nearTokenMatch = (tokenStr, option = { isJaroWinklerDistance: false, v: fa
         // もし、最も近い漢字が見つからなかった場合は、次の文字に進む
         let d = calculateSimilarity(text, bestMatchLocal, option.Levenshtein);
         if (d < minDistance) {
-          if (option.Vv === true) {
-            console.log({
-              'd'          : d,
-              'minDistance': minDistance,
-              'text'       : text,
-              'bestMatch'  : bestMatchLocal,
-              'kanji'      : kanji,
-              'newKanji'   : newKanji
-            });
-          }
+          log.trace({
+            'd'          : d,
+            'minDistance': minDistance,
+            'text'       : text,
+            'bestMatch'  : bestMatchLocal,
+            'kanji'      : kanji,
+            'newKanji'   : newKanji
+          });
           minDistance = d;
           tokens[i] = newKanji;
           // 一番近い漢字が見つかったら、それを採用して次の文字に進む
@@ -200,15 +193,14 @@ const organizeUnknownTokens = (ntokens, option = { v: false, Vv: false }) => {
     if (['副詞', '助詞', '助動詞', '記号'].includes(token.pos)) {
       adverb = true;
     }
-    if (option.Vv === true) {
-      console.log(
-        token.surface_form,
-        token.pos,
-        token.pos_detail_1,
-        token.pos_detail_2,
-        token.pos_detail_3
-      );
-    }
+    
+    log.trace(
+      token.surface_form,
+      token.pos,
+      token.pos_detail_1,
+      token.pos_detail_2,
+      token.pos_detail_3
+    );
     // 未知の形態素に続く形態素がない場合は、新しい形態素として追加する
     // 未知の形態素に続く副詞は、直前の形態素に付ける
     if (

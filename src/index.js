@@ -5,6 +5,7 @@ import path from 'path'
 import {distance, closest} from 'fastest-levenshtein'
 import kuromoji from 'kuromoji'
 import pc from "picocolors"
+import log from './logger.js'
 
 const dirname = path.dirname(new URL(import.meta.url).pathname)
 const meisi = JSON.parse(fs.readFileSync(`${dirname}/../data/meisi.json`, 'utf8'));
@@ -95,9 +96,7 @@ let default_decoder = async (encodeText,option = {} ,{ meisi, dousi }) => {
     cleanEncodeText = typoCorrection.exec(cleanEncodeText,option)
   }
 
-  if(option.v) {
-    console.error(cleanEncodeText)
-  }
+  log.debug('修正後のテキスト:', cleanEncodeText)
   // デコード用の正規表現に変換。
   // ex: /さざ波|その者|ほうき星よ/g
   let decodeRegExp = new RegExp(Object.keys(decodeHash).join('|'),'g')
