@@ -2,6 +2,7 @@
 import getStdin from 'get-stdin'
 import chant from './index.js'
 import fs from 'fs'
+import { setLogLevel } from './logger.js'
 const { version } = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
 
 import { Command } from 'commander/esm.mjs';
@@ -23,7 +24,10 @@ program
     option.is_tfidf = option.tfidf
   }
   if (option.Vv) { option.v = true }
-  if (option.v) { console.log({option}) }
+  
+  // ログレベルを設定
+  setLogLevel(option)
+  
   let inputText = text || (await getStdin())
   if (inputText == '') {
     console.log(chant.generate())

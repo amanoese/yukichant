@@ -25,6 +25,7 @@
     "fastest-levenshtein": "^1.0.16",
     "get-stdin": "^9.0.0",
     "kuromoji": "^0.1.2",
+    "loglevel": "^1.9.2",
     "natural": "^6.10.4",
     "picocolors": "^1.0.0",
     "yukidic": "git+https://github.com/amanoese/yukidic.git"
