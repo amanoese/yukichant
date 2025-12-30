@@ -27,6 +27,97 @@ function regenerateSummary() {
       continue;
     }
 
+    // ChatGPTの場合は、モデルごとのサブディレクトリを処理
+    if (algDir === 'chatgpt') {
+      const modelDirs = fs.readdirSync(algPath)
+        .filter(f => {
+          const stat = fs.statSync(path.join(algPath, f));
+          return stat.isDirectory();
+        });
+
+      if (modelDirs.length === 0) {
+        console.warn(`⚠️  ${algDir} にモデルディレクトリがありません`);
+        continue;
+      }
+
+      for (const modelDir of modelDirs) {
+        const modelPath = path.join(algPath, modelDir);
+        const files = fs.readdirSync(modelPath)
+          .filter(f => f.endsWith('.tsv'))
+          .sort()
+          .reverse();
+
+        if (files.length === 0) {
+          console.warn(`⚠️  ${algDir}/${modelDir} に結果ファイルがありません`);
+          continue;
+        }
+
+        const latestFile = files[0];
+        const filePath = path.join(modelPath, latestFile);
+        const content = fs.readFileSync(filePath, 'utf-8');
+        const lines = content.split('\n').filter(l => l.trim());
+        
+        if (lines.length < 2) {
+          console.warn(`⚠️  ${algDir}/${modelDir}/${latestFile} にデータがありません`);
+          continue;
+        }
+
+        // ヘッダーを解析
+        const header = lines[0].split('\t');
+        const dataLines = lines.slice(1);
+
+        // 統計を計算
+        let correct = 0;
+        let total = dataLines.length;
+        let totalTime = 0;
+        let apiErrors = 0;
+
+        for (const line of dataLines) {
+          const values = line.split('\t');
+          const row = {};
+          header.forEach((h, i) => {
+            row[h] = values[i];
+          });
+
+          if (row.is_correct === 'true') {
+            correct++;
+          }
+          if (row.execution_time_ms) {
+            totalTime += parseFloat(row.execution_time_ms);
+          }
+          if (row.error && row.error.trim()) {
+            apiErrors++;
+          }
+        }
+
+        const accuracy = (correct / total * 100).toFixed(2);
+        const avgTime = (totalTime / total).toFixed(2);
+
+        // タイムスタンプを抽出（ファイル名から）
+        const timestampMatch = latestFile.match(/^(.+)\.tsv$/);
+        const timestamp = timestampMatch ? timestampMatch[1] : latestFile;
+
+        const algorithmName = `chatgpt-${modelDir}`;
+        const options = { model: modelDir, limit: total, apiErrors };
+
+        latestResults.push({
+          algorithm: algorithmName,
+          options,
+          total,
+          correct,
+          accuracy: parseFloat(accuracy),
+          avgTime: parseFloat(avgTime),
+          timestamp,
+          apiErrors,
+          modelDir
+        });
+
+        console.log(`✓ ${algorithmName}: ${modelDir}/${latestFile}`);
+      }
+      continue;
+    }
+
+    // 非ChatGPTアルゴリズムの処理
     const files = fs.readdirSync(algPath)
       .filter(f => f.endsWith('.tsv'))
       .sort()
@@ -37,6 +128,7 @@ function regenerateSummary() {
       continue;
     }
 
+    // 最新ファイルのみ処理
     const latestFile = files[0];
     const filePath = path.join(algPath, latestFile);
     const content = fs.readFileSync(filePath, 'utf-8');
@@ -56,7 +148,6 @@ function regenerateSummary() {
     let total = dataLines.length;
     let totalTime = 0;
     let apiErrors = 0;
-    let model = null;
 
     for (const line of dataLines) {
       const values = line.split('\t');
@@ -74,9 +165,6 @@ function regenerateSummary() {
       if (row.error && row.error.trim()) {
         apiErrors++;
       }
-      if (row.model && !model) {
-        model = row.model;
-      }
     }
 
     const accuracy = (correct / total * 100).toFixed(2);
@@ -89,10 +177,7 @@ function regenerateSummary() {
     let algorithmName = algDir;
     let options = {};
 
-    if (algDir === 'chatgpt') {
-      algorithmName = model ? `chatgpt-${model}` : 'chatgpt';
-      options = { model, limit: total, apiErrors };
-    } else if (algDir === 'jaro-winkler') {
+    if (algDir === 'jaro-winkler') {
       options = { is_tfidf: false, Levenshtein: false };
     } else if (algDir === 'levenshtein') {
       options = { is_tfidf: false, Levenshtein: true };
@@ -175,19 +260,21 @@ const results = lines
   .sort((a, b) => b.accuracy - a.accuracy); // 精度の高い順にソート
 
 // テーブル形式で表示
-console.log('┌─────────────────────────┬──────────┬──────────┬─────────────┐');
-console.log('│ アルゴリズム            │ 正解率   │ 正解数   │ 平均時間(ms)│');
-console.log('├─────────────────────────┼──────────┼──────────┼─────────────┤');
+console.log('┌──────────┬─────────────────────────┬──────────┬──────────┬─────────────┐');
+console.log('│ 種別     │ アルゴリズム            │ 正解率   │ 正解数   │ 平均時間(ms)│');
+console.log('├──────────┼─────────────────────────┼──────────┼──────────┼─────────────┤');
 
 for (const result of results) {
+  const type = result.algorithm.startsWith('chatgpt') ? 'ChatGPT' : 'local';
+  const typeStr = type.padEnd(8);
   const alg = result.algorithm.padEnd(24);
   const acc = `${result.accuracy.toFixed(2)}%`.padStart(8);
   const cor = `${result.correct}/${result.total}`.padStart(8);
   const time = result.avgTime.toFixed(2).padStart(11);
-  console.log(`│ ${alg}│ ${acc} │ ${cor} │ ${time}  │`);
+  console.log(`│ ${typeStr} │ ${alg}│ ${acc} │ ${cor} │ ${time}  │`);
 }
 
-console.log('└─────────────────────────┴──────────┴──────────┴─────────────┘');
+console.log('└──────────┴─────────────────────────┴──────────┴──────────┴─────────────┘');
 
 // 最良のアルゴリズムを表示
 const best = results[0];
@@ -221,14 +308,15 @@ if (chatgptResults.length > 0) {
 
 console.log('\n📁 詳細結果ファイル:');
 for (const result of results) {
-  const algName = result.algorithm.replace(/^chatgpt-/, '');
-  const resultDir = path.join(__dirname, `../results/${result.algorithm.startsWith('chatgpt') ? 'chatgpt' : result.algorithm}`);
-  if (fs.existsSync(resultDir)) {
-    const files = fs.readdirSync(resultDir).filter(f => f.endsWith('.tsv'));
-    if (files.length > 0) {
-      const latestFile = files.sort().reverse()[0];
-      console.log(`  - ${result.algorithm}: benchmark/results/${result.algorithm.startsWith('chatgpt') ? 'chatgpt' : result.algorithm}/${latestFile}`);
-    }
+  if (result.algorithm.startsWith('chatgpt')) {
+    // ChatGPTの場合は、chatgpt/{model}/{timestamp}.tsv
+    const modelName = result.modelDir || result.algorithm.replace(/^chatgpt-/, '');
+    const fileName = `${result.timestamp}.tsv`;
+    console.log(`  - ${result.algorithm}: benchmark/results/chatgpt/${modelName}/${fileName}`);
+  } else {
+    // 非ChatGPTの場合は、{algorithm}/{timestamp}.tsv
+    const fileName = `${result.timestamp}.tsv`;
+    console.log(`  - ${result.algorithm}: benchmark/results/${result.algorithm}/${fileName}`);
   }
 }
 
