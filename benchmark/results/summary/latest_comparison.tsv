@@ -1,0 +1,5 @@
+algorithm	options	total	correct	accuracy	avg_time_ms	timestamp
+jaro-winkler	{"is_tfidf":false,"Levenshtein":false}	835	421	50.42	0.13	2025-12-30T09:30:11.623Z
+levenshtein	{"is_tfidf":false,"Levenshtein":true}	835	421	50.42	0.13	2025-12-30T09:30:12.308Z
+tfidf	{"is_tfidf":true,"Levenshtein":false}	835	436	52.22	3.19	2025-12-30T09:30:15.561Z
+tfidf-levenshtein	{"is_tfidf":true,"Levenshtein":true}	835	438	52.46	1.88	2025-12-30T09:30:17.731Z
