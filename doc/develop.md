@@ -61,3 +61,48 @@ $ npm test
 - `exec()`: 誤字修正を含むテキスト処理のメイン関数
 
 TF-IDF重み付けは `--no-tfidf` フラグで有効/無効を切り替えることができ、単語の重要度スコアを調整します。
+
+## ベンチマーク
+
+### 概要
+
+`benchmark/`ディレクトリには、誤字修正機能の精度を測定するためのテストデータとスクリプトが含まれています。
+[Chantプロジェクト（Magi）](https://github.com/xztaityozx/Chant)のOCRテストデータを使用して、各アルゴリズムの精度を比較できます。
+
+### ベンチマークの実行
+
+```bash
+## 全アルゴリズム比較 + レポート生成（デフォルト）
+$ npm run benchmark
+
+## 単一アルゴリズムのテスト
+$ npm run benchmark:single [algorithm]
+
+## 特定のアルゴリズムでテスト
+$ npm run benchmark:single jaro-winkler
+$ npm run benchmark:single levenshtein
+$ npm run benchmark:single tfidf
+$ npm run benchmark:single tfidf-levenshtein
+
+## 全アルゴリズムを比較（レポートなし）
+$ npm run benchmark:compare
+
+## レポート生成のみ
+$ npm run benchmark:report
+```
+
+### テストデータの追加
+
+`benchmark/magi_ocr_data/dataset.tsv`にテストケースを追加できます：
+
+```tsv
+id	ocr_result	expected	description	image_file
+001	罹刹に烙印を秘術を帰ら。	羅刹に烙印を秘術を刻ら。	漢字の誤認識（罹→羅、帰→刻）	
+```
+
+### 結果の確認
+
+- 各アルゴリズムの詳細結果: `benchmark/results/{algorithm}/`
+- 全体サマリー: `benchmark/results/summary/latest_comparison.tsv`
+
+詳細は `benchmark/README.md` を参照してください。
