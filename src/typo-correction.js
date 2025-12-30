@@ -67,6 +67,104 @@ function findClosestWord(word, wordList, useLevenshtein = false, option = { v: f
       }
     }
     score = maxSimilarity;
+    
+    // Jaro-Winkler距離が低い場合（0.7未満）、Levenshtein距離も考慮する
+    // ただし、Jaro-Winklerの類似度が高い場合はそれを優先
+    if (maxSimilarity < 0.7) {
+      let minLevenshteinDistance = Infinity;
+      let bestLevenshteinWord = closestWord;
+      let bestLengthDiff = Infinity;
+      let bestPrefixMatch = -1;
+      
+      for (const candidateWord of wordList) {
+        const levDistance = distance(word, candidateWord);
+        const lengthDiff = Math.abs(word.length - candidateWord.length);
+        
+        // 先頭文字の一致数をカウント
+        let prefixMatch = 0;
+        for (let i = 0; i < Math.min(word.length, candidateWord.length); i++) {
+          if (word[i] === candidateWord[i]) {
+            prefixMatch++;
+          } else {
+            break;
+          }
+        }
+        
+        // より良い距離、または同じ距離でより良い候補を選ぶ
+        // 優先順位: 1. 距離が小さい 2. 文字列が短い 3. 長さの差が小さい 4. 先頭一致が多い
+        // 文字列が短いものを優先することで、より簡潔な修正を選ぶ
+        
+        const isBetter = (() => {
+          // 1. 距離がより小さい場合
+          if (levDistance < minLevenshteinDistance) {
+            return true;
+          }
+          
+          // 距離が同じでない場合は、より悪い候補
+          if (levDistance !== minLevenshteinDistance) {
+            return false;
+          }
+          
+          // 2. 距離が同じ場合、以下の条件で判定
+          // 2-1. 文字列がより短い
+          if (candidateWord.length < bestLevenshteinWord.length) {
+            return true;
+          }
+          
+          // 文字列の長さが異なる（より長い）場合は、より悪い候補
+          if (candidateWord.length !== bestLevenshteinWord.length) {
+            return false;
+          }
+          
+          // 2-2. 文字列の長さが同じ場合、さらに詳細な条件で判定
+          // 2-2-1. 長さの差がより小さい
+          if (lengthDiff < bestLengthDiff) {
+            return true;
+          }
+          
+          // 長さの差が異なる（より大きい）場合は、より悪い候補
+          if (lengthDiff !== bestLengthDiff) {
+            return false;
+          }
+          
+          // 2-2-2. 長さの差が同じで、先頭一致がより多い
+          if (prefixMatch > bestPrefixMatch) {
+            return true;
+          }
+          
+          // 先頭一致が異なる（より少ない）場合は、より悪い候補
+          if (prefixMatch !== bestPrefixMatch) {
+            return false;
+          }
+          
+          // 2-2-3. すべて同じ場合、辞書順で小さい方を選ぶ
+          return candidateWord < bestLevenshteinWord;
+        })();
+        
+        if (isBetter) {
+          minLevenshteinDistance = levDistance;
+          bestLevenshteinWord = candidateWord;
+          bestLengthDiff = lengthDiff;
+          bestPrefixMatch = prefixMatch;
+        }
+      }
+      
+      // Jaro-Winklerの類似度が低い場合（0.5未満）は、Levenshtein距離の結果を優先
+      // それ以外の場合は、Jaro-Winklerの結果を優先
+      if (maxSimilarity < 0.5 || minLevenshteinDistance <= Math.max(2, word.length / 2)) {
+        // Jaro-Winklerの結果とLevenshteinの結果を比較
+        const jaroBestMatch = closestWord;
+        const jaroDistance = distance(word, jaroBestMatch);
+        
+        // Levenshtein距離がより良い結果を提供する場合、それを使用する
+        if (minLevenshteinDistance < jaroDistance || 
+            (minLevenshteinDistance === jaroDistance && bestLevenshteinWord.length < jaroBestMatch.length)) {
+          closestWord = bestLevenshteinWord;
+          algorithmName = 'Jaro-Winkler+Levenshtein';
+          score = minLevenshteinDistance;
+        }
+      }
+    }
   }
   
   // デバッグ情報の表示（loglevelを使用）
@@ -144,40 +242,73 @@ const exec = (text, option = { is_tfidf: false, v: false, Vv: false, Levenshtein
 };
 
 const nearTokenMatch = (tokenStr, option = { isJaroWinklerDistance: false, v: false, Vv: false, Levenshtein: false }) => {
-  let minDistance = Infinity;
-
   log.trace('tokenStr', tokenStr);
   
   let tokens = [...tokenStr];
+  let bestMatch = null;
+  let bestDistance = Infinity;
+  
+  // 各漢字を順番に置き換えて、最適な組み合わせを見つける
+  // 各位置で最適な候補を選び、それを次の位置の評価に使用する
+  let currentTokens = [...tokens];
+  
   for (let i = 0; i < tokens.length; i++) {
     let kanji = tokens[i];
     if (fkm.han.test(kanji)) {
       log.trace('kanji', fkm.maxTfidfSocres(kanji));
       
+      let bestKanji = kanji;
+      let bestLocalDistance = Infinity;
+      
+      // この位置の漢字の各候補を評価
       for (const result of fkm.maxTfidfSocres(kanji)) {
         let newKanji = result.kanji;
-        let text = [...tokens.slice(0, i), newKanji, ...tokens.slice(i + 1)].join('');
-        let bestMatchLocal = findClosestWord(text, fkm.allWord, option.Levenshtein, option);
-        // もし、最も近い漢字が見つからなかった場合は、次の文字に進む
-        let d = calculateSimilarity(text, bestMatchLocal, option.Levenshtein);
-        if (d < minDistance) {
-          log.trace({
-            'd'          : d,
-            'minDistance': minDistance,
-            'text'       : text,
-            'bestMatch'  : bestMatchLocal,
-            'kanji'      : kanji,
-            'newKanji'   : newKanji
-          });
-          minDistance = d;
-          tokens[i] = newKanji;
-          // 一番近い漢字が見つかったら、それを採用して次の文字に進む
-          // ただし、最善の漢字ではない可能性がある TODO: 他の候補も検討する
-          break;
+        let testTokens = [...currentTokens];
+        testTokens[i] = newKanji;
+        let testText = testTokens.join('');
+        
+        // 置き換えた後の文字列全体に対して最適なマッチを見つける
+        let bestMatchLocal = findClosestWord(testText, fkm.allWord, option.Levenshtein, option);
+        // 置き換えた後の文字列と最適なマッチの距離を計算
+        let d = calculateSimilarity(testText, bestMatchLocal, option.Levenshtein);
+        
+        log.trace({
+          'd'          : d,
+          'bestLocalDistance': bestLocalDistance,
+          'testText'   : testText,
+          'bestMatch'  : bestMatchLocal,
+          'kanji'      : kanji,
+          'newKanji'   : newKanji
+        });
+        
+        // より良い候補が見つかった場合
+        if (d < bestLocalDistance) {
+          bestLocalDistance = d;
+          bestKanji = newKanji;
         }
+      }
+      
+      // この位置で最適な漢字を採用
+      currentTokens[i] = bestKanji;
+      
+      // 現在の最良のマッチを更新
+      let currentText = currentTokens.join('');
+      let currentBestMatch = findClosestWord(currentText, fkm.allWord, option.Levenshtein, option);
+      let currentDistance = calculateSimilarity(currentText, currentBestMatch, option.Levenshtein);
+      
+      if (currentDistance < bestDistance) {
+        bestDistance = currentDistance;
+        bestMatch = currentBestMatch;
       }
     }
   }
+  
+  // 最適な候補が見つかった場合はそれを使用、そうでなければ元の文字列を使用
+  if (bestMatch !== null) {
+    return bestMatch;
+  }
+  
+  // 最終的に文字列全体に対して最適なマッチを見つける
   return findClosestWord(tokens.join(''), fkm.allWord, option.Levenshtein, option);
 };
 
