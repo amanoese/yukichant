@@ -1,5 +1,7 @@
 algorithm	options	total	correct	accuracy	avg_time_ms	timestamp
-jaro-winkler	{"is_tfidf":false,"Levenshtein":false}	835	421	50.42	0.13	2025-12-30T09:30:11.623Z
-levenshtein	{"is_tfidf":false,"Levenshtein":true}	835	421	50.42	0.13	2025-12-30T09:30:12.308Z
-tfidf	{"is_tfidf":true,"Levenshtein":false}	835	436	52.22	3.19	2025-12-30T09:30:15.561Z
-tfidf-levenshtein	{"is_tfidf":true,"Levenshtein":true}	835	438	52.46	1.88	2025-12-30T09:30:17.731Z
+jaro-winkler	{"is_tfidf":false,"Levenshtein":false}	835	421	50.42	0.13	2025-12-30T10:39:18.334Z
+levenshtein	{"is_tfidf":false,"Levenshtein":true}	835	421	50.42	0.13	2025-12-30T10:39:19.025Z
+tfidf	{"is_tfidf":true,"Levenshtein":false}	835	436	52.22	3.30	2025-12-30T10:39:22.378Z
+tfidf-levenshtein	{"is_tfidf":true,"Levenshtein":true}	835	438	52.46	1.86	2025-12-30T10:39:24.526Z
+chatgpt-gpt-5-mini	{"model":"gpt-5-mini","limit":50,"apiErrors":0}	50	31	62.00	19284.02	2025-12-30T10:54:03.783Z
+chatgpt-gpt-5	{"model":"gpt-5","limit":50,"apiErrors":0}	50	40	80.00	36273.65	2025-12-30T10:57:17.964Z
