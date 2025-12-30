@@ -45,6 +45,10 @@ yukichant/
 │   ├── meisi.json    # 名詞辞書（16進数コード→名詞リスト）
 │   └── dousi.json    # 動詞辞書（16進数コード→動詞リスト）
 ├── dic/              # kuromoji用辞書（yukidic）
+├── benchmark/        # ベンチマーク・精度測定
+│   ├── magi_ocr_data/  # Magiプロジェクトから取得したOCRテストデータ
+│   ├── results/        # 検証結果の保存先（.gitignore対象）
+│   └── scripts/        # ベンチマーク実行スクリプト
 ├── __tests__/        # Jest単体テスト
 └── raw_data/         # 辞書生成用スクリプト・元データ
 ```
@@ -195,6 +199,21 @@ echo "呪文" | npm run dev -- -d -s -vv
 ./raw_data/json_generator
 ```
 
+### ベンチマーク
+```bash
+# 全アルゴリズム比較 + レポート生成（デフォルト）
+npm run benchmark
+
+# 単一アルゴリズムのテスト
+npm run benchmark:single [algorithm]
+
+# 全アルゴリズムの比較（レポートなし）
+npm run benchmark:compare
+
+# レポート生成のみ
+npm run benchmark:report
+```
+
 ## よくある変更タスク
 
 ### 1. 新しい名詞・動詞を追加
@@ -216,6 +235,11 @@ echo "呪文" | npm run dev -- -d -s -vv
 - `src/machine-encrypt.js`を編集
 - エンコード/デコード両方で一貫性を保つ
 - バージョン互換性に注意
+
+### 5. ベンチマークデータの追加
+- `benchmark/magi_ocr_data/dataset.tsv`にテストケースを追加
+- TSV形式: `id`, `ocr_result`, `expected`, `description`, `image_file`
+- `npm run benchmark:compare`で全アルゴリズムの精度を測定
 
 ## デバッグ Tips
 
@@ -329,6 +353,79 @@ npm install
 [test] typo-correctionのテストケースを追加
 ```
 
+## ベンチマーク機能
+
+### 概要
+
+`benchmark/`ディレクトリには、誤字修正機能の精度を測定するためのテストデータとスクリプトが含まれています。
+
+### データソース
+
+- **Magi OCRデータ**: [Chantプロジェクト](https://github.com/xztaityozx/Chant)から取得したOCRテストデータ
+- 画像に書かれた呪文をOCRで読み取った結果と正解データのペア
+- yukichantの誤字修正機能の精度評価に使用
+
+### ディレクトリ構造
+
+```
+benchmark/
+├── magi_ocr_data/      # Magiプロジェクトから取得したOCRテストデータ
+│   ├── dataset.tsv     # テストデータ（TSV形式）
+│   └── images/         # OCR元画像（オプション）
+├── results/            # 検証結果の保存先（.gitignore対象）
+│   ├── jaro-winkler/   # Jaro-Winklerアルゴリズムの結果
+│   ├── levenshtein/    # Levenshteinアルゴリズムの結果
+│   ├── tfidf/          # TF-IDF使用時の結果
+│   ├── tfidf-levenshtein/  # TF-IDF + Levenshteinの結果
+│   └── summary/        # 全体サマリー
+└── scripts/            # ベンチマーク実行スクリプト
+    ├── run-accuracy-test.js     # 単一アルゴリズムのテスト
+    ├── compare-algorithms.js    # 全アルゴリズムの比較
+    └── generate-report.js       # レポート生成
+```
+
+### データフォーマット
+
+#### 入力データ（dataset.tsv）
+```tsv
+id	ocr_result	expected	description	image_file
+001	罹刹に烙印を秘術を帰ら。	羅刹に烙印を秘術を刻ら。	漢字の誤認識（罹→羅、帰→刻）	test001.png
+```
+
+#### 検証結果（results/{algorithm}/YYYYMMDD_HHMMSS_result.tsv）
+```tsv
+id	input	expected	corrected	is_correct	algorithm	options	execution_time_ms
+001	罹刹に烙印を秘術を帰ら。	羅刹に烙印を秘術を刻ら。	羅刹に烙印を秘術を刻ら。	true	jaro-winkler	{"is_tfidf":false}	45.2
+```
+
+### 使用方法
+
+```bash
+# 全アルゴリズム比較 + レポート生成（デフォルト）
+npm run benchmark
+
+# 単一アルゴリズムのテスト
+npm run benchmark:single [algorithm]
+
+# 全アルゴリズムの比較（レポートなし）
+npm run benchmark:compare
+
+# レポート生成のみ（精度順にソート、最速・バランス推奨を表示）
+npm run benchmark:report
+```
+
+### 精度指標
+
+- **正解率（Accuracy）**: 完全一致した割合
+- **平均実行時間**: 1件あたりの平均処理時間（ミリ秒）
+
+### ベンチマーク結果の活用
+
+1. **アルゴリズムの比較**: 各アルゴリズムの精度と速度を比較
+2. **パラメータ調整**: アルゴリズムのパラメータを調整して精度向上
+3. **リグレッションテスト**: コード変更後の精度低下を検出
+4. **デフォルトアルゴリズムの選定**: 最適なアルゴリズムを選択
+
 ## 参考リンク
 
 - [kuromoji.js](https://github.com/takuyaa/kuromoji.js)
@@ -336,6 +433,7 @@ npm install
 - [Jaro-Winkler距離](https://en.wikipedia.org/wiki/Jaro%E2%80%93Winkler_distance)
 - [Levenshtein距離](https://en.wikipedia.org/wiki/Levenshtein_distance)
 - [Enigma暗号機](https://en.wikipedia.org/wiki/Enigma_machine)
+- [Chantプロジェクト（Magi）](https://github.com/xztaityozx/Chant) - OCRテストデータの出典
 
 ---
 

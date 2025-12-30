@@ -14,7 +14,12 @@
     "json-generate": "raw_data/json_generator",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "deploy": "npm version patch && git push origin $(git describe --tags --abbrev=0)",
-    "install": "git clone https://github.com/yagays/kanjivg-radical.git -b master node_modules/kanjivg-radical"
+    "install": "git clone https://github.com/yagays/kanjivg-radical.git -b master node_modules/kanjivg-radical",
+    "benchmark": "node benchmark/scripts/compare-and-report.js",
+    "benchmark:single": "node benchmark/scripts/run-accuracy-test.js",
+    "benchmark:compare": "node benchmark/scripts/compare-algorithms.js",
+    "benchmark:report": "node benchmark/scripts/generate-report.js",
+    "benchmark:all": "node benchmark/scripts/compare-and-report.js"
   },
   "devDependencies": {
     "jest": "^27.4.7",
