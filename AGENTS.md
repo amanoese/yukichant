@@ -210,8 +210,16 @@ npm run benchmark:single [algorithm]
 # 全アルゴリズムの比較（レポートなし）
 npm run benchmark:compare
 
-# レポート生成のみ
+# レポート生成のみ（既存のサマリーから）
 npm run benchmark:report
+
+# 最新結果を収集してレポート生成
+npm run benchmark:report:latest
+
+# ChatGPT APIを使用したテスト（上位50件）
+export OPENAI_API_KEY="sk-..."
+npm run benchmark:chatgpt
+npm run benchmark:chatgpt -- --model gpt-4 --limit 30
 ```
 
 ## よくある変更タスク
@@ -377,11 +385,15 @@ benchmark/
 │   ├── levenshtein/    # Levenshteinアルゴリズムの結果
 │   ├── tfidf/          # TF-IDF使用時の結果
 │   ├── tfidf-levenshtein/  # TF-IDF + Levenshteinの結果
+│   ├── chatgpt/        # ChatGPT APIを使用した結果
 │   └── summary/        # 全体サマリー
 └── scripts/            # ベンチマーク実行スクリプト
     ├── run-accuracy-test.js     # 単一アルゴリズムのテスト
     ├── compare-algorithms.js    # 全アルゴリズムの比較
-    └── generate-report.js       # レポート生成
+    ├── generate-report.js       # レポート生成
+    ├── run-chatgpt-test.js      # ChatGPT APIテスト
+    ├── prompt-template.txt      # ChatGPT用プロンプトテンプレート
+    └── README_CHATGPT.md        # ChatGPTテストの詳細ドキュメント
 ```
 
 ### データフォーマット
@@ -412,7 +424,24 @@ npm run benchmark:compare
 
 # レポート生成のみ（精度順にソート、最速・バランス推奨を表示）
 npm run benchmark:report
+
+# ChatGPT APIを使用したテスト（上位50件、コスト削減のため）
+export OPENAI_API_KEY="sk-..."
+npm run benchmark:chatgpt
+npm run benchmark:chatgpt -- --model gpt-4 --limit 30
 ```
+
+### ChatGPT APIテスト
+
+ChatGPT APIを使用したプロンプトベースの誤字修正テストも利用可能です。
+
+**特徴**:
+- プロンプトテンプレートをカスタマイズ可能（`benchmark/scripts/prompt-template.txt`）
+- 予算の都合上、デフォルトで上位50件のみテスト
+- 複数のモデル（gpt-4o-mini, gpt-4o, gpt-4）をサポート
+- 結果は他のアルゴリズムと同様にサマリーに統合される
+
+**詳細**: `benchmark/scripts/README_CHATGPT.md` を参照
 
 ### 精度指標
 

@@ -19,7 +19,9 @@
     "benchmark:single": "node benchmark/scripts/run-accuracy-test.js",
     "benchmark:compare": "node benchmark/scripts/compare-algorithms.js",
     "benchmark:report": "node benchmark/scripts/generate-report.js",
-    "benchmark:all": "node benchmark/scripts/compare-and-report.js"
+    "benchmark:report:latest": "node benchmark/scripts/generate-report.js --regenerate",
+    "benchmark:all": "node benchmark/scripts/compare-and-report.js",
+    "benchmark:chatgpt": "node benchmark/scripts/run-chatgpt-test.js"
   },
   "devDependencies": {
     "jest": "^27.4.7",
