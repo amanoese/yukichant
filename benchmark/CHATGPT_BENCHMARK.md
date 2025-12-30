@@ -27,7 +27,7 @@ npm run benchmark:chatgpt -- --model gpt-5 --limit 10 --prompt-file my-prompt.tx
 
 | オプション | 説明 | デフォルト |
 |-----------|------|-----------|
-| `--model` | 使用モデル（gpt-5-mini/gpt-5/gpt-4o/gpt-4） | gpt-5-mini |
+| `--model` | 使用モデル（gpt-5-nano/gpt-5-mini/gpt-5） | gpt-5-mini |
 | `--limit` | テスト件数 | 50 |
 | `--prompt-file` | カスタムプロンプトファイル | prompt-template.txt |
 | `--api-key` | APIキー（環境変数の代わり） | - |
@@ -36,8 +36,8 @@ npm run benchmark:chatgpt -- --model gpt-5 --limit 10 --prompt-file my-prompt.tx
 
 | モデル | 用途 | 50件実行コスト |
 |--------|------|----------------|
-| gpt-5-mini | 開発・デバッグ | $0.01 |
-| gpt-4o | 本格評価 | $0.04 |
+| gpt-5-nano | 開発・デバッグ | $0.005 |
+| gpt-5-mini | 本格評価 | $0.01 |
 | gpt-5 | 最終評価 | $0.15 |
 
 ## プロンプトのカスタマイズ

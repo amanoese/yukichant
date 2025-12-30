@@ -16,7 +16,8 @@ if (args.includes('--help') || args.includes('-h')) {
 
 オプション:
   --api-key <key>     OpenAI APIキー（または環境変数 OPENAI_API_KEY）
-  --model <model>     使用するモデル（デフォルト: gpt-4o-mini）
+  --model <model>     使用するモデル（デフォルト: gpt-5-mini）
+                      利用可能: gpt-5, gpt-5-mini, gpt-5-nano
   --limit <number>    テストケース数の上限（デフォルト: 50）
   --prompt-file <path> プロンプトテンプレートファイルのパス（デフォルト: prompt-template.txt）
   --help, -h          このヘルプを表示
@@ -27,7 +28,8 @@ if (args.includes('--help') || args.includes('-h')) {
 例:
   export OPENAI_API_KEY="sk-..."
   node run-chatgpt-test.js
-  node run-chatgpt-test.js --model gpt-5-mini --limit 10
+  node run-chatgpt-test.js --model gpt-5 --limit 10
+  node run-chatgpt-test.js --model gpt-5-nano --limit 100
   node run-chatgpt-test.js --prompt-file my-prompt.txt
 `);
   process.exit(0);
@@ -48,7 +50,7 @@ if (!apiKey) {
 }
 
 // モデルの取得
-let model = 'gpt-5';
+let model = 'gpt-5-mini';
 const modelIndex = args.indexOf('--model');
 if (modelIndex !== -1 && args[modelIndex + 1]) {
   model = args[modelIndex + 1];
@@ -225,9 +227,9 @@ console.log(`正解率: ${accuracy}% (${correct}/${total})`);
 console.log(`平均実行時間: ${avgTime}ms`);
 console.log(`APIエラー数: ${apiErrors}`);
 
-// 結果をTSVファイルに保存
+// 結果をTSVファイルに保存（モデルごとにディレクトリを分ける）
 const timestamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\..+/, '').replace('T', 'T');
-const resultDir = path.join(__dirname, '../results/chatgpt');
+const resultDir = path.join(__dirname, '../results/chatgpt', model);
 fs.mkdirSync(resultDir, { recursive: true });
 
 const algorithmName = `chatgpt-${model}`;

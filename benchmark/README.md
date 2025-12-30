@@ -16,7 +16,10 @@ benchmark/
 │   ├── levenshtein/             # Levenshteinアルゴリズムの結果
 │   ├── tfidf/                   # TF-IDF使用時の結果
 │   ├── tfidf-levenshtein/       # TF-IDF + Levenshteinの結果
-│   ├── chatgpt/                 # ChatGPT APIを使用した結果
+│   ├── chatgpt/                 # ChatGPT APIを使用した結果（モデル別）
+│   │   ├── gpt-5/               # GPT-5の結果
+│   │   ├── gpt-5-mini/          # GPT-5-miniの結果
+│   │   └── gpt-5-nano/          # GPT-5-nanoの結果
 │   └── summary/                 # 全体サマリー
 └── scripts/                     # ベンチマーク実行スクリプト
     ├── run-accuracy-test.js     # 精度テスト実行
@@ -49,12 +52,18 @@ npm run benchmark:compare
 # レポート生成のみ
 npm run benchmark:report
 
-# ChatGPT APIを使用したテスト（上位50件）
+# ChatGPT APIを使用したテスト（上位50件、デフォルト: gpt-5-mini）
 export OPENAI_API_KEY="sk-..."
 npm run benchmark:chatgpt
+
+# 異なるモデルでテスト（gpt-5, gpt-5-mini, gpt-5-nano）
+npm run benchmark:chatgpt -- --model gpt-5 --limit 30
+npm run benchmark:chatgpt -- --model gpt-5-nano --limit 100
 ```
 
 **ChatGPTテストの詳細**: `scripts/README_CHATGPT.md` を参照してください。
+
+**注意**: ChatGPTの結果は`chatgpt/{model}/`ディレクトリにモデル別に保存されます。レポート生成時に各モデルの最新結果が自動的に集計され、比較レポートに表示されます。
 
 ### 3. 結果の確認
 
