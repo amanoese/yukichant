@@ -100,11 +100,11 @@ console.log(`正解率: ${accuracy}% (${correct}/${total})`);
 console.log(`平均実行時間: ${avgTime}ms`);
 
 // 結果をTSVファイルに保存
-const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+const timestamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\..+/, '').replace('T', 'T');
 const resultDir = path.join(__dirname, `../results/${algorithm}`);
 fs.mkdirSync(resultDir, { recursive: true });
 
-const resultPath = path.join(resultDir, `${timestamp}_result.tsv`);
+const resultPath = path.join(resultDir, `${timestamp}.tsv`);
 const resultTsv = [
   'id\tinput\texpected\tcorrected\tnormalized_expected\tnormalized_corrected\tis_correct\talgorithm\toptions\texecution_time_ms',
   ...results.map(r => 

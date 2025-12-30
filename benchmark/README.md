@@ -16,11 +16,15 @@ benchmark/
 │   ├── levenshtein/             # Levenshteinアルゴリズムの結果
 │   ├── tfidf/                   # TF-IDF使用時の結果
 │   ├── tfidf-levenshtein/       # TF-IDF + Levenshteinの結果
+│   ├── chatgpt/                 # ChatGPT APIを使用した結果
 │   └── summary/                 # 全体サマリー
 └── scripts/                     # ベンチマーク実行スクリプト
     ├── run-accuracy-test.js     # 精度テスト実行
     ├── compare-algorithms.js    # アルゴリズム比較
-    └── generate-report.js       # レポート生成
+    ├── generate-report.js       # レポート生成
+    ├── run-chatgpt-test.js      # ChatGPT APIテスト
+    ├── prompt-template.txt      # ChatGPT用プロンプトテンプレート
+    └── README_CHATGPT.md        # ChatGPTテストの詳細ドキュメント
 ```
 
 ## 使い方
@@ -44,7 +48,13 @@ npm run benchmark:compare
 
 # レポート生成のみ
 npm run benchmark:report
+
+# ChatGPT APIを使用したテスト（上位50件）
+export OPENAI_API_KEY="sk-..."
+npm run benchmark:chatgpt
 ```
+
+**ChatGPTテストの詳細**: `scripts/README_CHATGPT.md` を参照してください。
 
 ### 3. 結果の確認
 
@@ -53,10 +63,19 @@ npm run benchmark:report
 
 ## アルゴリズムの種類
 
+### 従来のアルゴリズム
+
 1. **jaro-winkler**: Jaro-Winkler距離を使用（デフォルト）
 2. **levenshtein**: Levenshtein距離を使用
 3. **tfidf**: TF-IDF + Jaro-Winkler距離を使用
 4. **tfidf-levenshtein**: TF-IDF + Levenshtein距離を使用
+
+### ChatGPT API
+
+5. **chatgpt-{model}**: ChatGPT APIを使用したプロンプトベースの誤字修正
+   - プロンプトテンプレートをカスタマイズ可能
+   - 上位50件のみテスト（コスト削減のため）
+   - 詳細は `scripts/README_CHATGPT.md` を参照
 
 ## 精度指標
 
