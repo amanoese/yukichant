@@ -207,7 +207,7 @@ const exec = (text, option = { is_tfidf: false, v: false, Vv: false, Levenshtein
         fixText = nearTokenMatch(fixText, option);
         log.debug('fixText', fixText);
       } else {
-        fixText = closest(fixText, fkm.allWord);
+        fixText = findClosestWord(fixText, fkm.allWord, option.Levenshtein, option);
       }
       return { ...token, v: fixText };
     });
