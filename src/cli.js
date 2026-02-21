@@ -20,9 +20,10 @@ program
 .option('-v','verbose mode flag')
 .option('-vv','more verbose') // なぜかVv
 .action(async (text,option)=>{
-  if (option.tfidf) {
-    option.is_tfidf = option.tfidf
-  }
+  // 内部実装で参照しているオプション名に揃える
+  option.is_tfidf = option.tfidf
+  option.Levenshtein = option.levenshtein
+
   if (option.Vv) { option.v = true }
   
   // ログレベルを設定
