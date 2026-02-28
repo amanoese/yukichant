@@ -11,26 +11,39 @@ permissions:
   id-token: write
 
 jobs:
-  preview:
+  verify-npm-token:
+    name: Verify npm token
     runs-on: ubuntu-latest
+    outputs:
+      valid: ${{ steps.check.outputs.valid }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22.x'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Verify npm token
-        id: npm_token
-        continue-on-error: true
-        run: npm whoami --registry https://registry.npmjs.org/ >/dev/null 2>&1 && echo "valid=true" >> "$GITHUB_OUTPUT" || echo "valid=false" >> "$GITHUB_OUTPUT"
+      - name: Check npm token
+        id: check
+        run: |
+          if npm whoami --registry https://registry.npmjs.org/ >/dev/null 2>&1; then
+            echo "valid=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::error::NPMトークンが無効または期限切れです。リポジトリのSecretsでNPM_TOKENを更新してください。"
+            exit 1
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  preview:
+    needs: verify-npm-token
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # semantic-releaseのdry-runはPRブランチ上では動作しないため、
       # コミットメッセージを直接解析してバージョンを算出する。
@@ -87,7 +100,7 @@ jobs:
             const hasRelease = '${{ steps.analyze.outputs.has_release }}' === 'true';
             const current = '${{ steps.analyze.outputs.current_version }}';
             const next = '${{ steps.analyze.outputs.next_version }}';
-            const npmTokenValid = '${{ steps.npm_token.outputs.valid }}' === 'true';
+            const npmTokenValid = '${{ needs.verify-npm-token.outputs.valid }}' === 'true';
 
             const version = hasRelease
               ? `v${current} → **v${next}**`
