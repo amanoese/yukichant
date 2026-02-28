@@ -3,7 +3,10 @@
   "version": "3.1.0",
   "description": "",
   "license": "Apache-2.0",
-  "repository": "amanoese/yukichant",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/amanoese/yukichant.git"
+  },
   "author": "Seito Taka",
   "main": "src/node.js",
   "exports": {
