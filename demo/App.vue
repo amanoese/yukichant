@@ -171,21 +171,21 @@ onMounted(async () => {
           <div class="direction-toggle">
             <button
               class="direction-option"
-              :class="{ active: isEncode }"
-              @click="direction = 'encode'"
-            >エンコード</button>
+              :class="{ 'active-encode': isEncode }"
+              @click="isEncode ? doEncode() : direction = 'encode'"
+            >Encode</button>
             <svg
               class="direction-icon"
-              :class="{ flipped: !isEncode }"
+              :class="isEncode ? 'encode' : 'decode'"
               width="20" height="20" viewBox="0 0 20 20" fill="none"
             >
               <path d="M10 4v12M10 16l-4-4M10 16l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <button
               class="direction-option"
-              :class="{ active: !isEncode }"
+              :class="{ 'active-decode': !isEncode }"
               @click="direction = 'decode'"
-            >デコード</button>
+            >Decode</button>
           </div>
         </div>
 
