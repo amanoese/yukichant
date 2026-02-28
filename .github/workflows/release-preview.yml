@@ -1,0 +1,116 @@
+name: Release Preview
+
+on:
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Semantic Release Dry Run
+        id: dry-run
+        run: |
+          OUTPUT=$(npx semantic-release --dry-run --no-ci 2>&1) || true
+          echo "$OUTPUT"
+
+          NEXT_VERSION=$(echo "$OUTPUT" | grep -oP 'The next release version is \K[0-9]+\.[0-9]+\.[0-9]+' || true)
+
+          if [ -n "$NEXT_VERSION" ]; then
+            echo "next_version=$NEXT_VERSION" >> "$GITHUB_OUTPUT"
+            echo "has_release=true" >> "$GITHUB_OUTPUT"
+
+            RELEASE_TYPE=""
+            if echo "$OUTPUT" | grep -q "major"; then
+              RELEASE_TYPE="メジャー"
+            elif echo "$OUTPUT" | grep -q "minor"; then
+              RELEASE_TYPE="マイナー"
+            elif echo "$OUTPUT" | grep -q "patch"; then
+              RELEASE_TYPE="パッチ"
+            fi
+            echo "release_type=$RELEASE_TYPE" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_release=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Comment on PR (release)
+        if: steps.dry-run.outputs.has_release == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const version = '${{ steps.dry-run.outputs.next_version }}';
+            const releaseType = '${{ steps.dry-run.outputs.release_type }}';
+            const body = `### リリースプレビュー\n\nこのPRがマージされると以下のリリースが行われます:\n\n**v${version}** (${releaseType}リリース)`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body.includes('### リリースプレビュー'));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
+
+      - name: Comment on PR (no release)
+        if: steps.dry-run.outputs.has_release == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = `### リリースプレビュー\n\nこのPRにはリリース対象のコミットが含まれていません。マージしてもバージョンは更新されません。`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const existing = comments.find(c => c.body.includes('### リリースプレビュー'));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
