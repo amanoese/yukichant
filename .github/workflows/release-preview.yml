@@ -29,38 +29,34 @@ jobs:
       - name: Semantic Release Dry Run
         id: dry-run
         run: |
-          OUTPUT=$(npx semantic-release --dry-run --no-ci 2>&1) || true
+          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+          OUTPUT=$(npx semantic-release --dry-run --no-ci --branches "$BRANCH_NAME" 2>&1) || true
           echo "$OUTPUT"
 
-          NEXT_VERSION=$(echo "$OUTPUT" | grep -oP 'The next release version is \K[0-9]+\.[0-9]+\.[0-9]+' || true)
+          CURRENT=$(node -p "require('./package.json').version")
+          NEXT=$(echo "$OUTPUT" | grep -oP 'next release version is \K[0-9]+\.[0-9]+\.[0-9]+' || true)
 
-          if [ -n "$NEXT_VERSION" ]; then
-            echo "next_version=$NEXT_VERSION" >> "$GITHUB_OUTPUT"
+          echo "current_version=$CURRENT" >> "$GITHUB_OUTPUT"
+          if [ -n "$NEXT" ]; then
+            echo "next_version=$NEXT" >> "$GITHUB_OUTPUT"
             echo "has_release=true" >> "$GITHUB_OUTPUT"
-
-            RELEASE_TYPE=""
-            if echo "$OUTPUT" | grep -q "major"; then
-              RELEASE_TYPE="メジャー"
-            elif echo "$OUTPUT" | grep -q "minor"; then
-              RELEASE_TYPE="マイナー"
-            elif echo "$OUTPUT" | grep -q "patch"; then
-              RELEASE_TYPE="パッチ"
-            fi
-            echo "release_type=$RELEASE_TYPE" >> "$GITHUB_OUTPUT"
           else
             echo "has_release=false" >> "$GITHUB_OUTPUT"
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Comment on PR (release)
-        if: steps.dry-run.outputs.has_release == 'true'
+      - name: Comment on PR
         uses: actions/github-script@v7
         with:
           script: |
-            const version = '${{ steps.dry-run.outputs.next_version }}';
-            const releaseType = '${{ steps.dry-run.outputs.release_type }}';
-            const body = `### リリースプレビュー\n\nこのPRがマージされると以下のリリースが行われます:\n\n**v${version}** (${releaseType}リリース)`;
+            const hasRelease = '${{ steps.dry-run.outputs.has_release }}' === 'true';
+            const current = '${{ steps.dry-run.outputs.current_version }}';
+            const next = '${{ steps.dry-run.outputs.next_version }}';
+
+            const body = hasRelease
+              ? `### リリースプレビュー\n\n**v${current}** → **v${next}**`
+              : `### リリースプレビュー\n\nリリース対象のコミットなし（v${current}のまま）`;
 
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
@@ -69,48 +65,14 @@ jobs:
             });
             const existing = comments.find(c => c.body.includes('### リリースプレビュー'));
 
-            if (existing) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: existing.id,
-                body,
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body,
-              });
-            }
-
-      - name: Comment on PR (no release)
-        if: steps.dry-run.outputs.has_release == 'false'
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const body = `### リリースプレビュー\n\nこのPRにはリリース対象のコミットが含まれていません。マージしてもバージョンは更新されません。`;
-
-            const { data: comments } = await github.rest.issues.listComments({
+            const params = {
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-            const existing = comments.find(c => c.body.includes('### リリースプレビュー'));
+              body,
+            };
 
             if (existing) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: existing.id,
-                body,
-              });
+              await github.rest.issues.updateComment({ ...params, comment_id: existing.id });
             } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body,
-              });
+              await github.rest.issues.createComment({ ...params, issue_number: context.issue.number });
             }
