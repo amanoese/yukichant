@@ -1,0 +1,56 @@
+import fs from 'fs'
+import path from 'path'
+import kuromoji from 'kuromoji'
+import natural from 'natural'
+import typoCorrection from '../src/typo-correction.js'
+import { initTypoCorrection } from '../src/typo-correction.js'
+import fkm, { initFuzzyKanjiMatch } from '../src/fuzzy-kanji-match.js'
+
+const dirname = path.dirname(new URL(import.meta.url).pathname)
+const meisi = JSON.parse(fs.readFileSync(`${dirname}/../data/meisi.json`, 'utf8'));
+const dousi = JSON.parse(fs.readFileSync(`${dirname}/../data/dousi.json`, 'utf8'));
+const kanji2element = JSON.parse(fs.readFileSync(`${dirname}/../node_modules/kanjivg-radical/data/kanji2radical.json`, 'utf8'));
+
+initFuzzyKanjiMatch({ meisi, dousi, kanji2element, TfIdf: natural.TfIdf });
+
+const tokenizer = await new Promise((resolve, reject) => {
+  kuromoji
+    .builder({ dicPath: `${dirname}/../node_modules/yukidic/dic/` })
+    .build(function (err, tokenizer) {
+      if (err != null) reject(err);
+      resolve(tokenizer);
+    });
+});
+
+initTypoCorrection({ tokenizer, fuzzyKanjiMatch: fkm });
+
+describe('typoCorrection', () => {
+  const option = { is_tfidf: true };
+  test('tokenize', () => {
+    console.log(typoCorrection.tokenize('羅刹に烙印を秘術を帰ら。'));
+    console.log(typoCorrection.tokenize('罹刹に烙印を秘術を帰ら。'));
+  })
+  test('test1', () => {
+    let allToken = typoCorrection.tokenize('罹刹に烙印を秘術を帰ら。');
+    expect(typoCorrection.organizeUnknownTokens(allToken)).toEqual([
+      {"adverb": true, "i": 1, "old": "罹刹に", "v": "罹刹に"},
+      {"adverb": true, "i": 4, "old": "烙印を秘術を帰ら。", "v": "烙印を秘術を帰ら。"}
+    ]);
+  })
+
+  test('test2', () => {
+    expect(typoCorrection.nearTokenMatch('罹刹に')).toEqual('羅刹に');
+  })
+
+  test('test3', () => {
+    expect(typoCorrection.exec('羅剤に聖者障墾は守る。塔と瞬きよ呼び声を呼び覚まさ。交わる。', option)).toEqual('羅刹に聖者障壁は守る塔と瞬きよ呼び声を呼び覚まさ交わる')
+  })
+  test('test4', () => {
+    // Levenshteinアルゴリズムを使用する場合
+    expect(typoCorrection.exec('泥気に室属生み出せ。原始にて平穏の戯れ。', { is_tfidf: true, Levenshtein: true })).toEqual('冷気に眷属生み出せ原始にて平穏の戯れ')
+  })
+  test('test', () => {
+    // Jaro-Winklerアルゴリズムの実際の出力に合わせて期待値を更新
+    expect(typoCorrection.exec('罹剤に聖戦にキモが守る。沈黙の煉獣の羽はたき。', option)).toEqual('羅刹に聖戦に姿が守る沈黙の煉獄と獣の羽ばたき')
+  })
+});
