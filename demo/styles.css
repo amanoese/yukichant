@@ -343,6 +343,38 @@ textarea.readonly {
   border-color: var(--success);
 }
 
+/* 差分表示 */
+.diff-display {
+  margin-top: 0.75rem;
+  padding: 0.625rem 0.75rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  font-family: "Noto Sans JP", "Hiragino Sans", sans-serif;
+  font-size: 0.95rem;
+  line-height: 1.8;
+  overflow-x: auto;
+}
+
+.diff-line {
+  white-space: nowrap;
+}
+
+.diff-display .unchanged {
+  color: var(--text-sub);
+  opacity: 0.5;
+}
+
+.diff-display .old {
+  color: var(--error);
+  text-decoration: line-through;
+}
+
+.diff-display .fixed {
+  color: var(--success);
+  font-weight: 700;
+}
+
 /* ステータス */
 .status {
   margin-top: 0.75rem;
