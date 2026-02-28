@@ -21,7 +21,8 @@ jobs:
 
       # semantic-releaseはリリースタグを起点にコミット差分を解析するため、
       # タグが存在するmasterブランチ上で実行する必要がある。
-      # --branchesオプションではPRブランチにタグがなく差分を検出できない。
+      # また、CI環境変数のブランチ名がrefs/pull/*/mergeになるため、
+      # --branchesオプションでmasterを明示的に指定する。
       - name: Simulate merge into master
         run: |
           git config user.name "github-actions"
@@ -41,13 +42,14 @@ jobs:
       - name: Semantic Release Dry Run
         id: dry-run
         run: |
-          OUTPUT=$(npx semantic-release --dry-run --no-ci 2>&1) || true
+          OUTPUT=$(npx semantic-release --dry-run --no-ci --branches master 2>&1) || true
           echo "$OUTPUT"
 
           CURRENT=$(node -p "require('./package.json').version")
           NEXT=$(echo "$OUTPUT" | grep -oP 'next release version is \K[0-9]+\.[0-9]+\.[0-9]+' || true)
 
           echo "current_version=$CURRENT" >> "$GITHUB_OUTPUT"
+          echo "Detected: current=$CURRENT next=$NEXT"
           if [ -n "$NEXT" ]; then
             echo "next_version=$NEXT" >> "$GITHUB_OUTPUT"
             echo "has_release=true" >> "$GITHUB_OUTPUT"
