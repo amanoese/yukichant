@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      path: resolve('node_modules/path-browserify'),
+      path: resolve('path-shim.js'),
     },
   },
   build: {
