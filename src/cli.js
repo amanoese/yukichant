@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 import getStdin from 'get-stdin'
-import chant from './index.js'
+import chant from './node.js'
 import fs from 'fs'
 import { setLogLevel } from './logger.js'
 const { version } = JSON.parse(fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8'));

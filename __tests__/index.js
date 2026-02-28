@@ -1,4 +1,4 @@
-import chant from '../src/index'
+import chant from '../src/node.js'
 import fs from 'fs'
 const meisi = JSON.parse(fs.readFileSync('./data/meisi.json', 'utf8'));
 const dousi = JSON.parse(fs.readFileSync('./data/dousi.json', 'utf8'));

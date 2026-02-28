@@ -1,43 +1,42 @@
-import fs from 'fs'
-import path from 'path'
 import {distance, closest} from 'fastest-levenshtein'
-const dirname = path.dirname(new URL(import.meta.url).pathname)
 
-import natural from 'natural'
-var TfIdf = natural.TfIdf;
-var tfidf = new TfIdf();
+let allWord = [];
+let han = /^[\p{scx=Han}]$/u;
+let kanjiList = [];
+let elementList = [];
+let tfidf = null;
+let _kanji2element = {};
+let allHan = [];
 
-//const kanji2element = JSON.parse(fs.readFileSync(`${dirname}/../node_modules/kanjivg-radical/data/kanji2element.json`, 'utf8'));
-const kanji2element = JSON.parse(fs.readFileSync(`${dirname}/../node_modules/kanjivg-radical/data/kanji2radical.json`, 'utf8'));
+/**
+ * fuzzy-kanji-matchモジュールを初期化する
+ * @param {Object} params
+ * @param {Object} params.meisi - 名詞辞書データ
+ * @param {Object} params.dousi - 動詞辞書データ
+ * @param {Object} params.kanji2element - 漢字→部首対応データ（kanji2radical.json）
+ * @param {Function} params.TfIdf - TF-IDFコンストラクタ（natural.TfIdf等）
+ */
+export function initFuzzyKanjiMatch({ meisi, dousi, kanji2element, TfIdf }) {
+  tfidf = new TfIdf();
+  _kanji2element = kanji2element;
 
-const meisi = JSON.parse(fs.readFileSync(`${dirname}/../data/meisi.json`, 'utf8'));
-const dousi = JSON.parse(fs.readFileSync(`${dirname}/../data/dousi.json`, 'utf8'));
+  allWord = [ ...Object.values(meisi),...Object.values(dousi)].flat();
 
-const allWord = [ ...Object.values(meisi),...Object.values(dousi)].flat();
-//console.log(allWord);
+  allHan = Array.from(new Set(allWord.join('').match(/[\p{scx=Han}]/ug)));
 
-const han = /^[\p{scx=Han}]$/u;
-const allHanOverlap = allWord.join('').match(/[\p{scx=Han}]/ug);
-const allHan = Array.from(new Set(allWord.join('').match(/[\p{scx=Han}]/ug)));
-const allFirstHan = Array.from(new Set(allWord.map(v=>v[0]).join('').match(/[\p{scx=Han}]/ug)));
+  const kanji2elementStrings = Object.entries(kanji2element).map(([k,v])=>`${k}${v.join('')}`);
+  const allHan2element = kanji2elementStrings.filter(v=>allHan.includes(v[0])).sort((a,b)=>a[0].codePointAt()-b[0].codePointAt());
+  kanjiList = allHan2element.map(v=>v[0]);
+  elementList = allHan2element.map(v=>v.slice(1));
 
-// 漢字と部首の対応表
-// kが漢字、vが部首
-const kanji2elementStrings = Object.entries(kanji2element).map(([k,v])=>`${k}${v.join('')}`);
-// allHanに含まれる漢字のみを抽出
-const allHan2element = kanji2elementStrings.filter(v=>allHan.includes(v[0])).sort((a,b)=>a[0].codePointAt()-b[0].codePointAt());
-const kanjiList = allHan2element.map(v=>v[0]);
-const elementList = allHan2element.map(v=>v.slice(1));
-//console.log(kanji2elementStrings);
-//console.log(allHan2element);
-
-elementList.forEach(v=>{
-  tfidf.addDocument(v.split(''));
-});
+  elementList.forEach(v=>{
+    tfidf.addDocument(v.split(''));
+  });
+}
 
 const maxTfidfSocres = (kanji,isDebug = false) => {
   let kanjiPoint = kanji.codePointAt()
-  let element = kanji2element[kanji];
+  let element = _kanji2element[kanji];
   if(isDebug){
     console.log(kanji,element);
   }
@@ -70,7 +69,7 @@ const maxTfidfSocres = (kanji,isDebug = false) => {
 };
 
 const minDistances = (kanji) => {
-  let element = kanji2element[kanji];
+  let element = _kanji2element[kanji];
   let elementStr = element.join('');
   let bestMatches = [];
   let minDistance = 100;
@@ -96,8 +95,8 @@ const minDistances = (kanji) => {
 export default  {
   maxTfidfSocres,
   minDistances,
-  allWord: allWord,
-  han: han,
-  chantAllHan: allHan,
-  chantKanjiList: kanjiList,
+  get allWord() { return allWord; },
+  han,
+  get chantAllHan() { return allHan; },
+  get chantKanjiList() { return kanjiList; },
 };
