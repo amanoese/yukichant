@@ -8,7 +8,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vitejs/plugin-vue": "^6.0.4",
     "path-browserify": "^1.0.1",
+    "vue": "^3.5.29",
     "yukichant": "file:.."
   },
   "devDependencies": {
