@@ -1,3 +1,9 @@
+## [4.1.1](https://github.com/amanoese/yukichant/compare/v4.1.0...v4.1.1) (2026-02-28)
+
+### Bug Fixes
+
+* GitHub Pages上で辞書ファイルのURL解決が失敗する問題を修正 ([f0f7e99](https://github.com/amanoese/yukichant/commit/f0f7e99da49d4ae661678c45e431a7505e0bdf83))
+
 ## [4.1.0](https://github.com/amanoese/yukichant/compare/v4.0.0...v4.1.0) (2026-02-28)
 
 ### Features
