@@ -13,10 +13,22 @@ jobs:
   preview:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout PR head
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      # semantic-releaseはリリースタグを起点にコミット差分を解析するため、
+      # タグが存在するmasterブランチ上で実行する必要がある。
+      # --branchesオプションではPRブランチにタグがなく差分を検出できない。
+      - name: Simulate merge into master
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git fetch origin master
+          git checkout -B master origin/master
+          git merge --no-edit ${{ github.event.pull_request.head.sha }}
 
       - name: Use Node.js
         uses: actions/setup-node@v4
@@ -29,8 +41,7 @@ jobs:
       - name: Semantic Release Dry Run
         id: dry-run
         run: |
-          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
-          OUTPUT=$(npx semantic-release --dry-run --no-ci --branches "$BRANCH_NAME" 2>&1) || true
+          OUTPUT=$(npx semantic-release --dry-run --no-ci 2>&1) || true
           echo "$OUTPUT"
 
           CURRENT=$(node -p "require('./package.json').version")
@@ -63,7 +74,10 @@ jobs:
               repo: context.repo.repo,
               issue_number: context.issue.number,
             });
-            const existing = comments.find(c => c.body.includes('### リリースプレビュー'));
+            const previews = comments
+              .filter(c => c.body.includes('### リリースプレビュー'))
+              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            const latest = previews[0];
 
             const params = {
               owner: context.repo.owner,
@@ -71,8 +85,6 @@ jobs:
               body,
             };
 
-            if (existing) {
-              await github.rest.issues.updateComment({ ...params, comment_id: existing.id });
-            } else {
+            if (!latest || latest.body !== body) {
               await github.rest.issues.createComment({ ...params, issue_number: context.issue.number });
             }
