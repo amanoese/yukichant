@@ -1,12 +1,7 @@
 import simpleEnigma from './machine-encrypt.js'
-import fs from 'fs'
-import path from 'path'
-const dirname = path.dirname(new URL(import.meta.url).pathname)
-const meisi = JSON.parse(fs.readFileSync(`${dirname}/../data/meisi.json`, 'utf8'));
-const dousi = JSON.parse(fs.readFileSync(`${dirname}/../data/dousi.json`, 'utf8'));
+import log from './logger.js'
 
-
-let default_encoder = (uint8text,{ meisi, dousi }) => {
+export let default_encoder = (uint8text,{ meisi, dousi }) => {
 
   //機械式暗号（ロータ型）の仕組みを利用したスクランブラーを配置
   //バイトコードは連続しやすい性質があるが、
@@ -40,7 +35,7 @@ let default_encoder = (uint8text,{ meisi, dousi }) => {
   return [ ...heads , last ].join('')
 }
 
-let default_decoder = (encodeText,{ meisi, dousi }) => {
+export let default_decoder = (typoCorrection) => async (encodeText,option = {} ,{ meisi, dousi }) => {
   // 元の名詞、動詞のハッシュマップのキーとバリューを逆にすることでデコード用のハッシュマップとする。
   // エンコードに使用しているハッシュマップの値はリストのため、リストの要素をそれぞれコードと紐付ける。
   // ex:
@@ -52,27 +47,37 @@ let default_decoder = (encodeText,{ meisi, dousi }) => {
   //     "歌え。" : "0A"
   //     "紡げ。" : "0A"
   let decodeHash = {}
+  let allWord = []
   Object.entries(meisi).forEach(([k,v])=> {
+    allWord = [ ...allWord, ...v]
     v.forEach(v2=> {
       decodeHash[v2] = k
     })
   })
   Object.entries(dousi).forEach(([k,v])=> {
+    allWord = [ ...allWord, ...v]
     v.forEach(v2=> {
       decodeHash[v2] = k
     })
   })
 
+  let textCodeList = []
+
+  // 読みやすさのために含まれている読点を削除(+英字と空白)
+  let cleanEncodeText = encodeText.replaceAll(/[。\sA-z]/g,'')
+
+  // オプションによっては、文字列を修正する。
+  if(option.s != true && typoCorrection) {
+    cleanEncodeText = typoCorrection.exec(cleanEncodeText,option)
+  }
+
+  log.debug('修正後のテキスト:', cleanEncodeText)
   // デコード用の正規表現に変換。
   // ex: /さざ波|その者|ほうき星よ/g
   let decodeRegExp = new RegExp(Object.keys(decodeHash).join('|'),'g')
 
-  // 読みやすさのために含まれている読点を削除
-  let cleanEncodeText = encodeText.replace(/。/g,'')
-
   // 正規表現にマッチするもののみに絞り込み。
-  let textCodeList = cleanEncodeText
-    .match(decodeRegExp) || []
+  textCodeList = cleanEncodeText.match(decodeRegExp) || []
 
   // デコード用のハッシュマップからエンコード前の2桁16進数のコードを復元。
   let encryptCode = textCodeList
@@ -80,25 +85,56 @@ let default_decoder = (encodeText,{ meisi, dousi }) => {
     .map(v=>parseInt(v,16))
 
   let textCode = simpleEnigma.uint8ArrayEncrypt(encryptCode)
+  // バイト配列として返却
   return Uint8Array.from(textCode)
 }
 
-export default {
-  data : {
-    meisi,
-    dousi
-  },
-  generate(length, data = this.data, generater = default_encoder) {
-    let rand = n => (Math.random() * n).toFixed()
-    let uint8text = Uint8Array.from({length:length || +rand(12) + 4}).map(_=>rand(255))
-    return generater(uint8text,data)
-  },
-  encode( text, data = this.data, encoder = default_encoder ){
-    let uint8text = (new TextEncoder()).encode(text)
-    return encoder(uint8text,data)
-  },
-  decode( text, data = this.data, decoder = default_decoder ){
-    let uint8text = decoder(text,data)
-    return (new TextDecoder()).decode(uint8text)
+/**
+ * yukichantインスタンスを生成するファクトリ関数
+ * @param {Object} params - 初期化パラメータ
+ * @param {Object} params.data - { meisi, dousi } 辞書データ
+ * @param {Object|null} params.typoCorrection - 誤字修正モジュール（null でデコード時の誤字修正を無効化）
+ * @returns {Object} encode/decode/generate メソッドを持つオブジェクト
+ */
+export function createChant({ data, typoCorrection = null }) {
+  const decoder = default_decoder(typoCorrection)
+  return {
+    data,
+    /**
+     * ランダムな呪文を生成する
+     * @param {number} length - 生成するバイト長
+     * @param {Object} _data - 使用する名詞と動詞のデータ
+     * @param {Function} generater - エンコード処理を行う関数
+     * @returns {string} 生成された呪文
+     */
+    generate(length, _data = this.data, generater = default_encoder) {
+      let rand = n => (Math.random() * n).toFixed()
+      let uint8text = Uint8Array.from({length:length || +rand(12) + 4}).map(_=>rand(255))
+      return generater(uint8text,_data)
+    },
+    /**
+     * テキストを呪文に変換する
+     * @param {string} text - エンコードするテキスト
+     * @param {Object} option - エンコードオプション
+     * @param {Object} _data - 使用する名詞と動詞のデータ
+     * @param {Function} encoder - エンコード処理を行う関数
+     * @returns {string} 変換された呪文
+     */
+    encode( text, option, _data = this.data, encoder = default_encoder ){
+      let uint8text = (new TextEncoder()).encode(text)
+      return encoder(uint8text,_data)
+    },
+    /**
+     * 呪文をテキストに復号する
+     * @param {string} text - デコードする呪文
+     * @param {Object} option - デコードオプション
+     * @param {Object} _data - 使用する名詞と動詞のデータ
+     * @param {Function} _decoder - デコード処理を行う関数
+     * @returns {string} 復号されたテキスト
+     */
+    async decode( text, option, _data = this.data, _decoder = decoder ){
+      let uint8text = await _decoder(text,option,_data)
+      return (new TextDecoder()).decode(uint8text)
+    }
   }
 }

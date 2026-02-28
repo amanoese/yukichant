@@ -1,1 +1,10 @@
 node_modules/
+dic/
+word.csv
+yukichant.dic
+.vscode/
+
+# ベンチマーク結果（.gitkeepは残す）
+benchmark/results/*
+!benchmark/results/.gitkeep
+!benchmark/results/summary/

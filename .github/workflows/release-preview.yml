@@ -1,0 +1,99 @@
+name: Release Preview
+
+on:
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # semantic-releaseのdry-runはPRブランチ上では動作しないため、
+      # コミットメッセージを直接解析してバージョンを算出する。
+      # .releaserc.jsonのreleaseRulesと同じルールを適用。
+      - name: Analyze commits and calculate next version
+        id: analyze
+        shell: bash
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 origin/master 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            echo "has_release=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          CURRENT=${LAST_TAG#v}
+          echo "current_version=$CURRENT" >> "$GITHUB_OUTPUT"
+
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT"
+
+          BUMP=""
+          while IFS= read -r msg; do
+            if echo "$msg" | grep -qi 'BREAKING CHANGE'; then
+              BUMP="major"
+              break
+            fi
+
+            TYPE=$(echo "$msg" | grep -oE '^[a-z]+[\(:]' | sed 's/[(:]//' || true)
+            case "$TYPE" in
+              feat)
+                [ "$BUMP" != "major" ] && BUMP="minor"
+                ;;
+              fix|perf|refactor|revert)
+                [ -z "$BUMP" ] && BUMP="patch"
+                ;;
+            esac
+          done < <(git log --format="%s%n%b" "$LAST_TAG"..HEAD)
+
+          if [ -n "$BUMP" ]; then
+            case "$BUMP" in
+              major) NEXT="$((MAJOR + 1)).0.0" ;;
+              minor) NEXT="$MAJOR.$((MINOR + 1)).0" ;;
+              patch) NEXT="$MAJOR.$MINOR.$((PATCH + 1))" ;;
+            esac
+            echo "next_version=$NEXT" >> "$GITHUB_OUTPUT"
+            echo "has_release=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_release=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const hasRelease = '${{ steps.analyze.outputs.has_release }}' === 'true';
+            const current = '${{ steps.analyze.outputs.current_version }}';
+            const next = '${{ steps.analyze.outputs.next_version }}';
+
+            const body = hasRelease
+              ? `### リリースプレビュー\n\n**v${current}** → **v${next}**`
+              : `### リリースプレビュー\n\nリリース対象のコミットなし（v${current}のまま）`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const previews = comments
+              .filter(c => c.body.includes('### リリースプレビュー'))
+              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            const latest = previews[0];
+
+            const params = {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body,
+            };
+
+            if (!latest || latest.body !== body) {
+              await github.rest.issues.createComment({ ...params, issue_number: context.issue.number });
+            }
