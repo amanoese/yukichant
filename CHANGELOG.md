@@ -1,3 +1,11 @@
+## [4.1.0](https://github.com/amanoese/yukichant/compare/v4.0.0...v4.1.0) (2026-02-28)
+
+### Features
+
+* GitHub Pagesデモページを追加 ([191b910](https://github.com/amanoese/yukichant/commit/191b910ce8fb0c61ba898b5f49ec66e49c36de34))
+* デモページのUI改善 ([e36e204](https://github.com/amanoese/yukichant/commit/e36e204dc46680093034803834cdadaf1550ab7f))
+* 誤字修正時の差分を色付き2行表示に改善 ([c96b2bb](https://github.com/amanoese/yukichant/commit/c96b2bbddc80a56b58e2210fbf85312169531fa8))
+
 ## [4.0.0](https://github.com/amanoese/yukichant/compare/v3.0.5...v4.0.0) (2026-02-28)
 
 ### ⚠ BREAKING CHANGES
