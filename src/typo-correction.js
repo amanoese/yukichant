@@ -1,6 +1,7 @@
 import { distance, closest } from 'fastest-levenshtein';
 import { JaroWinklerDistance } from './jaro-winkler.js';
 import log from './logger.js';
+import pc from 'picocolors';
 
 const jaroWinkler = new JaroWinklerDistance();
 
@@ -207,27 +208,27 @@ const exec = (text, option = { is_tfidf: false, v: false, Vv: false, Levenshtein
 
   let fixedTextTokens = [...ptokens, ...fixedTokens].sort((a, b) => a.i - b.i);
   
-  if (option.v) {
-    // デバッグオプションで修正前後の文字列を表示する
-    let originalText = '';
-    let fixedText = '';
-    
-      fixedTextTokens
-        .forEach((token) => {
-          const textWidth = Math.max((token.old||"").length, token.v.length);
-          if (token.old) {
-            originalText += token.old.padEnd(textWidth, '　')
-            fixedText += token.v.padEnd(textWidth, '　')
-          } else {
-            originalText += token.v.padEnd(textWidth, '　')
-            fixedText += token.v.padEnd(textWidth, ' 　')
-          }
-        });  
-    console.error(originalText);
-    console.error(fixedText);
-  
-    // 正規化された文字列をもとの文字列
-    console.error()
+  const hasChanges = fixedTextTokens.some((token) => token.old && token.old !== token.v);
+  if (hasChanges) {
+    let originalLine = '';
+    let fixedLine = '';
+    fixedTextTokens.forEach((token) => {
+      const old = token.old || token.v;
+      const fixed = token.v;
+      const changed = token.old && token.old !== token.v;
+      const padLen = Math.max([...old].length, [...fixed].length);
+      const padOld = old + '　'.repeat(Math.max(0, padLen - [...old].length));
+      const padFixed = fixed + '　'.repeat(Math.max(0, padLen - [...fixed].length));
+      if (changed) {
+        originalLine += pc.red(pc.strikethrough(padOld));
+        fixedLine += pc.green(pc.bold(padFixed));
+      } else {
+        originalLine += pc.dim(padOld);
+        fixedLine += pc.dim(padFixed);
+      }
+    });
+    console.error(originalLine);
+    console.error(fixedLine);
   }
 
   let fixedText = fixedTextTokens.map((token) => token.v).join('');
