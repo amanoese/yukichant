@@ -24,7 +24,8 @@ jobs:
     - run: npm ci
     - run: npm test
 
-  test-on-volta:
+  cli-install:
+    name: CLI install
     runs-on: ubuntu-latest
 
     strategy:
@@ -33,25 +34,21 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: volta-cli/action@v1
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
 
-    - run: node -v
-    - uses: actions/checkout@v4
-
-    - name: install yukichant on local
+    - name: Global install
       run: |
         npm install
-        npm install -g ../yukichant
+        npm install -g .
 
-    - name: mkdir sandbox
-      run: mkdir -p ./exec_dir
-
-    - name: check cli path
+    - name: Verify CLI is available
       run: which chant
-      working-directory: ./exec_dir
+      working-directory: /tmp
 
-    - run: chant
-      working-directory: ./exec_dir
+    - name: Run CLI
+      run: chant
+      working-directory: /tmp
 
