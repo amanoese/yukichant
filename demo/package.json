@@ -1,0 +1,17 @@
+{
+  "name": "yukichant-demo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "path-browserify": "^1.0.1",
+    "yukichant": "file:.."
+  },
+  "devDependencies": {
+    "vite": "^6"
+  }
+}
