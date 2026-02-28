@@ -1,32 +1,27 @@
-import fs from 'fs';
-import path from 'path';
-
-const dirname = path.dirname(new URL(import.meta.url).pathname);
-
 import { distance, closest } from 'fastest-levenshtein';
-import { JaroWinklerDistance } from './jaro-winkler.js'; // Jaro-Winkler実装をインポート
-
-import pc from 'picocolors';
-import kuromoji from 'kuromoji';
+import { JaroWinklerDistance } from './jaro-winkler.js';
 import log from './logger.js';
 
-import fkm from './fuzzy-kanji-match.js';
-
-// Jaro-Winklerインスタンスを作成
 const jaroWinkler = new JaroWinklerDistance();
 
-let tokenizer = await new Promise((resolve, reject) => {
-  kuromoji
-    .builder({ dicPath: `${dirname}/../node_modules/yukidic/dic/` })
-    .build(function (err, tokenizer) {
-      if (err != null) {
-        reject(err);
-      }
-      resolve(tokenizer);
-    });
-});
+let tokenizer = null;
+let fkm = null;
+
+/**
+ * typo-correctionモジュールを初期化する
+ * @param {Object} params
+ * @param {Object} params.tokenizer - kuromoji等のtokenizerインスタンス（tokenize(text)メソッドを持つ）
+ * @param {Object} params.fuzzyKanjiMatch - fuzzy-kanji-matchモジュール
+ */
+export function initTypoCorrection({ tokenizer: _tokenizer, fuzzyKanjiMatch }) {
+  tokenizer = _tokenizer;
+  fkm = fuzzyKanjiMatch;
+}
 
 const tokenize = (text) => {
+  if (!tokenizer) {
+    throw new Error('typo-correctionが初期化されていません。initTypoCorrection()を先に呼び出してください。');
+  }
   return tokenizer.tokenize(text);
 };
 
@@ -167,9 +162,7 @@ function findClosestWord(word, wordList, useLevenshtein = false, option = { v: f
     }
   }
   
-  // デバッグ情報の表示（loglevelを使用）
-  const color = useLevenshtein ? pc.cyan : pc.yellow;
-  log.debug(color(`[${algorithmName}]`), {
+  log.debug(`[${algorithmName}]`, {
     word,
     closestWord,
     [useLevenshtein ? 'distance' : 'similarity']: score,
@@ -223,8 +216,8 @@ const exec = (text, option = { is_tfidf: false, v: false, Vv: false, Levenshtein
         .forEach((token) => {
           const textWidth = Math.max((token.old||"").length, token.v.length);
           if (token.old) {
-            originalText += pc.red(token.old.padEnd(textWidth, '　'))
-            fixedText += pc.green(token.v.padEnd(textWidth, '　'))
+            originalText += token.old.padEnd(textWidth, '　')
+            fixedText += token.v.padEnd(textWidth, '　')
           } else {
             originalText += token.v.padEnd(textWidth, '　')
             fixedText += token.v.padEnd(textWidth, ' 　')

@@ -1,5 +1,14 @@
-import simpleEnigma from '../src/machine-encrypt.js'
-import fkm from '../src/fuzzy-kanji-match.js';
+import fs from 'fs'
+import path from 'path'
+import natural from 'natural'
+import fkm, { initFuzzyKanjiMatch } from '../src/fuzzy-kanji-match.js';
+
+const dirname = path.dirname(new URL(import.meta.url).pathname)
+const meisi = JSON.parse(fs.readFileSync(`${dirname}/../data/meisi.json`, 'utf8'));
+const dousi = JSON.parse(fs.readFileSync(`${dirname}/../data/dousi.json`, 'utf8'));
+const kanji2element = JSON.parse(fs.readFileSync(`${dirname}/../node_modules/kanjivg-radical/data/kanji2radical.json`, 'utf8'));
+
+initFuzzyKanjiMatch({ meisi, dousi, kanji2element, TfIdf: natural.TfIdf });
 
 describe('fuzzyKanjiMatch', () => {
   test('minDistances 正しい漢字の距離は最も短い', () => {

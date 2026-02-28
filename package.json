@@ -5,7 +5,15 @@
   "license": "Apache-2.0",
   "repository": "amanoese/yukichant",
   "author": "Seito Taka",
-  "main": "src/index.js",
+  "main": "src/node.js",
+  "exports": {
+    ".": {
+      "browser": "./src/browser.js",
+      "default": "./src/node.js"
+    },
+    "./browser": "./src/browser.js",
+    "./core": "./src/index.js"
+  },
   "bin": {
     "chant": "./src/cli.js"
   },
