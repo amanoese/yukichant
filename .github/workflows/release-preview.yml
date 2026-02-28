@@ -42,7 +42,7 @@ jobs:
       - name: Semantic Release Dry Run
         id: dry-run
         run: |
-          OUTPUT=$(npx semantic-release --dry-run --no-ci --branches master 2>&1) || true
+          OUTPUT=$(GITHUB_REF=refs/heads/master GITHUB_SHA=$(git rev-parse HEAD) npx semantic-release --dry-run --no-ci --branches master 2>&1) || true
           echo "$OUTPUT"
 
           CURRENT=$(node -p "require('./package.json').version")
