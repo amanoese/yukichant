@@ -59,5 +59,7 @@
     "unicode"
   ],
   "type": "module",
-  "node": ">=12.22.8"
+  "engines": {
+    "node": ">=20"
+  }
 }
