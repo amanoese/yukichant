@@ -21,6 +21,9 @@ const ui = {
   typoCorrection: $('#typo-correction'),
   algorithmSelect: $('#algorithm-select'),
   decodeOptions: $('#decode-options'),
+  diffDisplay: $('#diff-display'),
+  diffOriginal: $('#diff-original'),
+  diffFixed: $('#diff-fixed'),
 }
 
 let direction = 'encode'
@@ -44,7 +47,30 @@ function setStatus(text, type = 'info') {
   ui.status.className = `status ${type}`
 }
 
+function renderDiff(diffs) {
+  if (!diffs) {
+    ui.diffDisplay.classList.add('hidden')
+    return
+  }
+  ui.diffOriginal.innerHTML = ''
+  ui.diffFixed.innerHTML = ''
+  for (const { old, fixed, changed } of diffs) {
+    const cls = changed ? 'old' : 'unchanged'
+    const clsF = changed ? 'fixed' : 'unchanged'
+    const spanO = document.createElement('span')
+    spanO.className = cls
+    spanO.textContent = old
+    ui.diffOriginal.appendChild(spanO)
+    const spanF = document.createElement('span')
+    spanF.className = clsF
+    spanF.textContent = fixed
+    ui.diffFixed.appendChild(spanF)
+  }
+  ui.diffDisplay.classList.remove('hidden')
+}
+
 async function doEncode() {
+  renderDiff(null)
   const text = ui.textInput.value.trim()
   if (!text) {
     ui.spellInput.value = ''
@@ -72,6 +98,7 @@ async function doDecode() {
   const spell = ui.spellInput.value.trim()
   if (!spell) {
     ui.textInput.value = ''
+    renderDiff(null)
     setStatus('')
     return
   }
@@ -93,12 +120,17 @@ async function doDecode() {
     const algorithm = $('input[name="algorithm"]:checked')?.value
     if (algorithm === 'levenshtein') option.Levenshtein = true
 
+    let lastDiff = null
+    option.onDiff = (diffs) => { lastDiff = diffs }
+
     setStatus('デコード中...', 'info')
     const result = await chant.decode(spell, option)
     ui.textInput.value = result
+    renderDiff(lastDiff)
     setStatus('')
   } catch (err) {
     console.error(err)
+    renderDiff(null)
     setStatus(`エラー: ${err.message}`, 'error')
   }
 }
