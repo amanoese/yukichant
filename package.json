@@ -1,6 +1,6 @@
 {
   "name": "yukichant",
-  "version": "v3.1.0-beta.11",
+  "version": "3.1.0-beta.11",
   "description": "",
   "license": "Apache-2.0",
   "repository": "amanoese/yukichant",
@@ -21,7 +21,6 @@
     "dev": "src/cli.js",
     "json-generate": "raw_data/json_generator",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
-    "deploy": "npm version patch && git push origin $(git describe --tags --abbrev=0)",
     "install": "rm -rf node_modules/kanjivg-radical && git clone https://github.com/yagays/kanjivg-radical.git -b master node_modules/kanjivg-radical",
     "benchmark": "node benchmark/scripts/compare-and-report.js",
     "benchmark:single": "node benchmark/scripts/run-accuracy-test.js",
@@ -29,11 +28,20 @@
     "benchmark:report": "node benchmark/scripts/generate-report.js",
     "benchmark:report:latest": "node benchmark/scripts/generate-report.js --regenerate",
     "benchmark:all": "node benchmark/scripts/compare-and-report.js",
-    "benchmark:chatgpt": "node benchmark/scripts/run-chatgpt-test.js"
+    "benchmark:chatgpt": "node benchmark/scripts/run-chatgpt-test.js",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.4.2",
+    "@commitlint/config-conventional": "^20.4.2",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^12.0.6",
+    "conventional-changelog-conventionalcommits": "^9.1.0",
+    "husky": "^9.1.7",
     "jest": "^27.4.7",
-    "jest-extended": "^1.2.0"
+    "jest-extended": "^1.2.0",
+    "semantic-release": "^25.0.3"
   },
   "dependencies": {
     "commander": "^8.3.0",
