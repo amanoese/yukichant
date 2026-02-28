@@ -17,6 +17,8 @@
   --accent-bg: #f0eef9;
   --error: #d93025;
   --success: #1e8e3e;
+  --encode: #3b82f6;
+  --decode: #ef4444;
   --radius: 10px;
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -33,6 +35,8 @@
     --accent: #8b7ff0;
     --accent-hover: #9d93f5;
     --accent-bg: #1e1a33;
+    --encode: #60a5fa;
+    --decode: #f87171;
     --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
     --shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.4);
   }
@@ -138,6 +142,7 @@ header h1 {
   margin-bottom: 0;
 }
 
+
 label {
   display: block;
   font-size: 0.85rem;
@@ -202,22 +207,35 @@ textarea.readonly {
   user-select: none;
 }
 
-.direction-option.active {
-  background: var(--accent);
+.direction-option.active-encode {
+  background: var(--encode);
   color: white;
 }
 
-.direction-option:hover:not(.active) {
+.direction-option.active-decode {
+  background: var(--decode);
+  color: white;
+}
+
+.direction-option:hover:not([class*="active-"]) {
   color: var(--text);
 }
 
 .direction-icon {
-  color: var(--text-sub);
   flex-shrink: 0;
-  transition: transform 0.3s ease;
+  border-radius: 50%;
+  padding: 2px;
+  transition: transform 0.3s ease, background 0.2s ease, color 0.2s ease;
 }
 
-.direction-icon.flipped {
+.direction-icon.encode {
+  background: var(--encode);
+  color: white;
+}
+
+.direction-icon.decode {
+  background: var(--decode);
+  color: white;
   transform: rotate(180deg);
 }
 
