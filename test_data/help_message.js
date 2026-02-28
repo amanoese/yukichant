@@ -8,9 +8,8 @@ Arguments:
 Options:
   -V, --version  output the version number
   -d             decode flag
-  -s             strict decode mode flag
-  --no-tfidf     disable tfidf mode flag when strict decode mode flag is
-                 enabled
+  -s             disable typo correction (strict decode mode)
+  --no-tfidf     disable tfidf mode for typo correction
   --levenshtein  use Levenshtein distance algorithm instead of Jaro-Winkler
   -v             verbose mode flag
   -vv            more verbose
