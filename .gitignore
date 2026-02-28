@@ -8,3 +8,7 @@ yukichant.dic
 benchmark/results/*
 !benchmark/results/.gitkeep
 !benchmark/results/summary/
+
+# デモページ
+demo/node_modules/
+demo/dist/

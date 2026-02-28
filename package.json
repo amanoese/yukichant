@@ -56,6 +56,12 @@
     "picocolors": "^1.0.0",
     "yukidic": "git+https://github.com/amanoese/yukidic.git"
   },
+  "files": [
+    "src/",
+    "data/",
+    "README.md",
+    "LICENSE"
+  ],
   "keywords": [
     "cli",
     "terminal",
