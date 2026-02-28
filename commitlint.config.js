@@ -14,6 +14,7 @@ export default {
       'deps',
       'release',
     ]],
+    'subject-case': [0],
     'subject-empty': [2, 'never'],
     'type-empty': [2, 'never'],
   },
