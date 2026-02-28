@@ -14,8 +14,8 @@ program
 .version(version)
 .argument('[text]','input text','')
 .option('-d','decode flag')
-.option('-s','strict decode mode flag')
-.option('--no-tfidf','disable tfidf mode flag when strict decode mode flag is enabled')
+.option('-s','disable typo correction (strict decode mode)')
+.option('--no-tfidf','disable tfidf mode for typo correction')
 .option('--levenshtein','use Levenshtein distance algorithm instead of Jaro-Winkler')
 .option('-v','verbose mode flag')
 .option('-vv','more verbose') // なぜかVv
