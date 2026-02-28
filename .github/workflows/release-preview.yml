@@ -23,6 +23,7 @@ jobs:
       # .releaserc.jsonのreleaseRulesと同じルールを適用。
       - name: Analyze commits and calculate next version
         id: analyze
+        shell: bash
         run: |
           LAST_TAG=$(git describe --tags --abbrev=0 origin/master 2>/dev/null || echo "")
           if [ -z "$LAST_TAG" ]; then
@@ -37,12 +38,12 @@ jobs:
 
           BUMP=""
           while IFS= read -r msg; do
-            if echo "$msg" | grep -qiP 'BREAKING CHANGE'; then
+            if echo "$msg" | grep -qi 'BREAKING CHANGE'; then
               BUMP="major"
               break
             fi
 
-            TYPE=$(echo "$msg" | grep -oP '^[a-z]+(?=[\(:])')
+            TYPE=$(echo "$msg" | grep -oE '^[a-z]+[\(:]' | sed 's/[(:]//' || true)
             case "$TYPE" in
               feat)
                 [ "$BUMP" != "major" ] && BUMP="minor"
