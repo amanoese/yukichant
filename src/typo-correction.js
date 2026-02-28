@@ -1,8 +1,27 @@
 import { distance, closest } from 'fastest-levenshtein';
+import { diffChars } from 'diff';
 import { JaroWinklerDistance } from './jaro-winkler.js';
 import log from './logger.js';
+import pc from 'picocolors';
 
 const jaroWinkler = new JaroWinklerDistance();
+
+function colorDiffLines(oldStr, newStr) {
+  const parts = diffChars(oldStr, newStr);
+  let origLine = '';
+  let fixLine = '';
+  for (const part of parts) {
+    if (part.added) {
+      fixLine += pc.green(pc.bold(part.value));
+    } else if (part.removed) {
+      origLine += pc.red(pc.strikethrough(part.value));
+    } else {
+      origLine += pc.dim(part.value);
+      fixLine += pc.dim(part.value);
+    }
+  }
+  return { origLine, fixLine };
+}
 
 let tokenizer = null;
 let fkm = null;
@@ -183,11 +202,11 @@ const exec = (text, option = { is_tfidf: false, v: false, Vv: false, Levenshtein
     return text;
   }
 
-  log.trace('☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆');
-  log.trace('ntokens', ntokens.filter((token) => token.pos !== '記号'));
-  log.trace('☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆');
-  log.trace('ptokens', ptokens);
-  log.trace('☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆☆');
+  log.debug('----------------------------------');
+  log.debug('ntokens', ntokens.filter((token) => token.pos !== '記号'));
+  log.debug('----------------------------------');
+  log.debug('ptokens', ptokens);
+  log.debug('----------------------------------');
 
   let fixTokens = organizeUnknownTokens(ntokens, option);
   let fixedTokens = fixTokens
@@ -196,38 +215,45 @@ const exec = (text, option = { is_tfidf: false, v: false, Vv: false, Levenshtein
     .map((token) => {
       // 。で終わる文は、。を削除して修正する
       let fixText = token.v.replace(/。$/, '');
+      const originalText = fixText;
       if (option.is_tfidf === true) {
         fixText = nearTokenMatch(fixText, option);
-        log.debug('fixText', fixText);
       } else {
         fixText = findClosestWord(fixText, fkm.allWord, option.Levenshtein, option);
+      }
+      if (originalText !== fixText) {
+        const { origLine, fixLine } = colorDiffLines(originalText, fixText);
+        log.debug('----------------------------------');
+        log.debug(origLine);
+        log.debug(fixLine);
+        log.debug('----------------------------------');
       }
       return { ...token, v: fixText };
     });
 
   let fixedTextTokens = [...ptokens, ...fixedTokens].sort((a, b) => a.i - b.i);
   
-  if (option.v) {
-    // デバッグオプションで修正前後の文字列を表示する
-    let originalText = '';
-    let fixedText = '';
-    
-      fixedTextTokens
-        .forEach((token) => {
-          const textWidth = Math.max((token.old||"").length, token.v.length);
-          if (token.old) {
-            originalText += token.old.padEnd(textWidth, '　')
-            fixedText += token.v.padEnd(textWidth, '　')
-          } else {
-            originalText += token.v.padEnd(textWidth, '　')
-            fixedText += token.v.padEnd(textWidth, ' 　')
-          }
-        });  
-    console.error(originalText);
-    console.error(fixedText);
-  
-    // 正規化された文字列をもとの文字列
-    console.error()
+  const hasChanges = fixedTextTokens.some((token) => token.old && token.old !== token.v);
+  if (hasChanges) {
+    const diffs = fixedTextTokens.map((token) => ({
+      old: token.old || token.v,
+      fixed: token.v,
+      changed: !!(token.old && token.old !== token.v),
+    }));
+
+    if (typeof option.onDiff === 'function') {
+      option.onDiff(diffs);
+    }
+
+    if (option.v) {
+      const oldText = diffs.map(d => d.old).join('');
+      const fixedText = diffs.map(d => d.fixed).join('');
+      const { origLine, fixLine } = colorDiffLines(oldText, fixedText);
+      console.error(origLine);
+      console.error(fixLine);
+    }
+  } else if (typeof option.onDiff === 'function') {
+    option.onDiff(null);
   }
 
   let fixedText = fixedTextTokens.map((token) => token.v).join('');
@@ -235,7 +261,7 @@ const exec = (text, option = { is_tfidf: false, v: false, Vv: false, Levenshtein
 };
 
 const nearTokenMatch = (tokenStr, option = { isJaroWinklerDistance: false, v: false, Vv: false, Levenshtein: false }) => {
-  log.trace('tokenStr', tokenStr);
+  log.debug('tokenStr', tokenStr);
   
   let tokens = [...tokenStr];
   let bestMatch = null;
@@ -248,7 +274,7 @@ const nearTokenMatch = (tokenStr, option = { isJaroWinklerDistance: false, v: fa
   for (let i = 0; i < tokens.length; i++) {
     let kanji = tokens[i];
     if (fkm.han.test(kanji)) {
-      log.trace('kanji', fkm.maxTfidfSocres(kanji));
+      log.debug('kanji', fkm.maxTfidfSocres(kanji));
       
       let bestKanji = kanji;
       let bestLocalDistance = Infinity;
@@ -265,7 +291,7 @@ const nearTokenMatch = (tokenStr, option = { isJaroWinklerDistance: false, v: fa
         // 置き換えた後の文字列と最適なマッチの距離を計算
         let d = calculateSimilarity(testText, bestMatchLocal, option.Levenshtein);
         
-        log.trace({
+        log.debug({
           'd'          : d,
           'bestLocalDistance': bestLocalDistance,
           'testText'   : testText,
@@ -318,7 +344,7 @@ const organizeUnknownTokens = (ntokens, option = { v: false, Vv: false }) => {
       adverb = true;
     }
     
-    log.trace(
+    log.debug(
       token.surface_form,
       token.pos,
       token.pos_detail_1,

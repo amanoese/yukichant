@@ -33,7 +33,7 @@ const KANJIVG_RADICAL_REPO = 'yagays/kanjivg-radical'
  * @param {string} [version] - yukichantのリリースタグ（省略時はパッケージバージョン）
  * @returns {Object} 各データのURL
  */
-function getDefaultUrls(version = pkg.version) {
+function getDefaultUrls(version = `v${pkg.version}`) {
   return {
     dataBaseUrl: `${GITHUB_RAW_BASE}/${YUKICHANT_REPO}/${version}/data`,
     dicPath: `${GITHUB_RAW_BASE}/${YUKIDIC_REPO}/master/dic/`,
@@ -91,8 +91,8 @@ export async function initBrowser({
   ])
 
   if (!TfIdf) {
-    const natural = await import('natural')
-    TfIdf = natural.default.TfIdf
+    const tfidfModule = await import('natural/lib/natural/tfidf/index.js')
+    TfIdf = tfidfModule.TfIdf
   }
 
   initFuzzyKanjiMatch({ meisi, dousi, kanji2element, TfIdf })

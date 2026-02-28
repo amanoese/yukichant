@@ -1,6 +1,4 @@
 import simpleEnigma from './machine-encrypt.js'
-import log from './logger.js'
-
 export let default_encoder = (uint8text,{ meisi, dousi }) => {
 
   //機械式暗号（ロータ型）の仕組みを利用したスクランブラーを配置
@@ -71,7 +69,6 @@ export let default_decoder = (typoCorrection) => async (encodeText,option = {} ,
     cleanEncodeText = typoCorrection.exec(cleanEncodeText,option)
   }
 
-  log.debug('修正後のテキスト:', cleanEncodeText)
   // デコード用の正規表現に変換。
   // ex: /さざ波|その者|ほうき星よ/g
   let decodeRegExp = new RegExp(Object.keys(decodeHash).join('|'),'g')
