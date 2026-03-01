@@ -22,7 +22,9 @@
   },
   "scripts": {
     "dev": "src/cli.js",
-    "json-generate": "raw_data/json_generator",
+    "json-generate": "node raw_data/meisi_json_generator.js && node raw_data/dousi_json_generator.js",
+    "json-generate:meisi": "node raw_data/meisi_json_generator.js",
+    "json-generate:dousi": "node raw_data/dousi_json_generator.js",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "install": "rm -rf node_modules/kanjivg-radical && git clone https://github.com/yagays/kanjivg-radical.git -b master node_modules/kanjivg-radical",
     "benchmark": "node benchmark/scripts/compare-and-report.js",
