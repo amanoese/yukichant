@@ -476,13 +476,13 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-    subgraph 拗音・促音の扱い
+    subgraph "拗音・促音の扱い"
         A["きゃ → 1拍"]
         B["きょ → 1拍"]
         C["っ → 直前と合わせて1拍"]
     end
 
-    subgraph 例
+    subgraph "例"
         D["流星 リュウセイ → りゅう"]
         E["活殺 カッサツ → かっさ"]
     end
