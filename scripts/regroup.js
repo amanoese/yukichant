@@ -60,6 +60,33 @@ function regroupMeisi(tokenizer, dict, hexOrder) {
     mapping[hexOrder[i]] = selected[i];
   }
 
+  // v3.0.5 互換のためのスワップ処理
+  const v305Swaps = {
+    "9E": "誘いより",
+    "5C": "邪を",
+    "45": "魂すら",
+    "47": "業を",
+    "9B": "羅刹に",
+    "3F": "星より"
+  };
+
+  for (const [targetHex, word] of Object.entries(v305Swaps)) {
+    let currentHex = null;
+    for (const [hex, data] of Object.entries(mapping)) {
+      if (data.words.includes(word)) {
+        currentHex = hex;
+        break;
+      }
+    }
+
+    if (currentHex && currentHex !== targetHex) {
+      console.error(`[${label}] スワップ: ${word} (${currentHex} -> ${targetHex})`);
+      const temp = mapping[targetHex];
+      mapping[targetHex] = mapping[currentHex];
+      mapping[currentHex] = temp;
+    }
+  }
+
   const totalWords = Object.values(mapping).reduce((sum, v) => sum + v.words.length, 0);
   console.error(`[${label}] キー数: ${Object.keys(mapping).length}, 総単語数: ${totalWords}`);
   return mapping;
@@ -105,6 +132,29 @@ function regroupDousi(tokenizer, dict, hexOrder) {
   const mapping = {};
   for (let i = 0; i < Math.min(selected.length, hexOrder.length); i++) {
     mapping[hexOrder[i]] = selected[i];
+  }
+
+  // v3.0.5 互換のためのスワップ処理
+  const v305Swaps = {
+    "CD": "借り",
+    "C9": "失え"
+  };
+
+  for (const [targetHex, word] of Object.entries(v305Swaps)) {
+    let currentHex = null;
+    for (const [hex, data] of Object.entries(mapping)) {
+      if (data.words.includes(word)) {
+        currentHex = hex;
+        break;
+      }
+    }
+
+    if (currentHex && currentHex !== targetHex) {
+      console.error(`[${label}] スワップ: ${word} (${currentHex} -> ${targetHex})`);
+      const temp = mapping[targetHex];
+      mapping[targetHex] = mapping[currentHex];
+      mapping[currentHex] = temp;
+    }
   }
 
   const totalWords = Object.values(mapping).reduce((sum, v) => sum + v.words.length, 0);
