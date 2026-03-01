@@ -71,7 +71,7 @@ flowchart TD
 
 ## 分岐に関わる主なオプション（要点）
 
-- **`-s`（strict decode）**: デコード時に **誤字修正を行わない**（入力をそのまま解釈する）
+- **`-s`**: デコード時に **誤字修正を行わない**（入力をそのまま解釈する、strict decode mode）
 - **`--levenshtein`**: 距離計算を **Levenshtein** に切り替え（デフォルトは **Jaro-Winkler**）
 - **`--no-tfidf` / `is_tfidf=false`**: TF-IDFベースの探索（`nearTokenMatch()`）を使わない
 - **`-v / -vv`**: デバッグ出力（修正前後・スコア等の詳細が増える）
