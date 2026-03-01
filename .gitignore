@@ -12,3 +12,8 @@ benchmark/results/*
 # デモページ
 demo/node_modules/
 demo/dist/
+
+# Cursor/Playwright logs and temporary files
+.playwright-mcp/
+*.png
+*.txt
