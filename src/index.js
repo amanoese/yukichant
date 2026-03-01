@@ -38,12 +38,11 @@ export let default_decoder = (typoCorrection) => async (encodeText,option = {} ,
   // エンコードに使用しているハッシュマップの値はリストのため、リストの要素をそれぞれコードと紐付ける。
   // ex:
   //   from:
-  //     "0A":["汚し", "踊れ", "歌え", "紡げ"]
+  //     "0A":["単語1", "単語2", "単語3"]
   //   to:
-  //     "汚し。" : "0A"
-  //     "踊れ。" : "0A"
-  //     "歌え。" : "0A"
-  //     "紡げ。" : "0A"
+  //     "単語1。" : "0A"
+  //     "単語2。" : "0A"
+  //     "単語3。" : "0A"
   let decodeHash = {}
   let allWord = []
   Object.entries(meisi).forEach(([k,v])=> {
