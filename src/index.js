@@ -1,5 +1,5 @@
 import simpleEnigma from './machine-encrypt.js'
-export let default_encoder = (uint8text,{ meisi, dousi }) => {
+export let default_encoder = (uint8text,{ meisi, dousi }, option = {}) => {
 
   //機械式暗号（ロータ型）の仕組みを利用したスクランブラーを配置
   //バイトコードは連続しやすい性質があるが、
@@ -21,16 +21,30 @@ export let default_encoder = (uint8text,{ meisi, dousi }) => {
   // 生成する文字列は 名詞 名詞 名詞 動詞 + 。 といった規則性になる。
   let heads = encryptCode16
     .slice(0,-1)
-    .map((code,i)=> (i + 1) % 4 ? meisi[code].words : _dousi[code].words)
-    .map(v=> v[Math.floor(Math.random() * v.length)])
+    .map((code,i)=> (i + 1) % 4 ? meisi[code] : _dousi[code])
+    .map(v=> {
+      const index = Math.floor(Math.random() * v.words.length)
+      return { word: v.words[index], reading: v.readings[index] }
+    })
 
   // 最後の文字列を必ず動詞で終えることで呪文詠唱となる。
   let last = encryptCode16
     .slice(-1)
-    .map(code=> _dousi[code].words)
-    .map(v=> v[Math.floor(Math.random() * v.length)])
+    .map(code=> _dousi[code])
+    .map(v=> {
+      const index = Math.floor(Math.random() * v.words.length)
+      return { word: v.words[index], reading: v.readings[index] }
+    })
 
-  return [ ...heads , last ].join('')
+  const words = [ ...heads , ...last ]
+  if (option.furigana) {
+    return {
+      words: words.map(v => v.word).join(''),
+      readings: words.map(v => v.reading).join(' ')
+    }
+  }
+
+  return words.map(v => v.word).join('')
 }
 
 export let default_decoder = (typoCorrection) => async (encodeText,option = {} ,{ meisi, dousi }) => {
@@ -62,7 +76,7 @@ export let default_decoder = (typoCorrection) => async (encodeText,option = {} ,
 
   let textCodeList = []
 
-  // 読みやすさのために含まれている読点を削除(+英字と空白)
+  // 読みやすさのために含まれている読点を削除(+英字と空白、ふりがな)
   let cleanEncodeText = encodeText.replaceAll(/[。\sA-z]/g,'')
 
   // オプションによっては、文字列を修正する。
@@ -82,6 +96,7 @@ export let default_decoder = (typoCorrection) => async (encodeText,option = {} ,
     .map(v=>decodeHash[v])
     .map(v=>parseInt(v,16))
 
+  // デコード時も同じ回数だけローターを回す必要がある
   let textCode = simpleEnigma.uint8ArrayEncrypt(encryptCode)
   // バイト配列として返却
   return Uint8Array.from(textCode)
@@ -105,10 +120,10 @@ export function createChant({ data, typoCorrection = null }) {
      * @param {Function} generater - エンコード処理を行う関数
      * @returns {string} 生成された呪文
      */
-    generate(length, _data = this.data, generater = default_encoder) {
+    generate(length, option = {}, _data = this.data, generater = default_encoder) {
       let rand = n => (Math.random() * n).toFixed()
       let uint8text = Uint8Array.from({length:length || +rand(12) + 4}).map(_=>rand(255))
-      return generater(uint8text,_data)
+      return generater(uint8text,_data, option)
     },
     /**
      * テキストを呪文に変換する
@@ -120,7 +135,7 @@ export function createChant({ data, typoCorrection = null }) {
      */
     encode( text, option, _data = this.data, encoder = default_encoder ){
       let uint8text = (new TextEncoder()).encode(text)
-      return encoder(uint8text,_data)
+      return encoder(uint8text,_data, option)
     },
     /**
      * 呪文をテキストに復号する
