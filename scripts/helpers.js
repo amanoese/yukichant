@@ -62,8 +62,11 @@ export function getFirstKanji(word) {
 export function formatJson(mapping) {
   const keys = Object.keys(mapping).sort();
   const lines = keys.map(key => {
-    const values = mapping[key].map(v => `"${v}"`).join(', ');
-    return `  "${key}": [${values}]`;
+    const entry = mapping[key];
+    const firstKanji = entry.firstKanji.map(v => `"${v}"`).join(', ');
+    const words = entry.words.map(v => `"${v}"`).join(', ');
+    const readings = entry.readings.map(v => `"${v}"`).join(', ');
+    return `  "${key}": {\n    "firstKanji": [${firstKanji}],\n    "mora": "${entry.mora}",\n    "words": [${words}],\n    "readings": [${readings}]\n  }`;
   });
   return '{\n' + lines.join(',\n') + '\n}\n';
 }
