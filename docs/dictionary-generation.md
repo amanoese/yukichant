@@ -236,7 +236,16 @@ flowchart TD
 
 #### 16進コードの割り当て順序 (generateDousiHexOrder)
 
-名詞と同様に、00からFFまでを順番に生成します。
+名詞とは異なり、**20からFFまでを先に割り当て、その後に00から1Fを割り当てます。**
+
+```javascript
+function generateHexOrder() {
+  const order = [];
+  for (let i = 32; i <= 255; i++) order.push(i); // 20-FF
+  for (let i = 0; i <= 31; i++) order.push(i);  // 00-1F
+  return order.map(n => n.toString(16).toUpperCase().padStart(2, '0'));
+}
+```
 
 ---
 
