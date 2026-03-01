@@ -1,3 +1,25 @@
+## [5.0.0](https://github.com/amanoese/yukichant/compare/v4.1.1...v5.0.0) (2026-03-01)
+
+### ⚠ BREAKING CHANGES
+
+* dousi.jsonの16進コード→動詞マッピングが変更されたため、既存の呪文をデコードできなくなります
+
+Made-with: Cursor
+
+### Features
+
+* **demo:** ふりがな表示機能と表示切り替えトグルを追加 ([37b9f66](https://github.com/amanoese/yukichant/commit/37b9f66bf14e322464689b387a8cf6bea2fdfdf8))
+* **demo:** 開発環境ではローカルの辞書ファイルを参照するように変更 ([584f76b](https://github.com/amanoese/yukichant/commit/584f76bcb9cea7a45a7ed21f73c02086c5101c56))
+* v3.0.5 互換性維持のための 16進数コード・スワップ処理を追加 ([ed94811](https://github.com/amanoese/yukichant/commit/ed948110614deb2603f402d3f91b2476e7a075e7))
+* 動詞辞書の再グルーピングに3拍マージロジックを導入 ([35bd3cc](https://github.com/amanoese/yukichant/commit/35bd3cc4909a2df114602a2cb472df8d348059aa))
+* 辞書JSONの構造を詳細情報を含むオブジェクト形式に刷新 ([fccd005](https://github.com/amanoese/yukichant/commit/fccd005b89a88bce1a4c5335bec95dabccd4ab52))
+* 辞書生成スクリプトをBashからJavaScriptに移行し動詞バリエーションを拡充 ([ffd7c02](https://github.com/amanoese/yukichant/commit/ffd7c0204d1b53eb074a348a152fe590de1b3961))
+* 辞書生成時に末尾が小さい文字（ぁぃぅぇぉ等）で終わる単語を除外する処理を追加 ([5b10fc2](https://github.com/amanoese/yukichant/commit/5b10fc294765b53a20d8cf6190095a7febb192bc))
+
+### Bug Fixes
+
+* meisi.jsonの重複キーE3を削除 ([d7129c2](https://github.com/amanoese/yukichant/commit/d7129c2afd536fbc0d5f83a38da942bbe4bdcfcf))
+
 ## [4.1.1](https://github.com/amanoese/yukichant/compare/v4.1.0...v4.1.1) (2026-02-28)
 
 ### Bug Fixes
