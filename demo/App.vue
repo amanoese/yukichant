@@ -10,6 +10,8 @@ const loadingStatus = ref('エンコード機能を準備しています')
 const direction = ref('encode')
 const textInput = ref('')
 const spellInput = ref('')
+const furiganaOutput = ref('')
+const showFurigana = ref(false)
 const statusText = ref('')
 const statusType = ref('info')
 const typoCorrection = ref(true)
@@ -17,6 +19,7 @@ const algorithm = ref('jaro-winkler')
 const diffs = ref(null)
 const copyTextDone = ref(false)
 const copySpellDone = ref(false)
+const copyFuriganaDone = ref(false)
 
 const isEncode = computed(() => direction.value === 'encode')
 
@@ -32,13 +35,16 @@ async function doEncode() {
   diffs.value = null
   if (!textInput.value.trim()) {
     spellInput.value = ''
+    furiganaOutput.value = ''
     setStatus('')
     return
   }
   const chant = chantLight.value || chantFull.value
   if (!chant) { setStatus('初期化中です...', 'info'); return }
   try {
-    spellInput.value = chant.encode(textInput.value.trim())
+    const result = chant.encode(textInput.value.trim(), { furigana: true })
+    spellInput.value = result.words
+    furiganaOutput.value = result.readings
     setStatus('')
   } catch (err) {
     console.error(err)
@@ -49,6 +55,7 @@ async function doEncode() {
 async function doDecode() {
   if (!spellInput.value.trim()) {
     textInput.value = ''
+    furiganaOutput.value = ''
     diffs.value = null
     setStatus('')
     return
@@ -67,6 +74,15 @@ async function doDecode() {
     setStatus('デコード中...', 'info')
     const result = await chant.decode(spellInput.value.trim(), option)
     textInput.value = result
+    
+    // デコード時もふりがなを表示（エンコードして取得）
+    try {
+      const encodeResult = (chantLight.value || chantFull.value).encode(result, { furigana: true })
+      furiganaOutput.value = encodeResult.readings
+    } catch (e) {
+      furiganaOutput.value = ''
+    }
+
     diffs.value = lastDiff
     setStatus('')
   } catch (err) {
@@ -104,6 +120,14 @@ function copySpell() {
   navigator.clipboard.writeText(spellInput.value).then(() => {
     copySpellDone.value = true
     setTimeout(() => { copySpellDone.value = false }, 1500)
+  }).catch(() => setStatus('コピーに失敗しました', 'error'))
+}
+
+function copyFurigana() {
+  if (!furiganaOutput.value) return
+  navigator.clipboard.writeText(furiganaOutput.value).then(() => {
+    copyFuriganaDone.value = true
+    setTimeout(() => { copyFuriganaDone.value = false }, 1500)
   }).catch(() => setStatus('コピーに失敗しました', 'error'))
 }
 
@@ -198,7 +222,14 @@ onMounted(async () => {
 
         <div class="field">
           <div class="field-header">
-            <label for="spell-input">呪文</label>
+            <div class="label-with-toggle">
+              <label for="spell-input">呪文</label>
+              <label class="toggle mini">
+                <input type="checkbox" v-model="showFurigana" />
+                <span class="toggle-slider"></span>
+                <span class="toggle-label">ふりがな</span>
+              </label>
+            </div>
             <button
               class="copy-btn"
               :class="{ copied: copySpellDone }"
@@ -220,6 +251,26 @@ onMounted(async () => {
             :readonly="isEncode"
             :class="{ readonly: isEncode }"
           ></textarea>
+        </div>
+
+        <div v-if="showFurigana && furiganaOutput" class="field furigana-field">
+          <div class="field-header">
+            <label>ふりがな</label>
+            <button
+              class="copy-btn"
+              :class="{ copied: copyFuriganaDone }"
+              title="コピー"
+              @click="copyFurigana"
+            >
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <rect x="5" y="5" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+                <path d="M3 11V3a1.5 1.5 0 011.5-1.5H11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+          <div class="furigana-display">
+            {{ furiganaOutput }}
+          </div>
         </div>
 
         <div class="options" :class="{ disabled: isEncode }">
