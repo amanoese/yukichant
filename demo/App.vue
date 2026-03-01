@@ -110,10 +110,17 @@ function copySpell() {
 onMounted(async () => {
   try {
     loadingStatus.value = 'エンコード機能を準備しています'
-    chantLight.value = await createChantFromGitHub()
+    
+    // 開発環境ではローカルのViteサーバーから、本番環境ではGitHubから取得
+    const isDev = import.meta.env.DEV
+    const dataBaseUrl = isDev 
+      ? `${window.location.origin}${import.meta.env.BASE_URL}`
+      : undefined
+
+    chantLight.value = await createChantFromGitHub({ dataBaseUrl })
     loading.value = false
     setStatus('誤字修正機能を読み込み中...', 'info')
-    chantFull.value = await initBrowser()
+    chantFull.value = await initBrowser({ dataBaseUrl })
     setStatus('')
   } catch (err) {
     console.error('初期化エラー:', err)
