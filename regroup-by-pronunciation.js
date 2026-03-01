@@ -1,19 +1,21 @@
 #!/usr/bin/env node
 /**
- * meisi.json / dousi.json を「読みの先頭2拍」ベースで再グルーピングする。
+ * meisi.json / dousi.json を「読みの先頭N拍」ベースで再グルーピングする。
+ * N は MORAE_COUNT で指定。2拍のままとする（3拍にしても同音異義語は解消しないため。検証結果は後述）。
  *
  * 制約:
  *   - 同じ先頭漢字の単語が別のコードに分裂しないようにする
- *   - 先頭漢字が同じでも読みの先頭2拍が異なる場合はサブグループに分割する
- *   - 異なるコード間で先頭2拍が衝突しないようにする
+ *   - 先頭漢字が同じでも読みの先頭N拍が異なる場合はサブグループに分割する
+ *   - 異なるコード間で先頭N拍が衝突しないようにする
  *
  * アルゴリズム:
- *   1. 各単語の読み（先頭2拍）を kuromoji で取得
- *   2. (先頭漢字, 先頭2拍) の組み合わせでサブグループを作成
- *   3. 先頭2拍が同じサブグループ同士をマージ（先頭漢字は異なってもOK）
+ *   1. 各単語の読み（先頭N拍）を kuromoji で取得
+ *   2. (先頭漢字, 先頭N拍) の組み合わせでサブグループを作成
+ *   3. 先頭N拍が同じサブグループ同士をマージ（先頭漢字は異なってもOK）
  *   4. マージ後のグループを語数順にソートし、上位256グループを採用
  *   5. 16進コードに割り当てて出力
  */
+const MORAE_COUNT = 3;
 import kuromoji from 'kuromoji';
 import { readFileSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
@@ -43,11 +45,11 @@ function katakanaToHiragana(str) {
   );
 }
 
-function getFirst2Morae(reading) {
+function getFirstNMorae(reading, n) {
   const hira = katakanaToHiragana(reading);
   const morae = [];
   const smallKana = 'ぁぃぅぇぉゃゅょゎっ';
-  for (let i = 0; i < hira.length && morae.length < 2; i++) {
+  for (let i = 0; i < hira.length && morae.length < n; i++) {
     let mora = hira[i];
     if (i + 1 < hira.length && smallKana.includes(hira[i + 1])) {
       mora += hira[i + 1];
@@ -64,53 +66,54 @@ function getFirstKanji(word) {
 }
 
 /**
- * 名詞辞書を再グルーピングする（読みの先頭2拍ベース）
+ * 名詞辞書を再グルーピングする（読みの先頭N拍ベース）
  *
  * 制約:
- *   - 同じ先頭漢字 × 同じ先頭2拍 の単語は必ず同じコードに入る
- *   - 先頭漢字が同じでも読みの先頭2拍が異なれば別コードに分割してよい
- *   - 異なるコード間で先頭2拍が衝突しないようにする
- *   - 256コードを埋めるため、先頭2拍が同じサブグループをマージする
+ *   - 同じ先頭漢字 × 同じ先頭N拍 の単語は必ず同じコードに入る
+ *   - 先頭漢字が同じでも読みの先頭N拍が異なれば別コードに分割してよい
+ *   - 異なるコード間で先頭N拍が衝突しないようにする
+ *   - 256コードを埋めるため、先頭N拍が同じサブグループをマージする
  *
  * アルゴリズム:
- *   1. 各単語の先頭漢字と先頭2拍を取得
- *   2. (先頭漢字, 先頭2拍) でサブグループを作成
- *   3. 先頭2拍が同じサブグループ同士をマージ（先頭漢字が被ってもOK）
+ *   1. 各単語の先頭漢字と先頭N拍を取得
+ *   2. (先頭漢字, 先頭N拍) でサブグループを作成
+ *   3. 先頭N拍が同じサブグループ同士をマージ（先頭漢字が被ってもOK）
  *   4. 語数順にソートして256コードに割り当て
  */
 function regroupMeisi(tokenizer, dict, hexOrder) {
   const label = 'meisi';
+  const MEISI_MORAE_COUNT = 2; // 名詞は2拍を維持
   const allWords = [];
   for (const [, words] of Object.entries(dict)) {
     for (const w of words) {
       const reading = getReading(tokenizer, w);
-      const first2 = getFirst2Morae(reading);
+      const firstN = getFirstNMorae(reading, MEISI_MORAE_COUNT);
       const firstKanji = getFirstKanji(w);
-      allWords.push({ word: w, reading, first2, firstKanji });
+      allWords.push({ word: w, reading, firstN, firstKanji });
     }
   }
 
-  // (先頭漢字, 先頭2拍) でサブグループを作成
+  // (先頭漢字, 先頭N拍) でサブグループを作成
   const subGroupMap = new Map();
   for (const entry of allWords) {
-    const key = `${entry.firstKanji}|${entry.first2}`;
+    const key = `${entry.firstKanji}|${entry.firstN}`;
     if (!subGroupMap.has(key)) {
-      subGroupMap.set(key, { firstKanji: entry.firstKanji, first2: entry.first2, words: [] });
+      subGroupMap.set(key, { firstKanji: entry.firstKanji, firstN: entry.firstN, words: [] });
     }
     subGroupMap.get(key).words.push(entry.word);
   }
 
-  // 先頭2拍が同じサブグループをマージ
-  const first2Groups = new Map();
+  // 先頭N拍が同じサブグループをマージ
+  const firstNGroups = new Map();
   for (const sg of subGroupMap.values()) {
-    if (!first2Groups.has(sg.first2)) {
-      first2Groups.set(sg.first2, []);
+    if (!firstNGroups.has(sg.firstN)) {
+      firstNGroups.set(sg.firstN, []);
     }
-    first2Groups.get(sg.first2).push(...sg.words);
+    firstNGroups.get(sg.firstN).push(...sg.words);
   }
 
-  const merged = [...first2Groups.entries()]
-    .map(([first2, words]) => ({ first2, words }))
+  const merged = [...firstNGroups.entries()]
+    .map(([firstN, words]) => ({ firstN, words }))
     .sort((a, b) => b.words.length - a.words.length);
 
   const selected = merged.slice(0, 256);
@@ -131,16 +134,18 @@ function regroupMeisi(tokenizer, dict, hexOrder) {
 }
 
 /**
- * 動詞辞書を再グルーピングする（読みの先頭2拍ベース）
+ * 動詞辞書を再グルーピングする（読みの先頭N拍ベース）
  *
- * 動詞は活用形で先頭2拍の末尾が変わるのが自然なので、
- * 同一コード内の先頭2拍不一致を分割しつつ、256キーを維持する。
+ * 動詞は活用形で先頭N拍の末尾が変わるのが自然なので、
+ * 同一コード内の先頭N拍不一致を分割しつつ、256キーを維持する。
  *
  * 処理:
- *   1. 各コードの単語を先頭2拍でサブグループに分割
- *   2. 最多の先頭2拍を持つサブグループをそのコードに残す
+ *   1. 各コードの単語を先頭N拍でサブグループに分割
+ *   2. 最多の先頭N拍を持つサブグループをそのコードに残す
  *   3. 少数派のサブグループは溢れリストに入れる
  *   4. 溢れた単語を空きスロットに割り当てる
+ *
+ * 【変更】3拍で完全一致する読み（同音異義語）は同じコードにマージする。
  */
 function regroupDousi(tokenizer, dict, hexOrder) {
   const label = 'dousi';
@@ -151,41 +156,61 @@ function regroupDousi(tokenizer, dict, hexOrder) {
   for (const [code, words] of Object.entries(dict)) {
     if (words.length === 0) continue;
 
-    // 先頭2拍ごとにサブグループ化
-    const byFirst2 = new Map();
+    // 先頭N拍ごとにサブグループ化
+    const byFirstN = new Map();
     for (const w of words) {
       const reading = getReading(tokenizer, w);
-      const first2 = getFirst2Morae(reading);
-      if (!byFirst2.has(first2)) byFirst2.set(first2, []);
-      byFirst2.get(first2).push(w);
+      const firstN = getFirstNMorae(reading, MORAE_COUNT);
+      if (!byFirstN.has(firstN)) byFirstN.set(firstN, []);
+      byFirstN.get(firstN).push(w);
     }
 
-    if (byFirst2.size === 1) {
-      // 先頭2拍が1種類 → そのまま
+    if (byFirstN.size === 1) {
+      // 先頭N拍が1種類 → そのまま
       mapping[code] = words;
     } else {
-      // 最多の先頭2拍をこのコードに残し、残りはoverflowへ
-      const sorted = [...byFirst2.entries()].sort((a, b) => b[1].length - a[1].length);
+      // 最多の先頭N拍をこのコードに残し、残りはoverflowへ
+      const sorted = [...byFirstN.entries()].sort((a, b) => b[1].length - a[1].length);
       mapping[code] = sorted[0][1];
       for (let i = 1; i < sorted.length; i++) {
-        overflow.push({ first2: sorted[i][0], words: sorted[i][1] });
+        overflow.push({ firstN: sorted[i][0], words: sorted[i][1] });
       }
     }
   }
 
   // overflowのサブグループを空きスロットに割り当て
-  // まず先頭2拍が同じoverflowグループ同士をマージ
-  overflow.sort((a, b) => b.words.length - a.words.length);
+  // まず先頭N拍が同じoverflowグループ同士をマージ
+  // さらに、既存のmappingにあるコードとも先頭N拍が同じならマージする
+  const finalMapping = { ...mapping };
+  const firstNToCode = new Map();
+  for (const [code, words] of Object.entries(finalMapping)) {
+    const reading = getReading(tokenizer, words[0]);
+    const firstN = getFirstNMorae(reading, MORAE_COUNT);
+    firstNToCode.set(firstN, code);
+  }
+
+  const remainingOverflow = [];
+  for (const item of overflow) {
+    if (firstNToCode.has(item.firstN)) {
+      // 既存のコードに同じ読み（先頭N拍）があればマージ
+      const code = firstNToCode.get(item.firstN);
+      finalMapping[code] = [...new Set([...finalMapping[code], ...item.words])];
+    } else {
+      remainingOverflow.push(item);
+    }
+  }
+
+  // まだ残っているoverflowをマージ
   const mergedOverflow = [];
   const used = new Set();
-  for (let i = 0; i < overflow.length; i++) {
+  for (let i = 0; i < remainingOverflow.length; i++) {
     if (used.has(i)) continue;
-    const group = { first2: overflow[i].first2, words: [...overflow[i].words] };
+    const group = { firstN: remainingOverflow[i].firstN, words: [...remainingOverflow[i].words] };
     used.add(i);
-    for (let j = i + 1; j < overflow.length; j++) {
+    for (let j = i + 1; j < remainingOverflow.length; j++) {
       if (used.has(j)) continue;
-      if (overflow[j].first2 !== group.first2) continue;
-      group.words.push(...overflow[j].words);
+      if (remainingOverflow[j].firstN !== group.firstN) continue;
+      group.words.push(...remainingOverflow[j].words);
       used.add(j);
     }
     mergedOverflow.push(group);
@@ -193,14 +218,14 @@ function regroupDousi(tokenizer, dict, hexOrder) {
   mergedOverflow.sort((a, b) => b.words.length - a.words.length);
 
   // 空きコードにoverflowを割り当て
-  const usedCodes = new Set(Object.keys(mapping));
+  const usedCodes = new Set(Object.keys(finalMapping));
   const availableCodes = hexOrder.filter(h => !usedCodes.has(h));
   for (let i = 0; i < Math.min(mergedOverflow.length, availableCodes.length); i++) {
-    mapping[availableCodes[i]] = mergedOverflow[i].words;
+    finalMapping[availableCodes[i]] = mergedOverflow[i].words;
   }
 
-  const totalWords = Object.values(mapping).reduce((sum, v) => sum + v.length, 0);
-  const assignedKeys = Object.keys(mapping).length;
+  const totalWords = Object.values(finalMapping).reduce((sum, v) => sum + v.length, 0);
+  const assignedKeys = Object.keys(finalMapping).length;
   console.error(`[${label}] キー数: ${assignedKeys}, 総単語数: ${totalWords}`);
 
   if (mergedOverflow.length > availableCodes.length) {
@@ -209,7 +234,7 @@ function regroupDousi(tokenizer, dict, hexOrder) {
     console.error(`[${label}] 割り当て外: ${dropped.length}グループ (${droppedWords}語)`);
   }
 
-  return mapping;
+  return finalMapping;
 }
 
 function generateMeisiHexOrder() {
