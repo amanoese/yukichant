@@ -1,1538 +1,1538 @@
 {
   "00": {
-    "firstKanji": ["訪"],
-    "mora": "おとず",
-    "words": ["訪れる"],
-    "readings": ["オトズレル"]
-  },
-  "01": {
-    "firstKanji": ["見"],
-    "mora": "みよ",
-    "words": ["見よ"],
-    "readings": ["ミヨ"]
-  },
-  "02": {
-    "firstKanji": ["潜"],
-    "mora": "ひそむ",
-    "words": ["潜む"],
-    "readings": ["ヒソム"]
-  },
-  "03": {
-    "firstKanji": ["阻"],
-    "mora": "はばむ",
-    "words": ["阻む"],
-    "readings": ["ハバム"]
-  },
-  "04": {
-    "firstKanji": ["宿"],
-    "mora": "やどり",
-    "words": ["宿り"],
-    "readings": ["ヤドリ"]
-  },
-  "05": {
-    "firstKanji": ["揺"],
-    "mora": "ゆらす",
-    "words": ["揺らす"],
-    "readings": ["ユラス"]
-  },
-  "06": {
-    "firstKanji": ["放"],
-    "mora": "はなつ",
-    "words": ["放つ"],
-    "readings": ["ハナツ"]
-  },
-  "07": {
-    "firstKanji": ["与"],
-    "mora": "くみす",
-    "words": ["与する"],
-    "readings": ["クミスル"]
-  },
-  "08": {
-    "firstKanji": ["散"],
-    "mora": "ちらす",
-    "words": ["散らす"],
-    "readings": ["チラス"]
-  },
-  "09": {
-    "firstKanji": ["光"],
-    "mora": "ひかり",
-    "words": ["光り"],
-    "readings": ["ヒカリ"]
-  },
-  "0A": {
-    "firstKanji": ["問"],
-    "mora": "とえ",
-    "words": ["問え"],
-    "readings": ["トエ"]
-  },
-  "0B": {
-    "firstKanji": ["賜"],
-    "mora": "たまえ",
-    "words": ["賜え"],
-    "readings": ["タマエ"]
-  },
-  "0C": {
-    "firstKanji": ["集"],
-    "mora": "つどえ",
-    "words": ["集え"],
-    "readings": ["ツドエ"]
-  },
-  "0D": {
-    "firstKanji": ["作"],
-    "mora": "つくり",
-    "words": ["作り"],
-    "readings": ["ツクリ"]
-  },
-  "0E": {
-    "firstKanji": ["借"],
-    "mora": "かり",
-    "words": ["借り"],
-    "readings": ["カリ"]
-  },
-  "0F": {
-    "firstKanji": ["哮"],
-    "mora": "たけり",
-    "words": ["哮り"],
-    "readings": ["タケリ"]
-  },
-  "10": {
-    "firstKanji": ["居"],
-    "mora": "おり",
-    "words": ["居り"],
-    "readings": ["オリ"]
-  },
-  "11": {
-    "firstKanji": ["悶"],
-    "mora": "もだえ",
-    "words": ["悶え"],
-    "readings": ["モダエ"]
-  },
-  "12": {
-    "firstKanji": ["捧"],
-    "mora": "ささげ",
-    "words": ["捧げる"],
-    "readings": ["ササゲル"]
-  },
-  "13": {
-    "firstKanji": ["映"],
-    "mora": "うつり",
-    "words": ["映り"],
-    "readings": ["ウツリ"]
-  },
-  "14": {
-    "firstKanji": ["有"],
-    "mora": "あり",
-    "words": ["有り"],
-    "readings": ["アリ"]
-  },
-  "15": {
-    "firstKanji": ["繰"],
-    "mora": "くり",
-    "words": ["繰り"],
-    "readings": ["クリ"]
-  },
-  "16": {
-    "firstKanji": ["覆"],
-    "mora": "おおえ",
-    "words": ["覆え"],
-    "readings": ["オオエ"]
-  },
-  "17": {
-    "firstKanji": ["見"],
-    "mora": "みえ",
-    "words": ["見え"],
-    "readings": ["ミエ"]
-  },
-  "18": {
-    "firstKanji": ["讃"],
-    "mora": "たたえ",
-    "words": ["讃え"],
-    "readings": ["タタエ"]
-  },
-  "19": {
-    "firstKanji": ["足"],
-    "mora": "たり",
-    "words": ["足り"],
-    "readings": ["タリ"]
-  },
-  "1A": {
-    "firstKanji": ["迎"],
-    "mora": "むかえ",
-    "words": ["迎え"],
-    "readings": ["ムカエ"]
-  },
-  "1B": {
-    "firstKanji": ["迷"],
-    "mora": "まよえ",
-    "words": ["迷え"],
-    "readings": ["マヨエ"]
-  },
-  "1C": {
-    "firstKanji": ["遂"],
-    "mora": "とげる",
-    "words": ["遂げる"],
-    "readings": ["トゲル"]
-  },
-  "1D": {
-    "firstKanji": ["降"],
-    "mora": "ふれ",
-    "words": ["降れ"],
-    "readings": ["フレ"]
-  },
-  "1E": {
-    "firstKanji": ["下"],
-    "mora": "くだり",
-    "words": ["下り"],
-    "readings": ["クダリ"]
-  },
-  "1F": {
-    "firstKanji": ["乗"],
-    "mora": "のり",
-    "words": ["乗り"],
-    "readings": ["ノリ"]
-  },
-  "20": {
     "firstKanji": ["懸", "掛", "架", "欠", "翔", "賭", "駆", "駈"],
     "mora": "かける",
     "words": ["駆ける", "翔る", "翔ける", "懸ける", "掛ける", "架ける", "欠ける", "賭ける", "駈ける"],
     "readings": ["カケル", "カケル", "カケル", "カケル", "カケル", "カケル", "カケル", "カケル", "カケル"]
   },
-  "21": {
+  "01": {
     "firstKanji": ["占", "湿", "絞", "締", "閉"],
     "mora": "しめる",
     "words": ["湿る", "閉める", "占める", "絞める", "締める"],
     "readings": ["シメル", "シメル", "シメル", "シメル", "シメル"]
   },
-  "22": {
+  "02": {
     "firstKanji": ["奮", "振", "揮", "篩", "震"],
     "mora": "ふるう",
     "words": ["振るう", "震う", "奮う", "揮う", "篩う"],
     "readings": ["フルウ", "フルウ", "フルウ", "フルウ", "フルウ"]
   },
-  "23": {
+  "03": {
     "firstKanji": ["慣", "成", "熟", "狎", "馴"],
     "mora": "なれる",
     "words": ["成れる", "慣れる", "熟れる", "狎れる", "馴れる"],
     "readings": ["ナレル", "ナレル", "ナレル", "ナレル", "ナレル"]
   },
-  "24": {
+  "04": {
     "firstKanji": ["煌"],
     "mora": "きらめ",
     "words": ["煌めく", "煌めい", "煌めき", "煌めけ"],
     "readings": ["キラメク", "キラメイ", "キラメキ", "キラメケ"]
   },
-  "25": {
+  "05": {
     "firstKanji": ["上", "挙", "揚", "擧"],
     "mora": "あげる",
     "words": ["上げる", "挙げる", "揚げる", "擧げる"],
     "readings": ["アゲル", "アゲル", "アゲル", "アゲル"]
   },
-  "26": {
+  "06": {
     "firstKanji": ["導"],
     "mora": "みちび",
     "words": ["導け", "導く", "導き"],
     "readings": ["ミチビケ", "ミチビク", "ミチビキ"]
   },
-  "27": {
+  "07": {
     "firstKanji": ["葬"],
     "mora": "ほうむ",
     "words": ["葬る", "葬り", "葬ら"],
     "readings": ["ホウムル", "ホウムリ", "ホウムラ"]
   },
-  "28": {
+  "08": {
     "firstKanji": ["戒", "縛", "警"],
     "mora": "いまし",
     "words": ["縛める", "戒める", "警める"],
     "readings": ["イマシメル", "イマシメル", "イマシメル"]
   },
-  "29": {
+  "09": {
     "firstKanji": ["沈", "鎮", "静"],
     "mora": "しずめ",
     "words": ["沈め", "鎮め", "静め"],
     "readings": ["シズメ", "シズメ", "シズメ"]
   },
-  "2A": {
+  "0A": {
     "firstKanji": ["解"],
     "mora": "ときは",
     "words": ["解き放た", "解き放ち", "解き放て"],
     "readings": ["トキハナタ", "トキハナチ", "トキハナテ"]
   },
-  "2B": {
+  "0B": {
     "firstKanji": ["嘗", "甜", "舐"],
     "mora": "なめる",
     "words": ["嘗める", "甜める", "舐める"],
     "readings": ["ナメル", "ナメル", "ナメル"]
   },
-  "2C": {
+  "0C": {
     "firstKanji": ["呉", "昏", "暮"],
     "mora": "くれる",
     "words": ["呉れる", "昏れる", "暮れる"],
     "readings": ["クレル", "クレル", "クレル"]
   },
-  "2D": {
+  "0D": {
     "firstKanji": ["反", "外", "逸"],
     "mora": "そらす",
     "words": ["反らす", "外らす", "逸らす"],
     "readings": ["ソラス", "ソラス", "ソラス"]
   },
-  "2E": {
+  "0E": {
     "firstKanji": ["抗"],
     "mora": "あらが",
     "words": ["抗う", "抗え"],
     "readings": ["アラガウ", "アラガエ"]
   },
-  "2F": {
+  "0F": {
     "firstKanji": ["漂"],
     "mora": "ただよ",
     "words": ["漂う", "漂い"],
     "readings": ["タダヨウ", "タダヨイ"]
   },
-  "30": {
+  "10": {
     "firstKanji": ["成", "為"],
     "mora": "なす",
     "words": ["成す", "為す"],
     "readings": ["ナス", "ナス"]
   },
-  "31": {
+  "11": {
     "firstKanji": ["閃"],
     "mora": "ひらめ",
     "words": ["閃く", "閃き"],
     "readings": ["ヒラメク", "ヒラメキ"]
   },
-  "32": {
+  "12": {
     "firstKanji": ["震"],
     "mora": "ふるえ",
     "words": ["震える", "震えろ"],
     "readings": ["フルエル", "フルエロ"]
   },
-  "33": {
+  "13": {
     "firstKanji": ["育"],
     "mora": "はぐく",
     "words": ["育む", "育み"],
     "readings": ["ハグクム", "ハグクミ"]
   },
-  "34": {
+  "14": {
     "firstKanji": ["蝕"],
     "mora": "むしば",
     "words": ["蝕む", "蝕め"],
     "readings": ["ムシバム", "ムシバメ"]
   },
-  "35": {
+  "15": {
     "firstKanji": ["打", "討"],
     "mora": "うつ",
     "words": ["討つ", "打つ"],
     "readings": ["ウツ", "ウツ"]
   },
-  "36": {
+  "16": {
     "firstKanji": ["燃"],
     "mora": "もえさ",
     "words": ["燃え盛る", "燃え盛れ"],
     "readings": ["モエサカル", "モエサカレ"]
   },
-  "37": {
+  "17": {
     "firstKanji": ["揺"],
     "mora": "ゆるが",
     "words": ["揺るがす", "揺るがし"],
     "readings": ["ユルガス", "ユルガシ"]
   },
-  "38": {
+  "18": {
     "firstKanji": ["澄"],
     "mora": "すみわ",
     "words": ["澄み渡る", "澄み渡り"],
     "readings": ["スミワタル", "スミワタリ"]
   },
-  "39": {
+  "19": {
     "firstKanji": ["見"],
     "mora": "みうし",
     "words": ["見失い", "見失っ"],
     "readings": ["ミウシナイ", "ミウシナッ"]
   },
-  "3A": {
+  "1A": {
     "firstKanji": ["呼"],
     "mora": "よびも",
     "words": ["呼び戻し", "呼び戻す"],
     "readings": ["ヨビモドシ", "ヨビモドス"]
   },
-  "3B": {
+  "1B": {
     "firstKanji": ["横"],
     "mora": "よこた",
     "words": ["横たわり", "横たわる"],
     "readings": ["ヨコタワリ", "ヨコタワル"]
   },
-  "3C": {
+  "1C": {
     "firstKanji": ["消"],
     "mora": "きえさ",
     "words": ["消え去ら", "消え去れ"],
     "readings": ["キエサラ", "キエサレ"]
   },
-  "3D": {
+  "1D": {
     "firstKanji": ["生"],
     "mora": "うみだ",
     "words": ["生み出さ", "生み出す"],
     "readings": ["ウミダサ", "ウミダス"]
   },
-  "3E": {
+  "1E": {
     "firstKanji": ["羽"],
     "mora": "はばた",
     "words": ["羽ばたき", "羽ばたく"],
     "readings": ["ハバタキ", "ハバタク"]
   },
-  "3F": {
+  "1F": {
     "firstKanji": ["降"],
     "mora": "ふりそ",
     "words": ["降り注ぎ", "降り注げ"],
     "readings": ["フリソソギ", "フリソソゲ"]
   },
-  "40": {
+  "20": {
     "firstKanji": ["翻"],
     "mora": "ひるが",
     "words": ["翻す", "翻る"],
     "readings": ["ヒルガエス", "ヒルガエル"]
   },
-  "41": {
+  "21": {
     "firstKanji": ["蠕", "蠢"],
     "mora": "うごめ",
     "words": ["蠕く", "蠢く"],
     "readings": ["ウゴメク", "ウゴメク"]
   },
-  "42": {
+  "22": {
     "firstKanji": ["返", "還"],
     "mora": "かえさ",
     "words": ["還さ", "返さ"],
     "readings": ["カエサ", "カエサ"]
   },
-  "43": {
+  "23": {
     "firstKanji": ["齎"],
     "mora": "もたら",
     "words": ["齎す", "齎さ"],
     "readings": ["モタラス", "モタラサ"]
   },
-  "44": {
+  "24": {
     "firstKanji": ["貫"],
     "mora": "つらぬ",
     "words": ["貫く", "貫き"],
     "readings": ["ツラヌク", "ツラヌキ"]
   },
-  "45": {
+  "25": {
     "firstKanji": ["失"],
     "mora": "うしな",
     "words": ["失え", "失わ"],
     "readings": ["ウシナエ", "ウシナワ"]
   },
-  "46": {
+  "26": {
     "firstKanji": ["従"],
     "mora": "したが",
     "words": ["従え", "従い"],
     "readings": ["シタガエ", "シタガイ"]
   },
-  "47": {
+  "27": {
     "firstKanji": ["引"],
     "mora": "ひきさ",
     "words": ["引き裂か", "引き裂く"],
     "readings": ["ヒキサカ", "ヒキサク"]
   },
-  "48": {
+  "28": {
     "firstKanji": ["打"],
     "mora": "うちけ",
     "words": ["打ち消さ", "打ち消す"],
     "readings": ["ウチケサ", "ウチケス"]
   },
-  "49": {
+  "29": {
     "firstKanji": ["打"],
     "mora": "うちく",
     "words": ["打ち砕か", "打ち砕き"],
     "readings": ["ウチクダカ", "ウチクダキ"]
   },
-  "4A": {
+  "2A": {
     "firstKanji": ["授"],
     "mora": "さずか",
     "words": ["授から", "授かり"],
     "readings": ["サズカラ", "サズカリ"]
   },
-  "4B": {
+  "2B": {
     "firstKanji": ["断"],
     "mora": "たちき",
     "words": ["断ち切ら", "断ち切り"],
     "readings": ["タチキラ", "タチキリ"]
   },
-  "4C": {
+  "2C": {
     "firstKanji": ["掴", "攫"],
     "mora": "つかむ",
     "words": ["掴む", "攫む"],
     "readings": ["ツカム", "ツカム"]
   },
-  "4D": {
+  "2D": {
     "firstKanji": ["断", "立"],
     "mora": "たつ",
     "words": ["立つ", "断つ"],
     "readings": ["タツ", "タツ"]
   },
-  "4E": {
+  "2E": {
     "firstKanji": ["乗", "載"],
     "mora": "のせる",
     "words": ["乗せる", "載せる"],
     "readings": ["ノセル", "ノセル"]
   },
-  "4F": {
+  "2F": {
     "firstKanji": ["成", "為"],
     "mora": "なり",
     "words": ["成り", "為り"],
     "readings": ["ナリ", "ナリ"]
   },
-  "50": {
+  "30": {
     "firstKanji": ["吐"],
     "mora": "はき",
     "words": ["吐き"],
     "readings": ["ハキ"]
   },
-  "51": {
+  "31": {
     "firstKanji": ["埋"],
     "mora": "うまれ",
     "words": ["埋れ"],
     "readings": ["ウマレ"]
   },
-  "52": {
+  "32": {
     "firstKanji": ["委"],
     "mora": "ゆだね",
     "words": ["委ねる"],
     "readings": ["ユダネル"]
   },
-  "53": {
+  "33": {
     "firstKanji": ["恨"],
     "mora": "うらみ",
     "words": ["恨み"],
     "readings": ["ウラミ"]
   },
-  "54": {
+  "34": {
     "firstKanji": ["恵"],
     "mora": "めぐみ",
     "words": ["恵み"],
     "readings": ["メグミ"]
   },
-  "55": {
+  "35": {
     "firstKanji": ["悟"],
     "mora": "さとれ",
     "words": ["悟れ"],
     "readings": ["サトレ"]
   },
-  "56": {
+  "36": {
     "firstKanji": ["戯"],
     "mora": "たわむ",
     "words": ["戯れ"],
     "readings": ["タワムレ"]
   },
-  "57": {
+  "37": {
     "firstKanji": ["招"],
     "mora": "まねき",
     "words": ["招き"],
     "readings": ["マネキ"]
   },
-  "58": {
+  "38": {
     "firstKanji": ["極"],
     "mora": "きめ",
     "words": ["極め"],
     "readings": ["キメ"]
   },
-  "59": {
+  "39": {
     "firstKanji": ["守"],
     "mora": "まもる",
     "words": ["守る"],
     "readings": ["マモル"]
   },
-  "5A": {
+  "3A": {
     "firstKanji": ["守"],
     "mora": "まもれ",
     "words": ["守れ"],
     "readings": ["マモレ"]
   },
-  "5B": {
+  "3B": {
     "firstKanji": ["守"],
     "mora": "まもら",
     "words": ["守ら"],
     "readings": ["マモラ"]
   },
-  "5C": {
+  "3C": {
     "firstKanji": ["這"],
     "mora": "はう",
     "words": ["這う"],
     "readings": ["ハウ"]
   },
-  "5D": {
+  "3D": {
     "firstKanji": ["這"],
     "mora": "はい",
     "words": ["這い"],
     "readings": ["ハイ"]
   },
-  "5E": {
+  "3E": {
     "firstKanji": ["這"],
     "mora": "はわ",
     "words": ["這わ"],
     "readings": ["ハワ"]
   },
-  "5F": {
+  "3F": {
     "firstKanji": ["宿"],
     "mora": "やどす",
     "words": ["宿す"],
     "readings": ["ヤドス"]
   },
-  "60": {
+  "40": {
     "firstKanji": ["宿"],
     "mora": "やどし",
     "words": ["宿し"],
     "readings": ["ヤドシ"]
   },
-  "61": {
+  "41": {
     "firstKanji": ["宿"],
     "mora": "やどせ",
     "words": ["宿せ"],
     "readings": ["ヤドセ"]
   },
-  "62": {
+  "42": {
     "firstKanji": ["流"],
     "mora": "ながす",
     "words": ["流す"],
     "readings": ["ナガス"]
   },
-  "63": {
+  "43": {
     "firstKanji": ["流"],
     "mora": "ながし",
     "words": ["流し"],
     "readings": ["ナガシ"]
   },
-  "64": {
+  "44": {
     "firstKanji": ["流"],
     "mora": "ながそ",
     "words": ["流そ"],
     "readings": ["ナガソ"]
   },
-  "65": {
+  "45": {
     "firstKanji": ["刻"],
     "mora": "きざむ",
     "words": ["刻む"],
     "readings": ["キザム"]
   },
-  "66": {
+  "46": {
     "firstKanji": ["刻"],
     "mora": "きざん",
     "words": ["刻ん"],
     "readings": ["キザン"]
   },
-  "67": {
+  "47": {
     "firstKanji": ["刻"],
     "mora": "きざま",
     "words": ["刻ま"],
     "readings": ["キザマ"]
   },
-  "68": {
+  "48": {
     "firstKanji": ["帰"],
     "mora": "かえり",
     "words": ["帰り"],
     "readings": ["カエリ"]
   },
-  "69": {
+  "49": {
     "firstKanji": ["帰"],
     "mora": "かえれ",
     "words": ["帰れ"],
     "readings": ["カエレ"]
   },
-  "6A": {
+  "4A": {
     "firstKanji": ["帰"],
     "mora": "かえら",
     "words": ["帰ら"],
     "readings": ["カエラ"]
   },
-  "6B": {
+  "4B": {
     "firstKanji": ["持"],
     "mora": "もつ",
     "words": ["持つ"],
     "readings": ["モツ"]
   },
-  "6C": {
+  "4C": {
     "firstKanji": ["持"],
     "mora": "もち",
     "words": ["持ち"],
     "readings": ["モチ"]
   },
-  "6D": {
+  "4D": {
     "firstKanji": ["持"],
     "mora": "もっ",
     "words": ["持っ"],
     "readings": ["モッ"]
   },
-  "6E": {
+  "4E": {
     "firstKanji": ["紡"],
     "mora": "つむぐ",
     "words": ["紡ぐ"],
     "readings": ["ツムグ"]
   },
-  "6F": {
+  "4F": {
     "firstKanji": ["紡"],
     "mora": "つむぎ",
     "words": ["紡ぎ"],
     "readings": ["ツムギ"]
   },
-  "70": {
+  "50": {
     "firstKanji": ["紡"],
     "mora": "つむが",
     "words": ["紡が"],
     "readings": ["ツムガ"]
   },
-  "71": {
+  "51": {
     "firstKanji": ["散"],
     "mora": "ちる",
     "words": ["散る"],
     "readings": ["チル"]
   },
-  "72": {
+  "52": {
     "firstKanji": ["散"],
     "mora": "ちれ",
     "words": ["散れ"],
     "readings": ["チレ"]
   },
-  "73": {
+  "53": {
     "firstKanji": ["来"],
     "mora": "くる",
     "words": ["来る"],
     "readings": ["クル"]
   },
-  "74": {
+  "54": {
     "firstKanji": ["来"],
     "mora": "きたら",
     "words": ["来ら"],
     "readings": ["キタラ"]
   },
-  "75": {
+  "55": {
     "firstKanji": ["滾"],
     "mora": "たぎる",
     "words": ["滾る"],
     "readings": ["タギル"]
   },
-  "76": {
+  "56": {
     "firstKanji": ["滾"],
     "mora": "たぎり",
     "words": ["滾り"],
     "readings": ["タギリ"]
   },
-  "77": {
+  "57": {
     "firstKanji": ["伝"],
     "mora": "つたう",
     "words": ["伝う"],
     "readings": ["ツタウ"]
   },
-  "78": {
+  "58": {
     "firstKanji": ["伝"],
     "mora": "つたい",
     "words": ["伝い"],
     "readings": ["ツタイ"]
   },
-  "79": {
+  "59": {
     "firstKanji": ["呪"],
     "mora": "のろう",
     "words": ["呪う"],
     "readings": ["ノロウ"]
   },
-  "7A": {
+  "5A": {
     "firstKanji": ["呪"],
     "mora": "のろわ",
     "words": ["呪わ"],
     "readings": ["ノロワ"]
   },
-  "7B": {
+  "5B": {
     "firstKanji": ["舞"],
     "mora": "まう",
     "words": ["舞う"],
     "readings": ["マウ"]
   },
-  "7C": {
+  "5C": {
     "firstKanji": ["舞"],
     "mora": "まえ",
     "words": ["舞え"],
     "readings": ["マエ"]
   },
-  "7D": {
+  "5D": {
     "firstKanji": ["願"],
     "mora": "ねがう",
     "words": ["願う"],
     "readings": ["ネガウ"]
   },
-  "7E": {
+  "5E": {
     "firstKanji": ["願"],
     "mora": "ねがい",
     "words": ["願い"],
     "readings": ["ネガイ"]
   },
-  "7F": {
+  "5F": {
     "firstKanji": ["成"],
     "mora": "なせ",
     "words": ["成せ"],
     "readings": ["ナセ"]
   },
-  "80": {
+  "60": {
     "firstKanji": ["開"],
     "mora": "ひらく",
     "words": ["開く"],
     "readings": ["ヒラク"]
   },
-  "81": {
+  "61": {
     "firstKanji": ["開"],
     "mora": "ひらか",
     "words": ["開か"],
     "readings": ["ヒラカ"]
   },
-  "82": {
+  "62": {
     "firstKanji": ["響"],
     "mora": "ひびく",
     "words": ["響く"],
     "readings": ["ヒビク"]
   },
-  "83": {
+  "63": {
     "firstKanji": ["響"],
     "mora": "ひびけ",
     "words": ["響け"],
     "readings": ["ヒビケ"]
   },
-  "84": {
+  "64": {
     "firstKanji": ["駆"],
     "mora": "かけよ",
     "words": ["駆けよ"],
     "readings": ["カケヨ"]
   },
-  "85": {
+  "65": {
     "firstKanji": ["受"],
     "mora": "うける",
     "words": ["受ける"],
     "readings": ["ウケル"]
   },
-  "86": {
+  "66": {
     "firstKanji": ["受"],
     "mora": "うけよ",
     "words": ["受けよ"],
     "readings": ["ウケヨ"]
   },
-  "87": {
+  "67": {
     "firstKanji": ["住"],
     "mora": "すむ",
     "words": ["住む"],
     "readings": ["スム"]
   },
-  "88": {
+  "68": {
     "firstKanji": ["住"],
     "mora": "すみ",
     "words": ["住み"],
     "readings": ["スミ"]
   },
-  "89": {
+  "69": {
     "firstKanji": ["討"],
     "mora": "うち",
     "words": ["討ち"],
     "readings": ["ウチ"]
   },
-  "8A": {
+  "6A": {
     "firstKanji": ["破"],
     "mora": "やぶり",
     "words": ["破り"],
     "readings": ["ヤブリ"]
   },
-  "8B": {
+  "6B": {
     "firstKanji": ["破"],
     "mora": "やぶら",
     "words": ["破ら"],
     "readings": ["ヤブラ"]
   },
-  "8C": {
+  "6C": {
     "firstKanji": ["結"],
     "mora": "むすぶ",
     "words": ["結ぶ"],
     "readings": ["ムスブ"]
   },
-  "8D": {
+  "6D": {
     "firstKanji": ["結"],
     "mora": "むすば",
     "words": ["結ば"],
     "readings": ["ムスバ"]
   },
-  "8E": {
+  "6E": {
     "firstKanji": ["払"],
     "mora": "はらい",
     "words": ["払い"],
     "readings": ["ハライ"]
   },
-  "8F": {
+  "6F": {
     "firstKanji": ["払"],
     "mora": "はらわ",
     "words": ["払わ"],
     "readings": ["ハラワ"]
   },
-  "90": {
+  "70": {
     "firstKanji": ["化"],
     "mora": "かし",
     "words": ["化し"],
     "readings": ["カシ"]
   },
-  "91": {
+  "71": {
     "firstKanji": ["化"],
     "mora": "かせ",
     "words": ["化せ"],
     "readings": ["カセ"]
   },
-  "92": {
+  "72": {
     "firstKanji": ["示"],
     "mora": "しめさ",
     "words": ["示さ"],
     "readings": ["シメサ"]
   },
-  "93": {
+  "73": {
     "firstKanji": ["示"],
     "mora": "しめせ",
     "words": ["示せ"],
     "readings": ["シメセ"]
   },
-  "94": {
+  "74": {
     "firstKanji": ["死"],
     "mora": "しに",
     "words": ["死に"],
     "readings": ["シニ"]
   },
-  "95": {
+  "75": {
     "firstKanji": ["死"],
     "mora": "しぬ",
     "words": ["死ぬ"],
     "readings": ["シヌ"]
   },
-  "96": {
+  "76": {
     "firstKanji": ["落"],
     "mora": "おとさ",
     "words": ["落とさ"],
     "readings": ["オトサ"]
   },
-  "97": {
+  "77": {
     "firstKanji": ["落"],
     "mora": "おとす",
     "words": ["落とす"],
     "readings": ["オトス"]
   },
-  "98": {
+  "78": {
     "firstKanji": ["閉"],
     "mora": "とざさ",
     "words": ["閉ざさ"],
     "readings": ["トザサ"]
   },
-  "99": {
+  "79": {
     "firstKanji": ["閉"],
     "mora": "とざす",
     "words": ["閉ざす"],
     "readings": ["トザス"]
   },
-  "9A": {
+  "7A": {
     "firstKanji": ["流"],
     "mora": "ながれ",
     "words": ["流る"],
     "readings": ["ナガレル"]
   },
-  "9B": {
+  "7B": {
     "firstKanji": ["還"],
     "mora": "かえる",
     "words": ["還る"],
     "readings": ["カエル"]
   },
-  "9C": {
+  "7C": {
     "firstKanji": ["唸"],
     "mora": "うなる",
     "words": ["唸る"],
     "readings": ["ウナル"]
   },
-  "9D": {
+  "7D": {
     "firstKanji": ["廻"],
     "mora": "めぐる",
     "words": ["廻る"],
     "readings": ["メグル"]
   },
-  "9E": {
+  "7E": {
     "firstKanji": ["得"],
     "mora": "える",
     "words": ["得る"],
     "readings": ["エル"]
   },
-  "9F": {
+  "7F": {
     "firstKanji": ["斬"],
     "mora": "きる",
     "words": ["斬る"],
     "readings": ["キル"]
   },
-  "A0": {
+  "80": {
     "firstKanji": ["曇"],
     "mora": "くもる",
     "words": ["曇る"],
     "readings": ["クモル"]
   },
-  "A1": {
+  "81": {
     "firstKanji": ["滴"],
     "mora": "したた",
     "words": ["滴る"],
     "readings": ["シタタル"]
   },
-  "A2": {
+  "82": {
     "firstKanji": ["祈"],
     "mora": "いのる",
     "words": ["祈る"],
     "readings": ["イノル"]
   },
-  "A3": {
+  "83": {
     "firstKanji": ["移"],
     "mora": "うつる",
     "words": ["移る"],
     "readings": ["ウツル"]
   },
-  "A4": {
+  "84": {
     "firstKanji": ["踊"],
     "mora": "おどる",
     "words": ["踊る"],
     "readings": ["オドル"]
   },
-  "A5": {
+  "85": {
     "firstKanji": ["纏"],
     "mora": "まとう",
     "words": ["纏う"],
     "readings": ["マトウ"]
   },
-  "A6": {
+  "86": {
     "firstKanji": ["能"],
     "mora": "あたう",
     "words": ["能う"],
     "readings": ["アタウ"]
   },
-  "A7": {
+  "87": {
     "firstKanji": ["誓"],
     "mora": "ちかう",
     "words": ["誓う"],
     "readings": ["チカウ"]
   },
-  "A8": {
+  "88": {
     "firstKanji": ["誘"],
     "mora": "さそう",
     "words": ["誘う"],
     "readings": ["サソウ"]
   },
-  "A9": {
+  "89": {
     "firstKanji": ["贖"],
     "mora": "あがな",
     "words": ["贖う"],
     "readings": ["アガナウ"]
   },
-  "AA": {
+  "8A": {
     "firstKanji": ["帰"],
     "mora": "きす",
     "words": ["帰す"],
     "readings": ["キス"]
   },
-  "AB": {
+  "8B": {
     "firstKanji": ["乱"],
     "mora": "みだす",
     "words": ["乱す"],
     "readings": ["ミダス"]
   },
-  "AC": {
+  "8C": {
     "firstKanji": ["欲"],
     "mora": "ほっす",
     "words": ["欲す"],
     "readings": ["ホッス"]
   },
-  "AD": {
+  "8D": {
     "firstKanji": ["囁"],
     "mora": "ささや",
     "words": ["囁く"],
     "readings": ["ササヤク"]
   },
-  "AE": {
+  "8E": {
     "firstKanji": ["吹"],
     "mora": "ふく",
     "words": ["吹く"],
     "readings": ["フク"]
   },
-  "AF": {
+  "8F": {
     "firstKanji": ["戦"],
     "mora": "おのの",
     "words": ["戦く"],
     "readings": ["オノノク"]
   },
-  "B0": {
+  "90": {
     "firstKanji": ["輝"],
     "mora": "かがや",
     "words": ["輝く"],
     "readings": ["カガヤク"]
   },
-  "B1": {
+  "91": {
     "firstKanji": ["逝"],
     "mora": "ゆく",
     "words": ["逝く"],
     "readings": ["ユク"]
   },
-  "B2": {
+  "92": {
     "firstKanji": ["歪"],
     "mora": "ゆがめ",
     "words": ["歪め"],
     "readings": ["ユガメ"]
   },
-  "B3": {
+  "93": {
     "firstKanji": ["耐"],
     "mora": "たえ",
     "words": ["耐え"],
     "readings": ["タエ"]
   },
-  "B4": {
+  "94": {
     "firstKanji": ["荒"],
     "mora": "すさぶ",
     "words": ["荒ぶ"],
     "readings": ["スサブ"]
   },
-  "B5": {
+  "95": {
     "firstKanji": ["飢"],
     "mora": "うえ",
     "words": ["飢え"],
     "readings": ["ウエ"]
   },
-  "B6": {
+  "96": {
     "firstKanji": ["休"],
     "mora": "やすめ",
     "words": ["休め"],
     "readings": ["ヤスメ"]
   },
-  "B7": {
+  "97": {
     "firstKanji": ["作"],
     "mora": "つくれ",
     "words": ["作れ"],
     "readings": ["ツクレ"]
   },
-  "B8": {
+  "98": {
     "firstKanji": ["包"],
     "mora": "つつめ",
     "words": ["包め"],
     "readings": ["ツツメ"]
   },
-  "B9": {
+  "99": {
     "firstKanji": ["束"],
     "mora": "たばね",
     "words": ["束ねる"],
     "readings": ["タバネル"]
   },
-  "BA": {
+  "9A": {
     "firstKanji": ["歩"],
     "mora": "あゆみ",
     "words": ["歩み"],
     "readings": ["アユミ"]
   },
-  "BB": {
+  "9B": {
     "firstKanji": ["渡"],
     "mora": "わたれ",
     "words": ["渡れ"],
     "readings": ["ワタレ"]
   },
-  "BC": {
+  "9C": {
     "firstKanji": ["秘"],
     "mora": "ひめ",
     "words": ["秘め"],
     "readings": ["ヒメ"]
   },
-  "BD": {
+  "9D": {
     "firstKanji": ["踏"],
     "mora": "ふめ",
     "words": ["踏め"],
     "readings": ["フメ"]
   },
-  "BE": {
+  "9E": {
     "firstKanji": ["倒"],
     "mora": "たおれ",
     "words": ["倒れ"],
     "readings": ["タオレ"]
   },
-  "BF": {
+  "9F": {
     "firstKanji": ["歪"],
     "mora": "ゆがみ",
     "words": ["歪み"],
     "readings": ["ユガミ"]
   },
-  "C0": {
+  "A0": {
     "firstKanji": ["焼"],
     "mora": "やき",
     "words": ["焼き"],
     "readings": ["ヤキ"]
   },
-  "C1": {
+  "A1": {
     "firstKanji": ["犇"],
     "mora": "ひしめ",
     "words": ["犇めく"],
     "readings": ["ヒシメク"]
   },
-  "C2": {
+  "A2": {
     "firstKanji": ["緩"],
     "mora": "ゆるめ",
     "words": ["緩め"],
     "readings": ["ユルメ"]
   },
-  "C3": {
+  "A3": {
     "firstKanji": ["背"],
     "mora": "そむき",
     "words": ["背き"],
     "readings": ["ソムキ"]
   },
-  "C4": {
+  "A4": {
     "firstKanji": ["薄"],
     "mora": "うすれ",
     "words": ["薄れ"],
     "readings": ["ウスレ"]
   },
-  "C5": {
+  "A5": {
     "firstKanji": ["還"],
     "mora": "かえし",
     "words": ["還し"],
     "readings": ["カエシ"]
   },
-  "C6": {
+  "A6": {
     "firstKanji": ["還"],
     "mora": "かえせ",
     "words": ["還せ"],
     "readings": ["カエセ"]
   },
-  "C7": {
+  "A7": {
     "firstKanji": ["宿"],
     "mora": "やどる",
     "words": ["宿る"],
     "readings": ["ヤドル"]
   },
-  "C8": {
+  "A8": {
     "firstKanji": ["宿"],
     "mora": "やどれ",
     "words": ["宿れ"],
     "readings": ["ヤドレ"]
   },
-  "C9": {
+  "A9": {
     "firstKanji": ["知"],
     "mora": "しる",
     "words": ["知る"],
     "readings": ["シル"]
   },
-  "CA": {
+  "AA": {
     "firstKanji": ["知"],
     "mora": "しら",
     "words": ["知ら"],
     "readings": ["シラ"]
   },
-  "CB": {
+  "AB": {
     "firstKanji": ["在"],
     "mora": "ある",
     "words": ["在る"],
     "readings": ["アル"]
   },
-  "CC": {
+  "AC": {
     "firstKanji": ["在"],
     "mora": "あら",
     "words": ["在ら"],
     "readings": ["アラ"]
   },
-  "CD": {
+  "AD": {
     "firstKanji": ["折"],
     "mora": "おる",
     "words": ["折る"],
     "readings": ["オル"]
   },
-  "CE": {
+  "AE": {
     "firstKanji": ["折"],
     "mora": "おれ",
     "words": ["折れ"],
     "readings": ["オレ"]
   },
-  "CF": {
+  "AF": {
     "firstKanji": ["返"],
     "mora": "かえす",
     "words": ["返す"],
     "readings": ["カエス"]
   },
-  "D0": {
+  "B0": {
     "firstKanji": ["抱"],
     "mora": "いだく",
     "words": ["抱く"],
     "readings": ["イダク"]
   },
-  "D1": {
+  "B1": {
     "firstKanji": ["抱"],
     "mora": "いだき",
     "words": ["抱き"],
     "readings": ["イダキ"]
   },
-  "D2": {
+  "B2": {
     "firstKanji": ["裁"],
     "mora": "さばく",
     "words": ["裁く"],
     "readings": ["サバク"]
   },
-  "D3": {
+  "B3": {
     "firstKanji": ["裁"],
     "mora": "さばか",
     "words": ["裁か"],
     "readings": ["サバカ"]
   },
-  "D4": {
+  "B4": {
     "firstKanji": ["降"],
     "mora": "ふらす",
     "words": ["降らす"],
     "readings": ["フラス"]
   },
-  "D5": {
+  "B5": {
     "firstKanji": ["降"],
     "mora": "ふらし",
     "words": ["降らし"],
     "readings": ["フラシ"]
   },
-  "D6": {
+  "B6": {
     "firstKanji": ["救"],
     "mora": "すくえ",
     "words": ["救え"],
     "readings": ["スクエ"]
   },
-  "D7": {
+  "B7": {
     "firstKanji": ["救"],
     "mora": "すくわ",
     "words": ["救わ"],
     "readings": ["スクワ"]
   },
-  "D8": {
+  "B8": {
     "firstKanji": ["照"],
     "mora": "てらす",
     "words": ["照らす"],
     "readings": ["テラス"]
   },
-  "D9": {
+  "B9": {
     "firstKanji": ["照"],
     "mora": "てらし",
     "words": ["照らし"],
     "readings": ["テラシ"]
   },
-  "DA": {
+  "BA": {
     "firstKanji": ["奪"],
     "mora": "うばえ",
     "words": ["奪え"],
     "readings": ["ウバエ"]
   },
-  "DB": {
+  "BB": {
     "firstKanji": ["奪"],
     "mora": "うばい",
     "words": ["奪い"],
     "readings": ["ウバイ"]
   },
-  "DC": {
+  "BC": {
     "firstKanji": ["振"],
     "mora": "ふるわ",
     "words": ["振るわ"],
     "readings": ["フルワ"]
   },
-  "DD": {
+  "BD": {
     "firstKanji": ["眠"],
     "mora": "ねむる",
     "words": ["眠る"],
     "readings": ["ネムル"]
   },
-  "DE": {
+  "BE": {
     "firstKanji": ["縛"],
     "mora": "しばる",
     "words": ["縛る"],
     "readings": ["シバル"]
   },
-  "DF": {
+  "BF": {
     "firstKanji": ["募"],
     "mora": "つのる",
     "words": ["募る"],
     "readings": ["ツノル"]
   },
-  "E0": {
+  "C0": {
     "firstKanji": ["司"],
     "mora": "つかさ",
     "words": ["司る"],
     "readings": ["ツカサドル"]
   },
-  "E1": {
+  "C1": {
     "firstKanji": ["逸"],
     "mora": "はやる",
     "words": ["逸る"],
     "readings": ["ハヤル"]
   },
-  "E2": {
+  "C2": {
     "firstKanji": ["遮"],
     "mora": "さえぎ",
     "words": ["遮る"],
     "readings": ["サエギル"]
   },
-  "E3": {
+  "C3": {
     "firstKanji": ["伏"],
     "mora": "ふす",
     "words": ["伏す"],
     "readings": ["フス"]
   },
-  "E4": {
+  "C4": {
     "firstKanji": ["冠"],
     "mora": "かんす",
     "words": ["冠す"],
     "readings": ["カンス"]
   },
-  "E5": {
+  "C5": {
     "firstKanji": ["崩"],
     "mora": "くずす",
     "words": ["崩す"],
     "readings": ["クズス"]
   },
-  "E6": {
+  "C6": {
     "firstKanji": ["差"],
     "mora": "さす",
     "words": ["差す"],
     "readings": ["サス"]
   },
-  "E7": {
+  "C7": {
     "firstKanji": ["残"],
     "mora": "のこす",
     "words": ["残す"],
     "readings": ["ノコス"]
   },
-  "E8": {
+  "C8": {
     "firstKanji": ["翳"],
     "mora": "かざす",
     "words": ["翳す"],
     "readings": ["カザス"]
   },
-  "E9": {
+  "C9": {
     "firstKanji": ["慰"],
     "mora": "なぐさ",
     "words": ["慰める"],
     "readings": ["ナグサメル"]
   },
-  "EA": {
+  "CA": {
     "firstKanji": ["求"],
     "mora": "もとめ",
     "words": ["求める"],
     "readings": ["モトメル"]
   },
-  "EB": {
+  "CB": {
     "firstKanji": ["治"],
     "mora": "おさめ",
     "words": ["治める"],
     "readings": ["オサメル"]
   },
-  "EC": {
+  "CC": {
     "firstKanji": ["病"],
     "mora": "やめる",
     "words": ["病める"],
     "readings": ["ヤメル"]
   },
-  "ED": {
+  "CD": {
     "firstKanji": ["絡"],
     "mora": "からめ",
     "words": ["絡める"],
     "readings": ["カラメル"]
   },
-  "EE": {
+  "CE": {
     "firstKanji": ["認"],
     "mora": "みとめ",
     "words": ["認める"],
     "readings": ["ミトメル"]
   },
-  "EF": {
+  "CF": {
     "firstKanji": ["消"],
     "mora": "きえる",
     "words": ["消える"],
     "readings": ["キエル"]
   },
-  "F0": {
+  "D0": {
     "firstKanji": ["燃"],
     "mora": "もえる",
     "words": ["燃える"],
     "readings": ["モエル"]
   },
-  "F1": {
+  "D1": {
     "firstKanji": ["凍"],
     "mora": "こごえ",
     "words": ["凍える"],
     "readings": ["コゴエル"]
   },
-  "F2": {
+  "D2": {
     "firstKanji": ["支"],
     "mora": "ささえ",
     "words": ["支える"],
     "readings": ["ササエル"]
   },
-  "F3": {
+  "D3": {
     "firstKanji": ["砕"],
     "mora": "くだけ",
     "words": ["砕ける"],
     "readings": ["クダケル"]
   },
-  "F4": {
+  "D4": {
     "firstKanji": ["続"],
     "mora": "つづけ",
     "words": ["続ける"],
     "readings": ["ツヅケル"]
   },
-  "F5": {
+  "D5": {
     "firstKanji": ["退"],
     "mora": "しりぞ",
     "words": ["退ける"],
     "readings": ["シリゾケル"]
   },
-  "F6": {
+  "D6": {
     "firstKanji": ["仕"],
     "mora": "つかえ",
     "words": ["仕える"],
     "readings": ["ツカエル"]
   },
-  "F7": {
+  "D7": {
     "firstKanji": ["唱"],
     "mora": "となえ",
     "words": ["唱える"],
     "readings": ["トナエル"]
   },
-  "F8": {
+  "D8": {
     "firstKanji": ["眠"],
     "mora": "ねむれ",
     "words": ["眠れる"],
     "readings": ["ネムレル"]
   },
-  "F9": {
+  "D9": {
     "firstKanji": ["忘"],
     "mora": "わすれ",
     "words": ["忘れる"],
     "readings": ["ワスレル"]
   },
-  "FA": {
+  "DA": {
     "firstKanji": ["揺"],
     "mora": "ゆれる",
     "words": ["揺れる"],
     "readings": ["ユレル"]
   },
-  "FB": {
+  "DB": {
     "firstKanji": ["触"],
     "mora": "ふれる",
     "words": ["触れる"],
     "readings": ["フレル"]
   },
-  "FC": {
+  "DC": {
     "firstKanji": ["逃"],
     "mora": "のがれ",
     "words": ["逃れる"],
     "readings": ["ノガレル"]
   },
-  "FD": {
+  "DD": {
     "firstKanji": ["垂"],
     "mora": "たれる",
     "words": ["垂れる"],
     "readings": ["タレル"]
   },
-  "FE": {
+  "DE": {
     "firstKanji": ["塗"],
     "mora": "まみれ",
     "words": ["塗れる"],
     "readings": ["マミレル"]
   },
-  "FF": {
+  "DF": {
     "firstKanji": ["怒"],
     "mora": "おこれ",
     "words": ["怒れる"],
     "readings": ["オコレル"]
+  },
+  "E0": {
+    "firstKanji": ["訪"],
+    "mora": "おとず",
+    "words": ["訪れる"],
+    "readings": ["オトズレル"]
+  },
+  "E1": {
+    "firstKanji": ["見"],
+    "mora": "みよ",
+    "words": ["見よ"],
+    "readings": ["ミヨ"]
+  },
+  "E2": {
+    "firstKanji": ["潜"],
+    "mora": "ひそむ",
+    "words": ["潜む"],
+    "readings": ["ヒソム"]
+  },
+  "E3": {
+    "firstKanji": ["阻"],
+    "mora": "はばむ",
+    "words": ["阻む"],
+    "readings": ["ハバム"]
+  },
+  "E4": {
+    "firstKanji": ["宿"],
+    "mora": "やどり",
+    "words": ["宿り"],
+    "readings": ["ヤドリ"]
+  },
+  "E5": {
+    "firstKanji": ["揺"],
+    "mora": "ゆらす",
+    "words": ["揺らす"],
+    "readings": ["ユラス"]
+  },
+  "E6": {
+    "firstKanji": ["放"],
+    "mora": "はなつ",
+    "words": ["放つ"],
+    "readings": ["ハナツ"]
+  },
+  "E7": {
+    "firstKanji": ["与"],
+    "mora": "くみす",
+    "words": ["与する"],
+    "readings": ["クミスル"]
+  },
+  "E8": {
+    "firstKanji": ["散"],
+    "mora": "ちらす",
+    "words": ["散らす"],
+    "readings": ["チラス"]
+  },
+  "E9": {
+    "firstKanji": ["光"],
+    "mora": "ひかり",
+    "words": ["光り"],
+    "readings": ["ヒカリ"]
+  },
+  "EA": {
+    "firstKanji": ["問"],
+    "mora": "とえ",
+    "words": ["問え"],
+    "readings": ["トエ"]
+  },
+  "EB": {
+    "firstKanji": ["賜"],
+    "mora": "たまえ",
+    "words": ["賜え"],
+    "readings": ["タマエ"]
+  },
+  "EC": {
+    "firstKanji": ["集"],
+    "mora": "つどえ",
+    "words": ["集え"],
+    "readings": ["ツドエ"]
+  },
+  "ED": {
+    "firstKanji": ["作"],
+    "mora": "つくり",
+    "words": ["作り"],
+    "readings": ["ツクリ"]
+  },
+  "EE": {
+    "firstKanji": ["借"],
+    "mora": "かり",
+    "words": ["借り"],
+    "readings": ["カリ"]
+  },
+  "EF": {
+    "firstKanji": ["哮"],
+    "mora": "たけり",
+    "words": ["哮り"],
+    "readings": ["タケリ"]
+  },
+  "F0": {
+    "firstKanji": ["居"],
+    "mora": "おり",
+    "words": ["居り"],
+    "readings": ["オリ"]
+  },
+  "F1": {
+    "firstKanji": ["悶"],
+    "mora": "もだえ",
+    "words": ["悶え"],
+    "readings": ["モダエ"]
+  },
+  "F2": {
+    "firstKanji": ["捧"],
+    "mora": "ささげ",
+    "words": ["捧げる"],
+    "readings": ["ササゲル"]
+  },
+  "F3": {
+    "firstKanji": ["映"],
+    "mora": "うつり",
+    "words": ["映り"],
+    "readings": ["ウツリ"]
+  },
+  "F4": {
+    "firstKanji": ["有"],
+    "mora": "あり",
+    "words": ["有り"],
+    "readings": ["アリ"]
+  },
+  "F5": {
+    "firstKanji": ["繰"],
+    "mora": "くり",
+    "words": ["繰り"],
+    "readings": ["クリ"]
+  },
+  "F6": {
+    "firstKanji": ["覆"],
+    "mora": "おおえ",
+    "words": ["覆え"],
+    "readings": ["オオエ"]
+  },
+  "F7": {
+    "firstKanji": ["見"],
+    "mora": "みえ",
+    "words": ["見え"],
+    "readings": ["ミエ"]
+  },
+  "F8": {
+    "firstKanji": ["讃"],
+    "mora": "たたえ",
+    "words": ["讃え"],
+    "readings": ["タタエ"]
+  },
+  "F9": {
+    "firstKanji": ["足"],
+    "mora": "たり",
+    "words": ["足り"],
+    "readings": ["タリ"]
+  },
+  "FA": {
+    "firstKanji": ["迎"],
+    "mora": "むかえ",
+    "words": ["迎え"],
+    "readings": ["ムカエ"]
+  },
+  "FB": {
+    "firstKanji": ["迷"],
+    "mora": "まよえ",
+    "words": ["迷え"],
+    "readings": ["マヨエ"]
+  },
+  "FC": {
+    "firstKanji": ["遂"],
+    "mora": "とげる",
+    "words": ["遂げる"],
+    "readings": ["トゲル"]
+  },
+  "FD": {
+    "firstKanji": ["降"],
+    "mora": "ふれ",
+    "words": ["降れ"],
+    "readings": ["フレ"]
+  },
+  "FE": {
+    "firstKanji": ["下"],
+    "mora": "くだり",
+    "words": ["下り"],
+    "readings": ["クダリ"]
+  },
+  "FF": {
+    "firstKanji": ["乗"],
+    "mora": "のり",
+    "words": ["乗り"],
+    "readings": ["ノリ"]
   }
 }

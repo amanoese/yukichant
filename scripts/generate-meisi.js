@@ -111,18 +111,11 @@ function groupByFirstKanji(allWords, uniqueWords) {
 }
 
 function generateMeisiHexOrder() {
-  const priority = [10, 227, 129, 130, 131];
-  const excludeFromMiddle = new Set([129, 130, 131, 223]);
-  const middle = [];
-  for (let i = 32; i <= 255; i++) {
-    if (!excludeFromMiddle.has(i)) middle.push(i);
+  const order = [];
+  for (let i = 0; i <= 255; i++) {
+    order.push(i.toString(16).toUpperCase().padStart(2, '0'));
   }
-  const tail = [];
-  for (let i = 0; i <= 31; i++) {
-    if (i !== 10) tail.push(i);
-  }
-  const all = [...priority, ...middle, ...tail, 223];
-  return all.map(n => n.toString(16).toUpperCase().padStart(2, '0'));
+  return order;
 }
 
 function buildMapping(groups, hexOrder) {
