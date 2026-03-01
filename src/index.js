@@ -12,8 +12,8 @@ export let default_encoder = (uint8text,{ meisi, dousi }) => {
 
   //読みやすさのため動詞の最後には読点を入れる
   let _dousi = Object.fromEntries(
-    Object.entries(dousi).map(([k,dousiList])=> {
-      return [k,dousiList.map(d=>`${d}。`) ]
+    Object.entries(dousi).map(([k,entry])=> {
+      return [k, { ...entry, words: entry.words.map(d=>`${d}。`) } ]
     })
   )
 
@@ -21,13 +21,13 @@ export let default_encoder = (uint8text,{ meisi, dousi }) => {
   // 生成する文字列は 名詞 名詞 名詞 動詞 + 。 といった規則性になる。
   let heads = encryptCode16
     .slice(0,-1)
-    .map((code,i)=> (i + 1) % 4 ? meisi[code] : _dousi[code])
+    .map((code,i)=> (i + 1) % 4 ? meisi[code].words : _dousi[code].words)
     .map(v=> v[Math.floor(Math.random() * v.length)])
 
   // 最後の文字列を必ず動詞で終えることで呪文詠唱となる。
   let last = encryptCode16
     .slice(-1)
-    .map(code=> _dousi[code])
+    .map(code=> _dousi[code].words)
     .map(v=> v[Math.floor(Math.random() * v.length)])
 
   return [ ...heads , last ].join('')
@@ -45,13 +45,15 @@ export let default_decoder = (typoCorrection) => async (encodeText,option = {} ,
   //     "単語3。" : "0A"
   let decodeHash = {}
   let allWord = []
-  Object.entries(meisi).forEach(([k,v])=> {
+  Object.entries(meisi).forEach(([k,entry])=> {
+    const v = entry.words
     allWord = [ ...allWord, ...v]
     v.forEach(v2=> {
       decodeHash[v2] = k
     })
   })
-  Object.entries(dousi).forEach(([k,v])=> {
+  Object.entries(dousi).forEach(([k,entry])=> {
+    const v = entry.words
     allWord = [ ...allWord, ...v]
     v.forEach(v2=> {
       decodeHash[v2] = k

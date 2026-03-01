@@ -8,119 +8,108 @@ import { PATHS, MORAE_COUNT, buildTokenizer, getReading, getFirstNMorae, getFirs
 
 function regroupMeisi(tokenizer, dict, hexOrder) {
   const label = 'meisi';
+  const MEISI_MORAE_COUNT = 2; // 名詞は2拍を維持
   const allWords = [];
   for (const [, words] of Object.entries(dict)) {
-    for (const w of words) {
+    // 初回生成時は配列、再実行時はオブジェクトの可能性があるため正規化
+    const wordList = Array.isArray(words) ? words : words.words;
+    for (const w of wordList) {
       const reading = getReading(tokenizer, w);
-      const firstN = getFirstNMorae(reading, MORAE_COUNT.MEISI);
+      const firstN = getFirstNMorae(reading, MEISI_MORAE_COUNT);
       const firstKanji = getFirstKanji(w);
       allWords.push({ word: w, reading, firstN, firstKanji });
     }
   }
 
+  // (先頭漢字, 先頭N拍) でサブグループを作成
   const subGroupMap = new Map();
   for (const entry of allWords) {
     const key = `${entry.firstKanji}|${entry.firstN}`;
     if (!subGroupMap.has(key)) {
-      subGroupMap.set(key, { firstKanji: entry.firstKanji, firstN: entry.firstN, words: [] });
+      subGroupMap.set(key, { firstKanji: entry.firstKanji, firstN: entry.firstN, words: [], readings: [] });
     }
     subGroupMap.get(key).words.push(entry.word);
+    subGroupMap.get(key).readings.push(entry.reading);
   }
 
+  // 先頭N拍が同じサブグループをマージ
   const firstNGroups = new Map();
   for (const sg of subGroupMap.values()) {
     if (!firstNGroups.has(sg.firstN)) {
-      firstNGroups.set(sg.firstN, []);
+      firstNGroups.set(sg.firstN, { firstKanji: new Set(), words: [], readings: [] });
     }
-    firstNGroups.get(sg.firstN).push(...sg.words);
+    const group = firstNGroups.get(sg.firstN);
+    group.firstKanji.add(sg.firstKanji);
+    group.words.push(...sg.words);
+    group.readings.push(...sg.readings);
   }
 
   const merged = [...firstNGroups.entries()]
-    .map(([firstN, words]) => ({ firstN, words }))
+    .map(([firstN, data]) => ({ 
+      mora: firstN, 
+      firstKanji: [...data.firstKanji].sort(),
+      words: data.words,
+      readings: data.readings
+    }))
     .sort((a, b) => b.words.length - a.words.length);
 
   const selected = merged.slice(0, 256);
 
   const mapping = {};
   for (let i = 0; i < Math.min(selected.length, hexOrder.length); i++) {
-    mapping[hexOrder[i]] = selected[i].words;
+    mapping[hexOrder[i]] = selected[i];
   }
 
-  const totalWords = Object.values(mapping).reduce((sum, v) => sum + v.length, 0);
+  const totalWords = Object.values(mapping).reduce((sum, v) => sum + v.words.length, 0);
   console.error(`[${label}] キー数: ${Object.keys(mapping).length}, 総単語数: ${totalWords}`);
   return mapping;
 }
 
 function regroupDousi(tokenizer, dict, hexOrder) {
   const label = 'dousi';
-  const mapping = {};
-  const overflow = [];
-
-  for (const [code, words] of Object.entries(dict)) {
-    if (words.length === 0) continue;
-
-    const byFirstN = new Map();
-    for (const w of words) {
+  const allWords = [];
+  for (const [, words] of Object.entries(dict)) {
+    const wordList = Array.isArray(words) ? words : words.words;
+    for (const w of wordList) {
       const reading = getReading(tokenizer, w);
       const firstN = getFirstNMorae(reading, MORAE_COUNT.DOUSI);
-      if (!byFirstN.has(firstN)) byFirstN.set(firstN, []);
-      byFirstN.get(firstN).push(w);
-    }
-
-    if (byFirstN.size === 1) {
-      mapping[code] = words;
-    } else {
-      const sorted = [...byFirstN.entries()].sort((a, b) => b[1].length - a[1].length);
-      mapping[code] = sorted[0][1];
-      for (let i = 1; i < sorted.length; i++) {
-        overflow.push({ firstN: sorted[i][0], words: sorted[i][1] });
-      }
+      allWords.push({ word: w, reading, firstN });
     }
   }
 
-  const finalMapping = { ...mapping };
-  const firstNToCode = new Map();
-  for (const [code, words] of Object.entries(finalMapping)) {
-    const reading = getReading(tokenizer, words[0]);
-    const firstN = getFirstNMorae(reading, MORAE_COUNT.DOUSI);
-    firstNToCode.set(firstN, code);
-  }
-
-  const remainingOverflow = [];
-  for (const item of overflow) {
-    if (firstNToCode.has(item.firstN)) {
-      const code = firstNToCode.get(item.firstN);
-      finalMapping[code] = [...new Set([...finalMapping[code], ...item.words])];
-    } else {
-      remainingOverflow.push(item);
+  // 先頭N拍ごとにグループ化
+  const firstNGroups = new Map();
+  for (const entry of allWords) {
+    if (!firstNGroups.has(entry.firstN)) {
+      firstNGroups.set(entry.firstN, { firstKanji: new Set(), words: [], readings: [] });
+    }
+    const group = firstNGroups.get(entry.firstN);
+    group.firstKanji.add(getFirstKanji(entry.word));
+    if (!group.words.includes(entry.word)) {
+      group.words.push(entry.word);
+      group.readings.push(entry.reading);
     }
   }
 
-  const mergedOverflow = [];
-  const used = new Set();
-  for (let i = 0; i < remainingOverflow.length; i++) {
-    if (used.has(i)) continue;
-    const group = { firstN: remainingOverflow[i].firstN, words: [...remainingOverflow[i].words] };
-    used.add(i);
-    for (let j = i + 1; j < remainingOverflow.length; j++) {
-      if (used.has(j)) continue;
-      if (remainingOverflow[j].firstN !== group.firstN) continue;
-      group.words.push(...remainingOverflow[j].words);
-      used.add(j);
-    }
-    mergedOverflow.push(group);
-  }
-  mergedOverflow.sort((a, b) => b.words.length - a.words.length);
+  const merged = [...firstNGroups.entries()]
+    .map(([firstN, data]) => ({
+      mora: firstN,
+      firstKanji: [...data.firstKanji].sort(),
+      words: data.words,
+      readings: data.readings
+    }))
+    .sort((a, b) => b.words.length - a.words.length);
 
-  const usedCodes = new Set(Object.keys(finalMapping));
-  const availableCodes = hexOrder.filter(h => !usedCodes.has(h));
-  for (let i = 0; i < Math.min(mergedOverflow.length, availableCodes.length); i++) {
-    finalMapping[availableCodes[i]] = mergedOverflow[i].words;
+  const selected = merged.slice(0, 256);
+
+  const mapping = {};
+  for (let i = 0; i < Math.min(selected.length, hexOrder.length); i++) {
+    mapping[hexOrder[i]] = selected[i];
   }
 
-  const totalWords = Object.values(finalMapping).reduce((sum, v) => sum + v.length, 0);
-  console.error(`[${label}] キー数: ${Object.keys(finalMapping).length}, 総単語数: ${totalWords}`);
-  return finalMapping;
+  const totalWords = Object.values(mapping).reduce((sum, v) => sum + v.words.length, 0);
+  console.error(`[${label}] キー数: ${Object.keys(mapping).length}, 総単語数: ${totalWords}`);
+  return mapping;
 }
 
 function generateMeisiHexOrder() {
