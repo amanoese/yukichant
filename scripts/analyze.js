@@ -26,15 +26,16 @@ function analyzeDict(tokenizer, dict, label) {
   let sameCodeSameCount = 0;
   const n = label === 'meisi' ? MORAE_COUNT.MEISI : MORAE_COUNT.DOUSI;
 
-  for (const [code, words] of Object.entries(dict)) {
-    const readings = words.map(w => {
+  for (const [code, entry] of Object.entries(dict)) {
+    const wordList = Array.isArray(entry) ? entry : entry.words;
+    const readings = wordList.map(w => {
       const raw = getReading(tokenizer, w);
       const firstN = getFirstNMorae(raw, n);
       return { word: w, reading: raw, firstN };
     });
     codeReadings[code] = readings;
 
-    if (words.length > 1) {
+    if (wordList.length > 1) {
       const firstNSet = new Set(readings.map(r => r.firstN));
       if (firstNSet.size > 1) {
         sameCodeDiffCount++;
@@ -58,8 +59,9 @@ function analyzeCrossCodeCollisions(tokenizer, dict, label) {
   let collisionCount = 0;
   const n = label === 'meisi' ? MORAE_COUNT.MEISI : MORAE_COUNT.DOUSI;
 
-  for (const [code, words] of Object.entries(dict)) {
-    for (const w of words) {
+  for (const [code, entry] of Object.entries(dict)) {
+    const wordList = Array.isArray(entry) ? entry : entry.words;
+    for (const w of wordList) {
       const raw = getReading(tokenizer, w);
       const firstN = getFirstNMorae(raw, n);
       if (!firstNToCode[firstN]) {
