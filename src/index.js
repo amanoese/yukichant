@@ -13,7 +13,11 @@ export let default_encoder = (uint8text,{ meisi, dousi }, option = {}) => {
   //読みやすさのため動詞の最後には読点を入れる
   let _dousi = Object.fromEntries(
     Object.entries(dousi).map(([k,entry])=> {
-      return [k, { ...entry, words: entry.words.map(d=>`${d}。`) } ]
+      // 後方互換性のため、entryが配列（旧形式）の場合はオブジェクトに変換する
+      const normalizedEntry = Array.isArray(entry) 
+        ? { words: entry, readings: entry } // 旧形式には読みがないので単語を読みに流用
+        : entry;
+      return [k, { ...normalizedEntry, words: normalizedEntry.words.map(d=>`${d}。`) } ]
     })
   )
 
@@ -23,8 +27,12 @@ export let default_encoder = (uint8text,{ meisi, dousi }, option = {}) => {
     .slice(0,-1)
     .map((code,i)=> (i + 1) % 4 ? meisi[code] : _dousi[code])
     .map(v=> {
-      const index = Math.floor(Math.random() * v.words.length)
-      return { word: v.words[index], reading: v.readings[index] }
+      // 後方互換性のため、vが配列（旧形式）の場合はオブジェクトに変換する
+      const normalizedV = Array.isArray(v)
+        ? { words: v, readings: v }
+        : v;
+      const index = Math.floor(Math.random() * normalizedV.words.length)
+      return { word: normalizedV.words[index], reading: normalizedV.readings[index] }
     })
 
   // 最後の文字列を必ず動詞で終えることで呪文詠唱となる。
@@ -32,8 +40,12 @@ export let default_encoder = (uint8text,{ meisi, dousi }, option = {}) => {
     .slice(-1)
     .map(code=> _dousi[code])
     .map(v=> {
-      const index = Math.floor(Math.random() * v.words.length)
-      return { word: v.words[index], reading: v.readings[index] }
+      // 後方互換性のため、vが配列（旧形式）の場合はオブジェクトに変換する
+      const normalizedV = Array.isArray(v)
+        ? { words: v, readings: v }
+        : v;
+      const index = Math.floor(Math.random() * normalizedV.words.length)
+      return { word: normalizedV.words[index], reading: normalizedV.readings[index] }
     })
 
   const words = [ ...heads , ...last ]
@@ -60,14 +72,18 @@ export let default_decoder = (typoCorrection) => async (encodeText,option = {} ,
   let decodeHash = {}
   let allWord = []
   Object.entries(meisi).forEach(([k,entry])=> {
-    const v = entry.words
+    // 後方互換性のため、entryが配列（旧形式）の場合はオブジェクトに変換する
+    const normalizedEntry = Array.isArray(entry) ? { words: entry } : entry;
+    const v = normalizedEntry.words
     allWord = [ ...allWord, ...v]
     v.forEach(v2=> {
       decodeHash[v2] = k
     })
   })
   Object.entries(dousi).forEach(([k,entry])=> {
-    const v = entry.words
+    // 後方互換性のため、entryが配列（旧形式）の場合はオブジェクトに変換する
+    const normalizedEntry = Array.isArray(entry) ? { words: entry } : entry;
+    const v = normalizedEntry.words
     allWord = [ ...allWord, ...v]
     v.forEach(v2=> {
       decodeHash[v2] = k
