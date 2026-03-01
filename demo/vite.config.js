@@ -10,6 +10,7 @@ export default defineConfig({
       path: resolve('path-shim.js'),
     },
   },
+  publicDir: '../data',
   build: {
     outDir: 'dist',
     chunkSizeWarningLimit: 9000,
