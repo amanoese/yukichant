@@ -7,7 +7,7 @@ yukichantのエンコード/デコード機能をブラウザ上で試せるデ�
 ## 技術構成
 
 - **ビルドツール**: Vite
-- **UI**: Vanilla JS + HTML/CSS（フレームワークなし）
+- **UI**: Vue 3
 - **ライブラリ**: yukichant の `src/browser.js`（ブラウザ向けAPI）
 - **デプロイ**: GitHub Actions → GitHub Pages
 
@@ -18,7 +18,8 @@ demo/
 ├── package.json      # デモ専用の依存管理（本体のpackage.jsonとは独立）
 ├── vite.config.js    # Vite設定
 ├── index.html        # エントリーHTML
-├── main.js           # アプリケーションロジック
+├── main.js           # Vueエントリーポイント
+├── App.vue           # メインコンポーネント
 ├── styles.css        # スタイル（ダークモード対応）
 └── README.md         # このファイル
 ```

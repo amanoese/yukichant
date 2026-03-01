@@ -14,9 +14,9 @@ $ npm run dev unko
 $ npm run dev unko | npm run dev -- -d
 ```
 
-## generate meisi.json
+## generate meisi.json / dousi.json
 ```bash
-$ ./raw_data/meisi_json_generator
+$ npm run json-generate
 ```
 
 ## 誤字修正アルゴリズム
