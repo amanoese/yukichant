@@ -21,11 +21,13 @@ flowchart LR
 
     subgraph 1.名詞辞書生成
         C[scripts/generate-meisi.js]
+        C1[helpers.js: removeSmallKanaEnd]
         D[data/meisi.json]
     end
 
     subgraph 2.動詞辞書生成
         E[scripts/generate-dousi.js]
+        E1[helpers.js: removeSmallKanaEnd]
         F[data/dousi.json]
     end
 
@@ -39,10 +41,12 @@ flowchart LR
 
     A --> C
     B --> C
+    C1 -.-> C
     C --> D
     C -->|名詞リスト| E
     A --> E
     B --> E
+    E1 -.-> E
     E --> F
     D --> G
     F --> G
@@ -133,13 +137,14 @@ flowchart TD
     B --> C[mecab 形態素解析]
     C --> D[名詞+助詞結合語を抽出]
     D --> E[重複排除・フィルタ]
-    E --> F[部分一致除外]
-    F --> G[NG単語除外]
-    G --> H[先頭漢字でグルーピング]
-    H --> I[語数順ソート]
-    I --> J[上位257グループ採用]
-    J --> K[16進コード割り当て]
-    K --> L[data/meisi.json 出力]
+    E --> F[末尾小さい文字除外]
+    F --> G[部分一致除外]
+    G --> H[NG単語除外]
+    H --> I[先頭漢字でグルーピング]
+    I --> J[語数順ソート]
+    J --> K[上位257グループ採用]
+    K --> L[16進コード割り当て]
+    L --> M[data/meisi.json 出力]
 ```
 
 ### 詳細
@@ -156,6 +161,7 @@ mecab の形態素解析結果から、名詞および「名詞+連体化助詞�
 
 - **重複排除**: `sort -u` 相当でユニーク化
 - **長さ・漢字**: 2文字以上かつ漢字を含む語のみ
+- **末尾の小さい文字除外**: 末尾が小さい文字（ぁぃぅぇぉゃゅょゎっ）で終わる語を除外（`helpers.js` の `removeSmallKanaEnd` を使用）
 - **部分一致除外**: 他の語の部分文字列になっている語を除外
 - **NG単語除外**: `assets/ng-words.txt` に含まれる語を除外
 
@@ -228,12 +234,13 @@ flowchart TD
     F2 --> G
     B --> G
     G --> H[NG単語除外]
-    H --> I[類似語スコアリング]
-    I --> J[部分一致除外]
-    J --> K[基本形でグルーピング]
-    K --> L[活用形数順ソート]
-    L --> M[上位256グループ採用]
-    M --> N[data/dousi.json 出力]
+    H --> I[末尾小さい文字除外]
+    I --> J[類似語スコアリング]
+    J --> K[部分一致除外]
+    K --> L[基本形でグルーピング]
+    L --> M[活用形数順ソート]
+    M --> N[上位256グループ採用]
+    N --> O[data/dousi.json 出力]
 ```
 
 ### 詳細
@@ -246,6 +253,7 @@ flowchart TD
 #### スコアリング・フィルタリング (scoreFilterAndGroup)
 
 - **類似語スコア**: 各動詞について、基本形リスト内で編集距離（Levenshtein）1以内のマッチ数をカウント。スコアが高い順にソート
+- **末尾の小さい文字除外**: 末尾が小さい文字（ぁぃぅぇぉゃゅょゎっ）で終わる語を除外（`helpers.js` の `removeSmallKanaEnd` を使用）
 - **部分一致除外**: 他の語の部分文字列になっている語を除外
 - **基本形でグルーピング**: 同じ基本形の活用形を1グループにまとめる
 - **活用形数でソート**: 活用形が多い基本形を優先して256グループを選出

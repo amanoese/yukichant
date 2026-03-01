@@ -3,7 +3,7 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { execSync } from 'child_process';
 import { join } from 'path';
-import { PATHS } from './helpers.js';
+import { PATHS, removeSmallKanaEnd } from './helpers.js';
 
 // spell.txt をBase64デコードして mecab で形態素解析し、CSV形式の行配列を返す
 function runMecab() {
@@ -142,7 +142,8 @@ function main() {
   const uniqueNouns = removePartialMatches(allNouns);
   const ngWords = loadNgWords();
   const cleanNouns = removeNgWords(uniqueNouns, ngWords);
-  const groups = groupByFirstKanji(allNouns, cleanNouns);
+  const filteredNouns = removeSmallKanaEnd(cleanNouns);
+  const groups = groupByFirstKanji(allNouns, filteredNouns);
   const hexOrder = generateMeisiHexOrder();
   const mapping = buildMapping(groups, hexOrder);
   const json = formatJson(mapping);
