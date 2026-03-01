@@ -1,60 +1,18 @@
-import kuromoji from 'kuromoji';
+#!/usr/bin/env node
 import { readFileSync } from 'fs';
-import { dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { join } from 'path';
+import { PATHS, MORAE_COUNT, buildTokenizer, getReading, getFirstNMorae } from './helpers.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-
-// regroup-by-pronunciation.js と同じ拍数で分析（2: 現行 / 3: 検証用）
-const MORAE_COUNT = 3;
-
-const meisi = JSON.parse(readFileSync(`${__dirname}/data/meisi.json`, 'utf-8'));
-const dousi = JSON.parse(readFileSync(`${__dirname}/data/dousi.json`, 'utf-8'));
-
-function buildTokenizer() {
-  return new Promise((resolve, reject) => {
-    kuromoji
-      .builder({ dicPath: `${__dirname}/node_modules/yukidic/dic/` })
-      .build((err, tokenizer) => {
-        if (err) reject(err);
-        else resolve(tokenizer);
-      });
-  });
-}
-
-function getReading(tokenizer, word) {
-  const tokens = tokenizer.tokenize(word);
-  return tokens.map(t => t.reading || t.surface_form).join('');
-}
-
-function katakanaToHiragana(str) {
-  return str.replace(/[\u30A1-\u30F6]/g, ch =>
-    String.fromCharCode(ch.charCodeAt(0) - 0x60)
-  );
-}
-
-function getFirstNMorae(reading, n) {
-  const hira = katakanaToHiragana(reading);
-  const morae = [];
-  const smallKana = 'ぁぃぅぇぉゃゅょゎっ';
-  for (let i = 0; i < hira.length && morae.length < n; i++) {
-    let mora = hira[i];
-    if (i + 1 < hira.length && smallKana.includes(hira[i + 1])) {
-      mora += hira[i + 1];
-      i++;
-    }
-    morae.push(mora);
-  }
-  return morae.join('');
-}
+const meisi = JSON.parse(readFileSync(join(PATHS.DATA, 'meisi.json'), 'utf-8'));
+const dousi = JSON.parse(readFileSync(join(PATHS.DATA, 'dousi.json'), 'utf-8'));
 
 async function main() {
   const tokenizer = await buildTokenizer();
 
-  console.log(`=== meisi.json の発音分析（先頭2拍）===\n`);
+  console.log(`=== meisi.json の発音分析（先頭${MORAE_COUNT.MEISI}拍）===\n`);
   analyzeDict(tokenizer, meisi, 'meisi');
 
-  console.log(`\n=== dousi.json の発音分析（先頭${MORAE_COUNT}拍）===\n`);
+  console.log(`\n=== dousi.json の発音分析（先頭${MORAE_COUNT.DOUSI}拍）===\n`);
   analyzeDict(tokenizer, dousi, 'dousi');
 
   console.log(`\n=== 異なるコード間での発音の衝突分析 ===\n`);
@@ -66,7 +24,7 @@ function analyzeDict(tokenizer, dict, label) {
   const codeReadings = {};
   let sameCodeDiffCount = 0;
   let sameCodeSameCount = 0;
-  const n = label === 'meisi' ? 2 : MORAE_COUNT; // 名詞は2拍、動詞は設定値(3拍)で分析
+  const n = label === 'meisi' ? MORAE_COUNT.MEISI : MORAE_COUNT.DOUSI;
 
   for (const [code, words] of Object.entries(dict)) {
     const readings = words.map(w => {
@@ -98,7 +56,7 @@ function analyzeDict(tokenizer, dict, label) {
 function analyzeCrossCodeCollisions(tokenizer, dict, label) {
   const firstNToCode = {};
   let collisionCount = 0;
-  const n = label === 'meisi' ? 2 : MORAE_COUNT; // 名詞は2拍、動詞は設定値(3拍)で分析
+  const n = label === 'meisi' ? MORAE_COUNT.MEISI : MORAE_COUNT.DOUSI;
 
   for (const [code, words] of Object.entries(dict)) {
     for (const w of words) {
@@ -129,10 +87,6 @@ function analyzeCrossCodeCollisions(tokenizer, dict, label) {
     for (const e of entries) {
       console.log(`    ${e.code}: "${e.word}" (${e.reading})`);
     }
-  }
-
-  if (collisions.length > 30) {
-    console.log(`  ... 他 ${collisions.length - 30} 件の衝突`);
   }
 
   console.log(`\n  衝突している最初の${n}拍の種類: ${collisionCount}`);
