@@ -1,3 +1,9 @@
+## [5.0.1](https://github.com/amanoese/yukichant/compare/v5.0.0...v5.0.1) (2026-03-01)
+
+### Bug Fixes
+
+* 旧形式の辞書データに対する後方互換性を追加 ([e4ac148](https://github.com/amanoese/yukichant/commit/e4ac14836a4098654e50f22ba063658be6ebcc37))
+
 ## [5.0.0](https://github.com/amanoese/yukichant/compare/v4.1.1...v5.0.0) (2026-03-01)
 
 ### ⚠ BREAKING CHANGES
