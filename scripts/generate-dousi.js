@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync } from 'fs';
 import { execSync } from 'child_process';
 import { join } from 'path';
 import { distance } from 'fastest-levenshtein';
-import { PATHS, buildTokenizer } from './helpers.js';
+import { PATHS, buildTokenizer, removeSmallKanaEnd } from './helpers.js';
 
 function getMeisiList() {
   const output = execSync(`node scripts/generate-meisi.js`, { encoding: 'utf-8', maxBuffer: 50 * 1024 * 1024 });
@@ -129,11 +129,12 @@ function getMecabInfo(verbs) {
 function scoreFilterAndGroup(verbs) {
   const ngWords = readFileSync(PATHS.NG_WORDS, 'utf-8').split('\n').filter(l => l.trim() && !l.startsWith('#'));
   const cleanVerbs = verbs.filter(v => !ngWords.some(ng => v.includes(ng)));
+  const filteredVerbs = removeSmallKanaEnd(cleanVerbs);
 
-  const mecabInfo = getMecabInfo(cleanVerbs);
+  const mecabInfo = getMecabInfo(filteredVerbs);
   const baseforms = mecabInfo.map(m => m.baseform);
 
-  const scored = cleanVerbs.map(verb => {
+  const scored = filteredVerbs.map(verb => {
     const count = baseforms.filter(bf => distance(verb, bf) <= 1).length;
     return { verb, count };
   });

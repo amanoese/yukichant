@@ -59,6 +59,14 @@ export function getFirstKanji(word) {
   return m ? m[0] : word[0];
 }
 
+export function removeSmallKanaEnd(words) {
+  const smallKana = 'ぁぃぅぇぉゃゅょゎっ';
+  return words.filter(word => {
+    const lastChar = word.slice(-1);
+    return !smallKana.includes(lastChar);
+  });
+}
+
 export function formatJson(mapping) {
   const keys = Object.keys(mapping).sort();
   const lines = keys.map(key => {
