@@ -14,6 +14,7 @@ program
 .version(version)
 .argument('[text]','input text','')
 .option('-d','decode flag')
+.option('-f, --furigana','display furigana (ruby)')
 .option('-s','disable typo correction (strict decode mode)')
 .option('--no-tfidf','disable tfidf mode for typo correction')
 .option('--levenshtein','use Levenshtein distance algorithm instead of Jaro-Winkler')
@@ -35,7 +36,13 @@ program
   } else if (option.d){
     process.stdout.write(await chant.decode(inputText,option))
   } else {
-    console.log(chant.encode(inputText))
+    const result = chant.encode(inputText, option)
+    if (typeof result === 'object') {
+      console.error(result.readings)
+      console.log(result.words)
+    } else {
+      console.log(result)
+    }
   }
 })
 .parse(process.argv);

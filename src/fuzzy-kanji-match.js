@@ -20,7 +20,10 @@ export function initFuzzyKanjiMatch({ meisi, dousi, kanji2element, TfIdf }) {
   tfidf = new TfIdf();
   _kanji2element = kanji2element;
 
-  allWord = [ ...Object.values(meisi),...Object.values(dousi)].flat();
+  allWord = [ 
+    ...Object.values(meisi).map(e => e.words),
+    ...Object.values(dousi).map(e => e.words)
+  ].flat();
 
   allHan = Array.from(new Set(allWord.join('').match(/[\p{scx=Han}]/ug)));
 
