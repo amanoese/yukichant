@@ -20,12 +20,10 @@ describe('chant',()=>{
 })
 
 describe('CLIオプション', () => {
-  // 「魔手よ呪文を骸に借り。」= encode('unko') の現在の出力
-  const correctSpell = '魔手よ呪文を骸に借り。'
-  // 一部の漢字を誤字にしたもの（骸→骸、借り→借ら）
-  // 現在の誤字修正ロジックでは「借ら」が「来ら」に修正されてしまうため、
-  // 確実に「借り」に修正される別の誤字（例：借リ）を使用する
-  const typoSpell = '魔手よ呪文を骸に借リ。'
+  // 「魔手よ呪文を指を借り。」= encode('unko') の現在の出力
+  const correctSpell = '魔手よ呪文を指を借り。'
+  // 一部の漢字を誤字にしたもの
+  const typoSpell = '魔手よ呪文を指を借リ。'
 
   test('-d: 正しい呪文をデコードできる', () => {
     const result = execSync(`echo -n '${correctSpell}' | ${chant_cmd} -d`)
