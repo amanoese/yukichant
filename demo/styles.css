@@ -256,6 +256,10 @@ textarea.readonly {
   pointer-events: none;
 }
 
+.furigana-options {
+  display: none;
+}
+
 .options-row {
   display: flex;
   align-items: center;
@@ -317,6 +321,37 @@ textarea.readonly {
   font-weight: 500;
 }
 
+/* ミニトグル */
+.label-with-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.toggle.mini {
+  gap: 0.35rem;
+  font-size: 0.75rem;
+}
+
+.toggle.mini .toggle-slider {
+  width: 28px;
+  height: 16px;
+}
+
+.toggle.mini .toggle-slider::after {
+  width: 12px;
+  height: 12px;
+}
+
+.toggle.mini input:checked + .toggle-slider::after {
+  transform: translateX(12px);
+}
+
+.toggle.mini .toggle-label {
+  font-weight: 400;
+  color: var(--text-sub);
+}
+
 .algorithm-select {
   display: flex;
   gap: 1rem;
@@ -359,6 +394,22 @@ textarea.readonly {
 .copy-btn.copied {
   color: var(--success);
   border-color: var(--success);
+}
+
+/* ふりがな表示 */
+.furigana-field {
+  margin-top: 1rem;
+}
+
+.furigana-display {
+  padding: 0.75rem;
+  border: 1px dashed var(--border);
+  border-radius: calc(var(--radius) - 2px);
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-size: 0.85rem;
+  word-break: break-all;
+  line-height: 1.5;
 }
 
 /* 差分表示 */

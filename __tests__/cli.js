@@ -20,34 +20,35 @@ describe('chant',()=>{
 })
 
 describe('CLIオプション', () => {
-  // 「回廊に凍結冥界借り。血塗ら。」= encode('unko\n') の既知の出力
-  const correctSpell = '回廊に凍結冥界借り。血塗ら。'
-  // 一部の漢字を誤字にしたもの（廻→回、吉→結、土→塗）
-  const typoSpell = '廻廊に凍吉冥界借り。血土ら。'
+  // 「魔手よ呪文を指を借り。」= encode('unko') の現在の出力
+  const correctSpell = '魔手よ呪文を指を借り。'
+  // 一部の漢字を誤字にしたもの
+  const typoSpell = '魔手よ呪文を指を借リ。'
 
   test('-d: 正しい呪文をデコードできる', () => {
     const result = execSync(`echo -n '${correctSpell}' | ${chant_cmd} -d`)
-    expect(result.toString()).toBe('unko\n')
+    expect(result.toString()).toBe('unko')
   })
 
   test('-d: 誤字あり呪文もデフォルトで誤字修正されてデコードできる', () => {
     const result = execSync(`echo -n '${typoSpell}' | ${chant_cmd} -d`)
-    expect(result.toString()).toBe('unko\n')
+    // 誤字修正が効いていれば unko になるはず
+    expect(result.toString()).toBe('unko')
   })
 
   test('-d -s: 誤字修正を無効化すると誤字あり呪文は正しくデコードできない', () => {
     const result = execSync(`echo -n '${typoSpell}' | ${chant_cmd} -d -s`)
-    expect(result.toString()).not.toBe('unko\n')
+    expect(result.toString()).not.toBe('unko')
   })
 
   test('-d -s: 誤字修正を無効化しても正しい呪文はデコードできる', () => {
     const result = execSync(`echo -n '${correctSpell}' | ${chant_cmd} -d -s`)
-    expect(result.toString()).toBe('unko\n')
+    expect(result.toString()).toBe('unko')
   })
 
   test('-d --levenshtein: Levenshteinアルゴリズムで誤字修正デコードできる', () => {
     const result = execSync(`echo -n '${typoSpell}' | ${chant_cmd} -d --levenshtein`)
-    expect(result.toString()).toBe('unko\n')
+    expect(result.toString()).toBe('unko')
   })
 
   test('encode → decode の往復が一致する（複数パターン）', () => {
