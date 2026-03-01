@@ -20,10 +20,10 @@ describe('chant',()=>{
 })
 
 describe('CLIオプション', () => {
-  // 「回廊に凍結冥界宿り。篩う。」= encode('unko\n') の既知の出力
-  const correctSpell = '回廊に凍結冥界宿り。篩う。'
-  // 一部の漢字を誤字にしたもの（廻→回、吉→結）
-  const typoSpell = '廻廊に凍吉冥界宿り。篩う。'
+  // 「黄昏より記憶の不浄を宿り。篩う。」= encode('unko\n') の既知の出力
+  const correctSpell = '黄昏より記憶の不浄を宿り。篩う。'
+  // 一部の漢字を誤字にしたもの（憶→臆）
+  const typoSpell = '黄昏より記臆の不浄を宿り。篩う。'
 
   test('-d: 正しい呪文をデコードできる', () => {
     const result = execSync(`echo -n '${correctSpell}' | ${chant_cmd} -d`)
