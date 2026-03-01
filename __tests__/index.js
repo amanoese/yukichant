@@ -9,7 +9,7 @@ describe('chant',()=>{
     // 乱数を考慮して複数回テストを実行する。
     for (let i=0; i<1000; i++) {
       expect(chant.encode('unko\n'))
-        .toMatch(/^(回廊に|回廊へ)(凍結|凍土に)(冥へ|冥界|冥府の|冥府より)(宿り。)(篩う。)$/)
+        .toMatch(/^(黄昏より)(記憶に|記憶の)(不浄の|不浄を|不条理の)(宿り。)(篩う。)$/)
     }
   })
 
@@ -19,7 +19,7 @@ describe('chant',()=>{
   })
 
   test('decode 改行文字込',async ()=>{
-    expect(await chant.decode('回廊に凍結冥界宿り。篩う。')).toBe('unko\n')
+    expect(await chant.decode('黄昏より記憶の不浄を宿り。篩う。')).toBe('unko\n')
   })
 
   test('dumpされた文字が途中でもdecodeできるかの確認',async ()=>{
@@ -35,8 +35,8 @@ describe('chant',()=>{
   })
 
   test('decode 文字の間違いをある程度修正できるか',async ()=>{
-    //                   回廊に凍結冥界宿り。篩う。
-    //                   回      結
-    expect(await chant.decode('廻廊に凍吉冥界宿り。篩う。')).toBe('unko\n')
+    //                   黄昏より記憶の不浄を宿り。篩う。
+    //                         記臆
+    expect(await chant.decode('黄昏より記臆の不浄を宿り。篩う。')).toBe('unko\n')
   })
 })

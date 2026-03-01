@@ -232,9 +232,6 @@ async function main() {
     mapping[hexOrder[i]] = verbGroups[i];
   }
 
-  // 0A は固定値
-  mapping['0A'] = ['具現化せよ', '踊れ', '歌え', '紡げ'];
-
   const json = formatJson(mapping);
   writeFileSync(OUTPUT_PATH, json);
 
