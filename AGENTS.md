@@ -37,20 +37,30 @@ yukichant/
 ├── src/               # ソースコード
 │   ├── cli.js        # CLIエントリーポイント（commander使用）
 │   ├── index.js      # メインロジック（encode/decode/generate）
+│   ├── node.js       # Node.js環境用エントリーポイント
+│   ├── browser.js    # ブラウザ環境用エントリーポイント
 │   ├── machine-encrypt.js      # ローター型暗号実装
 │   ├── typo-correction.js      # 誤字修正ロジック
 │   ├── fuzzy-kanji-match.js    # 漢字類似度マッチング
-│   └── jaro-winkler.js         # Jaro-Winkler実装
+│   ├── jaro-winkler.js         # Jaro-Winkler実装
+│   └── logger.js     # ロギングユーティリティ
 ├── data/             # 名詞・動詞データ（JSON）
 │   ├── meisi.json    # 名詞辞書（16進数コード→名詞リスト）
 │   └── dousi.json    # 動詞辞書（16進数コード→動詞リスト）
+├── scripts/          # 辞書生成・メンテナンス用スクリプト
+│   ├── generate-meisi.js  # 名詞辞書生成
+│   ├── generate-dousi.js  # 動詞辞書生成
+│   ├── regroup.js         # 辞書の再グループ化
+│   ├── analyze.js         # 辞書の分析
+│   └── helpers.js         # 共通ユーティリティ
 ├── dic/              # kuromoji用辞書（yukidic）
 ├── benchmark/        # ベンチマーク・精度測定
 │   ├── magi_ocr_data/  # Magiプロジェクトから取得したOCRテストデータ
 │   ├── results/        # 検証結果の保存先（.gitignore対象）
 │   └── scripts/        # ベンチマーク実行スクリプト
 ├── __tests__/        # Jest単体テスト
-└── raw_data/         # 辞書生成用スクリプト・元データ
+├── .github/          # GitHub Actionsワークフロー
+└── .husky/           # Gitフック設定（commit-msg）
 ```
 
 ### データフロー
@@ -166,6 +176,11 @@ Enigma機を模した暗号化アルゴリズム
 
 ## 開発ガイドライン
 
+### ブランチ運用と修正ルール
+- **`master`ブランチへの直接プッシュは禁止されています。**
+- すべての修正は機能ブランチ（feature/fix等）で行い、**Pull Request (PR)** を通じて`master`にマージしてください。
+- PRが作成されると、GitHub Actionsによってテストが自動実行されます。
+
 ### コーディング規約
 - ES Modules（`import`/`export`）を使用
 - 非同期処理は`async`/`await`
@@ -198,12 +213,23 @@ echo "呪文" | npm run dev -- -d -s -vv
 ```
 
 ### 辞書データ更新
-```bash
-# meisi.jsonを再生成
-./raw_data/meisi_json_generator
+辞書データの生成・更新には `scripts/` 配下のスクリプトを使用します。
 
-# dousi.jsonの生成
-./raw_data/json_generator
+```bash
+# meisi.json, dousi.json, regroup.js を一括実行
+npm run json-generate
+
+# 名詞辞書のみ生成
+npm run json-generate:meisi
+
+# 動詞辞書のみ生成
+npm run json-generate:dousi
+
+# 辞書の再グループ化（16進数コードの割り当て調整）
+npm run json-regroup
+
+# 辞書の分析（カバー率など）
+npm run json-analyze
 ```
 
 ### ベンチマーク
@@ -235,7 +261,7 @@ npm run benchmark:chatgpt -- --model gpt-5-nano --limit 100
 ## よくある変更タスク
 
 ### 1. 新しい名詞・動詞を追加
-- `raw_data/spell.txt`を編集
+- `raw_data/spell.txt`を編集（※元データは引き続き `raw_data/` に配置）
 - `npm run json-generate`で再生成
 - テストで動作確認
 
@@ -349,22 +375,40 @@ npm install
 
 ### コミットメッセージ
 **Conventional Commits形式**で記載すること。semantic-releaseによる自動バージョニングに使用される。
+**husky** により、コミット時にメッセージ形式がバリデーションされます（`.husky/commit-msg`）。
 
 フォーマット: `種別: 簡潔な説明`（日本語の説明を推奨）
 
 種別とリリースへの影響:
-- `feat`: 新機能追加 → **マイナー**リリース（例: 1.0.0 → 1.1.0）
-- `fix`: バグ修正 → **パッチ**リリース（例: 1.0.0 → 1.0.1）
-- `perf`: パフォーマンス改善 → **パッチ**リリース
-- `refactor`: コード整理 → **パッチ**リリース
-- `revert`: 変更の取り消し → **パッチ**リリース
-- `test`: テスト追加/修正 → リリースなし
-- `docs`: ドキュメント更新 → リリースなし
-- `chore`: その他の変更 → リリースなし
-- `ci`: CI設定の変更 → リリースなし
-- `deps`: 依存関係の更新 → リリースなし
 
-破壊的変更がある場合はフッターに`BREAKING CHANGE:`を記載 → **メジャー**リリース
+| 種別 | 内容 | リリースへの影響 |
+| :--- | :--- | :--- |
+| `feat` | 新機能追加 | **マイナー**リリース (1.0.0 → 1.1.0) |
+| `fix` | バグ修正 | **パッチ**リリース (1.0.0 → 1.0.1) |
+| `perf` | パフォーマンス改善 | **パッチ**リリース |
+| `refactor` | コード整理 | **パッチ**リリース |
+| `revert` | 変更の取り消し | **パッチ**リリース |
+| `test` | テスト追加/修正 | リリースなし |
+| `docs` | ドキュメント更新 | リリースなし |
+| `chore` | その他の変更 | リリースなし |
+| `ci` | CI設定の変更 | リリースなし |
+| `deps` | 依存関係の更新 | リリースなし |
+| `release` | リリース作業（自動生成） | リリースなし |
+| (Any) | `BREAKING CHANGE:` を含む変更 | **メジャー**リリース (1.0.0 → 2.0.0) |
+
+#### 破壊的変更（`BREAKING CHANGE:`）の判断基準
+
+yukichantでは、**「過去に生成された呪文が正しくデコードできなくなる変更」**を最も重大な破壊的変更と見なします。
+
+| カテゴリ | 破壊的変更と見なす例 |
+| :--- | :--- |
+| **呪文の互換性** | 暗号化ロジック (`machine-encrypt.js`) の変更、辞書 (`meisi.json`/`dousi.json`) のコード割り当て変更、エンコード形式の変更 |
+| **CLI / API** | 既存オプション (`-d`, `-s` 等) の削除・リネーム、`encode`/`decode` 関数の引数・戻り値の型変更 |
+| **環境** | Node.js サポートバージョンの切り上げ、必須となる外部バイナリの追加 |
+
+**注意**: 単なる単語の追加（既存のコード割り当てを維持したまま `words` 配列に要素を増やす）や、誤字修正アルゴリズムの精度向上（既存の正しい呪文のデコードに影響しないもの）は、通常 `feat` または `refactor` として扱い、破壊的変更には含めません。
+
+破壊的変更がある場合はフッターに `BREAKING CHANGE:` を記載してください。
 
 例:
 ```
@@ -507,6 +551,8 @@ ChatGPT APIを使用したプロンプトベースの誤字修正テストも利
 - [Chantプロジェクト（Magi）](https://github.com/xztaityozx/Chant) - OCRテストデータの出典
 
 ---
+
+**最終更新日: 2026-03-02**
 
 **このドキュメントは、AIエージェントがプロジェクトを理解し、コンテキストに沿った提案を行うためのガイドです。人間の開発者が読む場合は、まず[README.md](./README.md)と[develop.md](./doc/develop.md)を参照してください。**
 
