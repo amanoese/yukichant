@@ -14,6 +14,7 @@ let encrypt = (uint8array,roter,refrector) => {
     phase_2 = toNumber(refrector,phase_1);
     phase_3 = revToNumber(nextRotor,phase_2);
 
+    // ロータリーエンコーダーの回転（256で一周）
     nextRotor = [ ...nextRotor.slice(1) , nextRotor[0] ];
     
     ret.push(phase_3);
