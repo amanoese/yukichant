@@ -38,7 +38,7 @@ function buildReadingToKanjiMap(tokenizer) {
 function extractVerbs(meisiList, readingToKanji) {
   const base64Text = readFileSync(PATHS.SPELL, 'utf-8');
   const decodedText = Buffer.from(base64Text, 'base64').toString('utf-8');
-  const mecabOutput = execSync('mecab', { input: decodedText, encoding: 'utf-8', maxBuffer: 50 * 1024 * 1024 });
+  const mecabOutput = execSync('mecab -d /var/lib/mecab/dic/ipadic-utf8', { input: decodedText, encoding: 'utf-8', maxBuffer: 50 * 1024 * 1024 });
 
   const lines = mecabOutput.replace(/\t/g, ',').split('\n');
   const verbs = new Set();
@@ -67,7 +67,7 @@ function extractVerbs(meisiList, readingToKanji) {
 
   const hiraBaseList = [...hiraganaBaseforms.keys()];
   if (hiraBaseList.length > 0) {
-    const mecabBase = execSync('mecab', { input: hiraBaseList.join('\n'), encoding: 'utf-8', maxBuffer: 50 * 1024 * 1024 });
+    const mecabBase = execSync('mecab -d /var/lib/mecab/dic/ipadic-utf8', { input: hiraBaseList.join('\n'), encoding: 'utf-8', maxBuffer: 50 * 1024 * 1024 });
     for (const line of mecabBase.replace(/\t/g, ',').split('\n')) {
       const f = line.split(',');
       const surface = f[0];
@@ -89,7 +89,7 @@ function extractVerbs(meisiList, readingToKanji) {
 
     if (kanjiCandidates.length > 0) {
       const checkInput = kanjiCandidates.map(c => c.kanjiBase).join('\n');
-      const checkOutput = execSync('mecab', { input: checkInput, encoding: 'utf-8', maxBuffer: 50 * 1024 * 1024 });
+      const checkOutput = execSync('mecab -d /var/lib/mecab/dic/ipadic-utf8', { input: checkInput, encoding: 'utf-8', maxBuffer: 50 * 1024 * 1024 });
       const checkLines = checkOutput.split('EOS\n').filter(Boolean);
 
       for (let i = 0; i < kanjiCandidates.length && i < checkLines.length; i++) {
@@ -112,7 +112,7 @@ function extractVerbs(meisiList, readingToKanji) {
 
 function getMecabInfo(verbs) {
   const input = verbs.join('\n');
-  const mecabOutput = execSync('mecab', { input, encoding: 'utf-8', maxBuffer: 50 * 1024 * 1024 });
+  const mecabOutput = execSync('mecab -d /var/lib/mecab/dic/ipadic-utf8', { input, encoding: 'utf-8', maxBuffer: 50 * 1024 * 1024 });
   const lines = mecabOutput.replace(/\t/g, ',').split('\n');
 
   const results = [];
@@ -124,6 +124,11 @@ function getMecabInfo(verbs) {
     results.push({ surface, baseform });
   }
   return results;
+}
+
+function getFirstKanji(word) {
+  const m = word.match(/^\p{scx=Han}/u);
+  return m ? m[0] : '';
 }
 
 function scoreFilterAndGroup(verbs) {
@@ -150,10 +155,12 @@ function scoreFilterAndGroup(verbs) {
   const filteredSet = new Set(filtered);
   const filteredMecab = getMecabInfo(filtered);
   const groups = new Map();
-  for (const { surface, baseform } of filteredMecab) {
+  for (const { surface } of filteredMecab) {
     if (!filteredSet.has(surface)) continue;
-    if (!groups.has(baseform)) groups.set(baseform, []);
-    groups.get(baseform).push(surface);
+    const firstKanji = getFirstKanji(surface);
+    if (!firstKanji) continue;
+    if (!groups.has(firstKanji)) groups.set(firstKanji, []);
+    groups.get(firstKanji).push(surface);
   }
 
   const sortedGroups = [...groups.entries()]

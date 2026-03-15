@@ -9,7 +9,7 @@ export const PATHS = {
   DATA: join(__dirname, '..', 'data'),
   SPELL: join(__dirname, '..', 'assets', 'spell.txt'),
   NG_WORDS: join(__dirname, '..', 'assets', 'ng-words.txt'),
-  KUROMOJI_DIC: join(__dirname, '..', 'node_modules', 'yukidic', 'dic'),
+  KUROMOJI_DIC: join(__dirname, '..', 'node_modules', 'kuromoji', 'dict'),
 };
 
 export const MORAE_COUNT = {
