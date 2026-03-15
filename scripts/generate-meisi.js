@@ -9,7 +9,7 @@ import { PATHS, removeSmallKanaEnd } from './helpers.js';
 function runMecab() {
   const base64Text = readFileSync(PATHS.SPELL, 'utf-8');
   const decodedText = Buffer.from(base64Text, 'base64').toString('utf-8');
-  const output = execSync('mecab', { input: decodedText, encoding: 'utf-8', maxBuffer: 50 * 1024 * 1024 });
+  const output = execSync('mecab -d /var/lib/mecab/dic/ipadic-utf8', { input: decodedText, encoding: 'utf-8', maxBuffer: 50 * 1024 * 1024 });
   return output.replace(/\t/g, ',').split('\n');
 }
 

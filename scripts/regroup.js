@@ -6,6 +6,19 @@ import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { PATHS, MORAE_COUNT, buildTokenizer, getReading, getFirstNMorae, getFirstKanji, formatJson } from './helpers.js';
 
+function sortWordReadingPairs(words, readings) {
+  const pairs = words.map((word, i) => ({ word, reading: readings[i] ?? '' }));
+  pairs.sort((a, b) => {
+    const readingDiff = a.reading.localeCompare(b.reading, 'ja');
+    if (readingDiff !== 0) return readingDiff;
+    return a.word.localeCompare(b.word, 'ja');
+  });
+  return {
+    words: pairs.map(p => p.word),
+    readings: pairs.map(p => p.reading),
+  };
+}
+
 function regroupMeisi(tokenizer, dict, hexOrder) {
   const label = 'meisi';
   const MEISI_MORAE_COUNT = 2; // 名詞は2拍を維持
@@ -45,13 +58,20 @@ function regroupMeisi(tokenizer, dict, hexOrder) {
   }
 
   const merged = [...firstNGroups.entries()]
-    .map(([firstN, data]) => ({ 
-      mora: firstN, 
-      firstKanji: [...data.firstKanji].sort(),
-      words: data.words,
-      readings: data.readings
-    }))
-    .sort((a, b) => b.words.length - a.words.length);
+    .map(([firstN, data]) => {
+      const sortedPairs = sortWordReadingPairs(data.words, data.readings);
+      return {
+        mora: firstN,
+        firstKanji: [...data.firstKanji].sort(),
+        words: sortedPairs.words,
+        readings: sortedPairs.readings,
+      };
+    })
+    .sort((a, b) => {
+      const diff = b.words.length - a.words.length;
+      if (diff !== 0) return diff;
+      return a.mora.localeCompare(b.mora);
+    });
 
   const selected = merged.slice(0, 256);
 
@@ -119,13 +139,20 @@ function regroupDousi(tokenizer, dict, hexOrder) {
   }
 
   const merged = [...firstNGroups.entries()]
-    .map(([firstN, data]) => ({
-      mora: firstN,
-      firstKanji: [...data.firstKanji].sort(),
-      words: data.words,
-      readings: data.readings
-    }))
-    .sort((a, b) => b.words.length - a.words.length);
+    .map(([firstN, data]) => {
+      const sortedPairs = sortWordReadingPairs(data.words, data.readings);
+      return {
+        mora: firstN,
+        firstKanji: [...data.firstKanji].sort(),
+        words: sortedPairs.words,
+        readings: sortedPairs.readings,
+      };
+    })
+    .sort((a, b) => {
+      const diff = b.words.length - a.words.length;
+      if (diff !== 0) return diff;
+      return a.mora.localeCompare(b.mora);
+    });
 
   const selected = merged.slice(0, 256);
 

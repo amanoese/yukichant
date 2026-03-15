@@ -73,6 +73,9 @@ const maxTfidfSocres = (kanji,isDebug = false) => {
 
 const minDistances = (kanji) => {
   let element = _kanji2element[kanji];
+  if (!element) {
+    return [];
+  }
   let elementStr = element.join('');
   let bestMatches = [];
   let minDistance = 100;
@@ -90,8 +93,6 @@ const minDistances = (kanji) => {
       });
     }
   }
-  console.log(elementStr);
-  console.log(bestMatches);
   return bestMatches;
 }
 

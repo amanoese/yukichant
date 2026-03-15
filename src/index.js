@@ -101,8 +101,17 @@ export let default_decoder = (typoCorrection) => async (encodeText,option = {} ,
   }
 
   // デコード用の正規表現に変換。
-  // ex: /さざ波|その者|ほうき星よ/g
-  let decodeRegExp = new RegExp(Object.keys(decodeHash).join('|'),'g')
+  // 接頭辞衝突（例: 「穢れ」と「穢れで」）で短い語が先にマッチしないよう、
+  // 長い語順に並べたうえで正規表現をエスケープする。
+  const escapeRegExp = (word) => word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  let decodeRegExp = new RegExp(
+    Object
+      .keys(decodeHash)
+      .sort((a, b) => b.length - a.length)
+      .map(escapeRegExp)
+      .join('|'),
+    'gu'
+  )
 
   // 正規表現にマッチするもののみに絞り込み。
   textCodeList = cleanEncodeText.match(decodeRegExp) || []
