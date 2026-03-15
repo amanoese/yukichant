@@ -194,6 +194,16 @@ npm test  # Jestで単体テスト実行
 
 テストファイル: `__tests__/*.js`
 
+#### テスト修正時の注意点（重要）
+- テスト失敗時は、まず**実装バグ**と**辞書更新（`yukidic`）起因の期待値差分**を切り分ける
+- 期待値更新の前に `npm install` を実行し、依存（`yukidic` / `kanjivg-radical`）を正常化する
+- CLI回帰テストは原則として**固定文字列**を使う（安易に動的生成ベースへ戻さない）
+- 現行の固定文字列（`__tests__/cli.js`）:
+  - 正常呪文: `破滅を御前に意に従い借り。` → `unko`
+  - 誤字呪文: `破滅を御前に意に従い借リ。`
+- 誤字系テストは `-d` / `-d -s` / `-d --levenshtein` の3系統で確認する
+- 期待値を更新した場合は、再現コマンドと実出力を確認してから `npm test` を再実行する
+
 ### ビルド・実行
 ```bash
 # 開発モード（エンコード）
@@ -202,14 +212,17 @@ npm run dev unko
 # 開発モード（デコード）
 echo "呪文" | npm run dev -- -d
 
-# 誤字修正付きデコード
-echo "呪文" | npm run dev -- -d -s
+# 誤字修正付きデコード（デフォルト）
+echo "呪文" | npm run dev -- -d
 
 # Levenshteinアルゴリズム使用
-echo "呪文" | npm run dev -- -d -s --levenshtein
+echo "呪文" | npm run dev -- -d --levenshtein
+
+# strict decode（誤字修正を無効化）
+echo "呪文" | npm run dev -- -d -s
 
 # デバッグ出力
-echo "呪文" | npm run dev -- -d -s -vv
+echo "呪文" | npm run dev -- -d -vv
 ```
 
 ### 辞書データ更新
@@ -256,7 +269,7 @@ npm run benchmark:chatgpt -- --model gpt-5 --limit 30
 npm run benchmark:chatgpt -- --model gpt-5-nano --limit 100
 ```
 
-**注意**: ChatGPTの結果は`chatgpt/{model}/`ディレクトリにモデル別に保存されます。レポート生成時に各モデルの最新結果が自動的に集計され、比較レポートに表示されます。
+**注意**: ChatGPTの結果は`results/chatgpt/{model}/`ディレクトリにモデル別に保存されます。レポート生成時に各モデルの最新結果が自動的に集計され、比較レポートに表示されます。
 
 ## よくある変更タスク
 
@@ -297,7 +310,7 @@ if (option.Vv === true) {
 
 ### 類似度スコアの確認
 ```bash
-echo "罹刹に烙印を秘術を帰ら。" | npm run dev -- -d -s -vv
+echo "罹刹に烙印を秘術を帰ら。" | npm run dev -- -d -vv
 # → アルゴリズム名、類似度スコア、候補単語数を表示
 ```
 
@@ -312,7 +325,7 @@ console.log('textCodeList', textCodeList);  // マッチした単語リスト
 
 ### 重要な外部ライブラリ
 - **kuromoji**: 日本語形態素解析（辞書: yukidic）
-- **yukidic**: カスタム形態素解析辞書（git submodule）
+- **yukidic**: カスタム形態素解析辞書（npmのGitHub依存）
 - **fastest-levenshtein**: 高速Levenshtein距離計算
 - **natural**: TF-IDF計算（NLP）
 - **commander**: CLIフレームワーク
@@ -321,7 +334,7 @@ console.log('textCodeList', textCodeList);  // マッチした単語リスト
 ### インストール時の注意
 ```bash
 npm install
-# → postinstallでyukidicをgit cloneする
+# → npm依存としてyukidic/kanjivg-radicalを取得する
 ```
 
 ## パフォーマンス考慮事項
@@ -352,7 +365,7 @@ npm install
 ## トラブルシューティング
 
 ### 問題: デコードが失敗する
-- 誤字修正モード（`-s`）を試す
+- strict decode（`-s`）を外して誤字修正を有効化し、再度デコードを試す
 - `-vv`オプションで詳細ログを確認
 - 辞書に単語が存在するか確認
 
@@ -361,7 +374,7 @@ npm install
 - `npm install`を再実行
 
 ### 問題: テストが失敗する
-- Node.jsバージョン確認（>=12.22.8）
+- Node.jsバージョン確認（>=20）
 - `NODE_OPTIONS=--experimental-vm-modules jest`が必要
 
 ## レビュー・コミットガイドライン
@@ -515,7 +528,7 @@ npm run benchmark:chatgpt -- --model gpt-5 --limit 30
 npm run benchmark:chatgpt -- --model gpt-5-nano --limit 100
 ```
 
-**注意**: ChatGPTの結果は`chatgpt/{model}/`ディレクトリにモデル別に保存されます。レポート生成時に各モデルの最新結果が自動的に集計され、比較レポートに表示されます。
+**注意**: ChatGPTの結果は`results/chatgpt/{model}/`ディレクトリにモデル別に保存されます。レポート生成時に各モデルの最新結果が自動的に集計され、比較レポートに表示されます。
 
 ### ChatGPT APIテスト
 
@@ -554,5 +567,5 @@ ChatGPT APIを使用したプロンプトベースの誤字修正テストも利
 
 **最終更新日: 2026-03-02**
 
-**このドキュメントは、AIエージェントがプロジェクトを理解し、コンテキストに沿った提案を行うためのガイドです。人間の開発者が読む場合は、まず[README.md](./README.md)と[develop.md](./doc/develop.md)を参照してください。**
+**このドキュメントは、AIエージェントがプロジェクトを理解し、コンテキストに沿った提案を行うためのガイドです。人間の開発者が読む場合は、まず[README.md](./README.md)と[develop.md](./docs/develop.md)を参照してください。**
 

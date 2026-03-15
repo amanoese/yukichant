@@ -2,6 +2,20 @@
 
 このディレクトリには、yukichantの誤字修正機能の精度を測定するためのベンチマークデータとスクリプトが含まれています。
 
+## 事前準備
+
+```bash
+# 依存関係のインストール（yukidic / kanjivg-radical を含む）
+npm install
+
+# （任意）yukidic を最新コミットへ更新して検証したい場合
+npm install "yukidic@github:amanoese/yukidic"
+npm install
+```
+
+> `yukidic` を更新した場合は、ベンチマークの前に `npm test` を実行して
+> 既存機能の回帰がないことを確認してから比較することを推奨します。
+
 ## ディレクトリ構成
 
 ```
@@ -43,6 +57,9 @@ benchmark/
 # 全アルゴリズム比較 + レポート生成（デフォルト）
 npm run benchmark
 
+# benchmark の別名（同じ処理）
+npm run benchmark:all
+
 # 単一アルゴリズムのテスト
 npm run benchmark:single [algorithm]
 
@@ -51,6 +68,9 @@ npm run benchmark:compare
 
 # レポート生成のみ
 npm run benchmark:report
+
+# 既存結果の最新ファイルを再集計してレポート生成
+npm run benchmark:report:latest
 
 # ChatGPT APIを使用したテスト（上位50件、デフォルト: gpt-5-mini）
 export OPENAI_API_KEY="sk-..."
@@ -63,7 +83,7 @@ npm run benchmark:chatgpt -- --model gpt-5-nano --limit 100
 
 **ChatGPTテストの詳細**: `scripts/README_CHATGPT.md` を参照してください。
 
-**注意**: ChatGPTの結果は`chatgpt/{model}/`ディレクトリにモデル別に保存されます。レポート生成時に各モデルの最新結果が自動的に集計され、比較レポートに表示されます。
+**注意**: ChatGPTの結果は`results/chatgpt/{model}/`ディレクトリにモデル別に保存されます。レポート生成時に各モデルの最新結果が自動的に集計され、比較レポートに表示されます。
 
 ### 3. 結果の確認
 
