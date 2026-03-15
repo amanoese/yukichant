@@ -152,6 +152,7 @@ const chant = await initBrowser({
 
 ## Documentation
 
+- 開発時のテスト運用（`yukidic`更新手順・固定文字列テスト方針）は `docs/develop.md` を参照
 - [開発者ガイド (Develop Guide)](/docs/develop.md)
 - [誤字修正アルゴリズムの詳細 (Typo Correction Algorithm)](/docs/typo-correction-algorithm.md)
 - [辞書生成について (Dictionary Generation)](/docs/dictionary-generation.md)
