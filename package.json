@@ -59,7 +59,7 @@
     "loglevel": "^1.9.2",
     "natural": "^6.10.4",
     "picocolors": "^1.0.0",
-    "yukidic": "git+https://github.com/amanoese/yukidic.git"
+    "yukidic": "github:amanoese/yukidic"
   },
   "files": [
     "src/",

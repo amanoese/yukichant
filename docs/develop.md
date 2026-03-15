@@ -43,15 +43,50 @@ $ npm run json-generate
 ### アルゴリズムのテスト
 
 ```bash
-## Jaro-Winklerでテスト（デフォルト）
-$ echo 罹刹に烙印を秘術を帰ら。 | npm run dev -- -d -s -vv
+## Jaro-Winkler + TF-IDF でテスト（デフォルト）
+$ echo 罹刹に烙印を秘術を帰ら。 | npm run dev -- -d -vv
 
 ## Levenshteinでテスト
-$ echo 罹刹に烙印を秘術を帰ら。 | npm run dev -- -d -s --levenshtein -vv
+$ echo 罹刹に烙印を秘術を帰ら。 | npm run dev -- -d --levenshtein -vv
+
+## 誤字修正を無効化したstrict decode
+$ echo 罹刹に烙印を秘術を帰ら。 | npm run dev -- -d -s -vv
 
 ## ユニットテストの実行
 $ npm test
 ```
+
+### 依存更新（`yukidic`）時の手順
+
+```bash
+## 依存を正しい状態にする
+$ npm install
+
+## 必要に応じてyukidicを最新化
+$ npm install "yukidic@github:amanoese/yukidic"
+$ npm install
+
+## 回帰確認
+$ npm test
+```
+
+### テスト修正時の注意点
+
+- テスト失敗時は、まず**実装バグ**と**辞書更新（`yukidic`）起因の期待値差分**を切り分ける
+- 期待値を更新する前に、依存（`yukidic` / `kanjivg-radical`）を `npm install` で復元する
+- CLI回帰テストは原則として**固定文字列**を使用し、安易に動的生成へ戻さない
+- 誤字系テストは `-d` / `-d -s` / `-d --levenshtein` の3系統で確認する
+- 期待値更新後は `npm test` を再実行し、必要に応じてCLIを手動実行して出力を確認する
+
+### CLI回帰テストで使う固定文字列
+
+`__tests__/cli.js` では、辞書更新後の挙動で固定化した以下の文字列を使用します。
+
+- 正常呪文: `破滅を御前に意に従い借り。` → `unko`
+- 誤字呪文: `破滅を御前に意に従い借リ。`
+  - `-d` では `unko` に復号される
+  - `-d -s` では `unko` にならない
+  - `-d --levenshtein` では `unko` に復号される
 
 ### 実装の詳細
 
