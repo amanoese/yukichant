@@ -20,6 +20,8 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
+        cache: npm
+        cache-dependency-path: package-lock.json
     - run: node -v
     - run: npm ci
     - run: npm test
@@ -38,6 +40,8 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
+        cache: npm
+        cache-dependency-path: package-lock.json
 
     - name: Global install
       run: |
