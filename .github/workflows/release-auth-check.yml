@@ -20,26 +20,17 @@ jobs:
           persist-credentials: false
           ref: ${{ github.event.pull_request.head.sha }}
 
-      - name: Check secrets availability
+      - name: Check release PAT availability
         id: secret_check
         shell: bash
         run: |
-          if [ -n "${NPM_TOKEN:-}" ] && [ -n "${RELEASE_PAT:-}" ]; then
+          if [ -n "${RELEASE_PAT:-}" ]; then
             echo "available=true" >> "$GITHUB_OUTPUT"
           else
             echo "available=false" >> "$GITHUB_OUTPUT"
           fi
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           RELEASE_PAT: ${{ secrets.RELEASE_PAT }}
-
-      - name: Verify npm token
-        id: npm_token
-        if: steps.secret_check.outputs.available == 'true'
-        continue-on-error: true
-        run: npm whoami --registry https://registry.npmjs.org/
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Verify release PAT
         id: release_pat
@@ -58,13 +49,11 @@ jobs:
         uses: actions/github-script@v7
         with:
           script: |
-            const npmTokenValid = '${{ steps.npm_token.outcome }}' === 'success';
             const releasePatValid = '${{ steps.release_pat.outcome }}' === 'success';
 
             let body = `### リリース認証確認\n\n`;
             body += `| 項目 | 状態 |\n`;
             body += `| --- | --- |\n`;
-            body += `| NPM_TOKEN | ${npmTokenValid ? '有効 ✅' : '無効 ❌'} |\n`;
             body += `| RELEASE_PAT | ${releasePatValid ? '有効 ✅' : '無効 ❌'} |\n`;
 
             const { data: comments } = await github.rest.issues.listComments({
