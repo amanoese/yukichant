@@ -1,0 +1,77 @@
+name: Release Auth Check
+
+on:
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR head
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Check release PAT availability
+        id: secret_check
+        shell: bash
+        run: |
+          if [ -n "${RELEASE_PAT:-}" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          RELEASE_PAT: ${{ secrets.RELEASE_PAT }}
+
+      - name: Verify release PAT
+        id: release_pat
+        if: steps.secret_check.outputs.available == 'true'
+        continue-on-error: true
+        shell: bash
+        run: |
+          git remote set-url origin "https://x-access-token:${RELEASE_PAT}@github.com/${REPOSITORY}.git"
+          git push -n -f origin HEAD:refs/heads/master
+        env:
+          RELEASE_PAT: ${{ secrets.RELEASE_PAT }}
+          REPOSITORY: ${{ github.repository }}
+
+      - name: Comment on PR
+        if: steps.secret_check.outputs.available == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const releasePatValid = '${{ steps.release_pat.outcome }}' === 'success';
+
+            let body = `### リリース認証確認\n\n`;
+            body += `| 項目 | 状態 |\n`;
+            body += `| --- | --- |\n`;
+            body += `| RELEASE_PAT | ${releasePatValid ? '有効 ✅' : '無効 ❌'} |\n`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const checks = comments
+              .filter(c => c.body.includes('### リリース認証確認'))
+              .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+            const latest = checks[0];
+
+            const params = {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body,
+            };
+
+            if (!latest || latest.body !== body) {
+              await github.rest.issues.createComment({ ...params, issue_number: context.issue.number });
+            }
