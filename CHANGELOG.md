@@ -1,3 +1,20 @@
+## [6.0.0](https://github.com/amanoese/yukichant/compare/v5.0.1...v6.0.0) (2026-03-21)
+
+### ⚠ BREAKING CHANGES
+
+* 現在のブランチの変更は既存の呪文互換性に影響するため、メジャーバージョンを6に引き上げます。
+
+Made-with: Cursor
+
+### Features
+
+* v6向けの破壊的変更を宣言 ([462f6c4](https://github.com/amanoese/yukichant/commit/462f6c4a0f1e6584080446c1c22c4b35b349db1e))
+
+### Bug Fixes
+
+* yukidic更新後のデコード回帰とテスト運用を修正 ([6496253](https://github.com/amanoese/yukichant/commit/6496253bdad9f44de9758681d55caed124e23d7f))
+* リリースワークフローをPAT認証に変更 ([a5f2c52](https://github.com/amanoese/yukichant/commit/a5f2c527844279c2e0dbda9bb689ac502fcae5ef))
+
 ## [5.0.1](https://github.com/amanoese/yukichant/compare/v5.0.0...v5.0.1) (2026-03-01)
 
 ### Bug Fixes
