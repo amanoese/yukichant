@@ -33,7 +33,8 @@ describe('typoCorrection', () => {
   test('test1', () => {
     let allToken = typoCorrection.tokenize('罹刹に烙印を秘術を帰ら。');
     expect(typoCorrection.organizeUnknownTokens(allToken)).toEqual([
-      {"adverb": true, "i": 1, "old": "罹刹に", "v": "罹刹に"},
+      {"adverb": false, "i": 1, "old": "罹", "pos": "動詞", "v": "罹"},
+      {"adverb": true, "i": 2, "old": "刹に", "v": "刹に"},
       {"adverb": true, "i": 4, "old": "烙印を", "v": "烙印を"},
       {"adverb": true, "i": 7, "old": "秘術を", "v": "秘術を"},
       {"adverb": true, "i": 10, "old": "帰ら。", "v": "帰ら。"}
@@ -44,8 +45,12 @@ describe('typoCorrection', () => {
     expect(typoCorrection.nearTokenMatch('罹刹に')).toEqual('罪と共に');
   })
 
+  test('業よは影よより業火よを優先する', () => {
+    expect(typoCorrection.findClosestWord('業よ', ['業火よ', '影よ'])).toEqual('業火よ');
+  })
+
   test('test3', () => {
-    expect(typoCorrection.exec('羅剤に聖者障墾は守る。塔と瞬きよ呼び声を呼び覚まさ。交わる。', option)).toEqual('御前に聖者障壁は葬る神と輝きよ呼び声を武器合わせる')
+    expect(typoCorrection.exec('羅剤に聖者障墾は守る。塔と瞬きよ呼び声を呼び覚まさ。交わる。', option)).toEqual('罪と共に聖者障害を垂れる守りの垂れる輝きよ呼び声を武器合わせる')
   })
   test('test4', () => {
     // Levenshteinアルゴリズムを使用する場合
@@ -53,6 +58,6 @@ describe('typoCorrection', () => {
   })
   test('test', () => {
     // Jaro-Winklerアルゴリズムの実際の出力に合わせて期待値を更新
-    expect(typoCorrection.exec('罹剤に聖戦にキモが守る。沈黙の煉獣の羽はたき。', option)).toEqual('御前に聖戦に姿が葬る沈黙の煉獄と獣の羽ばたき')
+    expect(typoCorrection.exec('罹剤に聖戦にキモが守る。沈黙の煉獣の羽はたき。', option)).toEqual('罪ば刹那にて聖戦に現出が守りの沈黙の煉獄と獣の羽ばたき')
   })
 });

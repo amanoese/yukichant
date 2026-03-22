@@ -3,7 +3,7 @@
  * 文字列の類似度を計算するアルゴリズム。値が1に近いほど類似していることを示す。
  */
 export class JaroWinklerDistance {
-  constructor(prefixScale = 0.1, boostThreshold = 0.7, prefixLength = 4) {
+  constructor(prefixScale = 0.15, boostThreshold = 0.6, prefixLength = 5) {
     this.prefixScale = prefixScale;      // プレフィックス重み
     this.boostThreshold = boostThreshold; // ブースト閾値
     this.prefixLength = prefixLength;     // プレフィックス最大長

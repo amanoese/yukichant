@@ -70,114 +70,74 @@ function findClosestWord(word, wordList, useLevenshtein = false, option = { v: f
   } else {
     // Jaro-Winkler距離を使用
     algorithmName = 'Jaro-Winkler';
-    let maxSimilarity = -1;
-    closestWord = word;
-    
-    for (const candidateWord of wordList) {
-      const similarity = jaroWinkler.similarity(word, candidateWord);
-      if (similarity > maxSimilarity) {
-        maxSimilarity = similarity;
-        closestWord = candidateWord;
-      }
-    }
-    score = maxSimilarity;
-    
-    // Jaro-Winkler距離が低い場合（0.7未満）、Levenshtein距離も考慮する
-    // ただし、Jaro-Winklerの類似度が高い場合はそれを優先
-    if (maxSimilarity < 0.7) {
-      let minLevenshteinDistance = Infinity;
-      let bestLevenshteinWord = closestWord;
-      let bestLengthDiff = Infinity;
-      let bestPrefixMatch = -1;
-      
-      for (const candidateWord of wordList) {
-        const levDistance = distance(word, candidateWord);
-        const lengthDiff = Math.abs(word.length - candidateWord.length);
-        
-        // 先頭文字の一致数をカウント
-        let prefixMatch = 0;
-        for (let i = 0; i < Math.min(word.length, candidateWord.length); i++) {
-          if (word[i] === candidateWord[i]) {
-            prefixMatch++;
-          } else {
-            break;
-          }
+    // 1回目のスコアリング: 現在のJaro-Winkler設定で全候補を評価
+    const jaroScored = wordList
+      .map((candidateWord, index) => ({
+        index,
+        candidateWord,
+        similarity: jaroWinkler.similarity(word, candidateWord),
+      }))
+      .sort((a, b) => {
+        if (b.similarity !== a.similarity) {
+          return b.similarity - a.similarity;
         }
-        
-        // より良い距離、または同じ距離でより良い候補を選ぶ
-        // 優先順位: 1. 距離が小さい 2. 文字列が短い 3. 長さの差が小さい 4. 先頭一致が多い
-        // 文字列が短いものを優先することで、より簡潔な修正を選ぶ
-        
-        const isBetter = (() => {
-          // 1. 距離がより小さい場合
-          if (levDistance < minLevenshteinDistance) {
-            return true;
+        return a.index - b.index;
+      });
+
+    const bestJaro = jaroScored[0];
+    const secondJaro = jaroScored[1];
+    const gapThreshold =
+      typeof option.jaroGapThreshold === 'number'
+        ? option.jaroGapThreshold
+        : typeof option.jaroLevenshteinGapThreshold === 'number'
+          ? option.jaroLevenshteinGapThreshold
+        : 0.02;
+
+    closestWord = bestJaro?.candidateWord ?? word;
+    score = bestJaro?.similarity ?? 0;
+
+    // 上位差が小さいときだけ「接頭辞一致を強めたJaro-Winkler」で再判定する
+    if (secondJaro && bestJaro.similarity - secondJaro.similarity <= gapThreshold) {
+      // 1位との差が閾値以内の候補だけを曖昧候補として再比較対象にする
+      const ambiguousCandidates = jaroScored
+        .filter((item) => bestJaro.similarity - item.similarity <= gapThreshold)
+        .map((item) => ({
+          index: item.index,
+          candidateWord: item.candidateWord,
+          baseSimilarity: item.similarity,
+        }));
+
+      const boostedPrefixScale =
+        typeof option.jaroBoostedPrefixScale === 'number'
+          ? option.jaroBoostedPrefixScale
+          : 0.3;
+      const boostedJaroWinkler = new JaroWinklerDistance(
+        boostedPrefixScale,
+        jaroWinkler.boostThreshold,
+        jaroWinkler.prefixLength
+      );
+
+      // 2回目のスコアリング:
+      // 1) boostedSimilarity 2) baseSimilarity 3) 元の候補順 の順で決着
+      const boostedScored = ambiguousCandidates
+        .map((item) => ({
+          ...item,
+          boostedSimilarity: boostedJaroWinkler.similarity(word, item.candidateWord),
+        }))
+        .sort((a, b) => {
+          if (b.boostedSimilarity !== a.boostedSimilarity) {
+            return b.boostedSimilarity - a.boostedSimilarity;
           }
-          
-          // 距離が同じでない場合は、より悪い候補
-          if (levDistance !== minLevenshteinDistance) {
-            return false;
+          if (b.baseSimilarity !== a.baseSimilarity) {
+            return b.baseSimilarity - a.baseSimilarity;
           }
-          
-          // 2. 距離が同じ場合、以下の条件で判定
-          // 2-1. 文字列がより短い
-          if (candidateWord.length < bestLevenshteinWord.length) {
-            return true;
-          }
-          
-          // 文字列の長さが異なる（より長い）場合は、より悪い候補
-          if (candidateWord.length !== bestLevenshteinWord.length) {
-            return false;
-          }
-          
-          // 2-2. 文字列の長さが同じ場合、さらに詳細な条件で判定
-          // 2-2-1. 長さの差がより小さい
-          if (lengthDiff < bestLengthDiff) {
-            return true;
-          }
-          
-          // 長さの差が異なる（より大きい）場合は、より悪い候補
-          if (lengthDiff !== bestLengthDiff) {
-            return false;
-          }
-          
-          // 2-2-2. 長さの差が同じで、先頭一致がより多い
-          if (prefixMatch > bestPrefixMatch) {
-            return true;
-          }
-          
-          // 先頭一致が異なる（より少ない）場合は、より悪い候補
-          if (prefixMatch !== bestPrefixMatch) {
-            return false;
-          }
-          
-          // 2-2-3. すべて同じ場合、辞書順で小さい方を選ぶ
-          return candidateWord < bestLevenshteinWord;
-        })();
-        
-        if (isBetter) {
-          minLevenshteinDistance = levDistance;
-          bestLevenshteinWord = candidateWord;
-          bestLengthDiff = lengthDiff;
-          bestPrefixMatch = prefixMatch;
-        }
-      }
-      
-      // Jaro-Winklerの類似度が低い場合（0.5未満）は、Levenshtein距離の結果を優先
-      // それ以外の場合は、Jaro-Winklerの結果を優先
-      if (maxSimilarity < 0.5 || minLevenshteinDistance <= Math.max(2, word.length / 2)) {
-        // Jaro-Winklerの結果とLevenshteinの結果を比較
-        const jaroBestMatch = closestWord;
-        const jaroDistance = distance(word, jaroBestMatch);
-        
-        // Levenshtein距離がより良い結果を提供する場合、それを使用する
-        if (minLevenshteinDistance < jaroDistance || 
-            (minLevenshteinDistance === jaroDistance && bestLevenshteinWord.length < jaroBestMatch.length)) {
-          closestWord = bestLevenshteinWord;
-          algorithmName = 'Jaro-Winkler+Levenshtein';
-          score = minLevenshteinDistance;
-        }
-      }
+          return a.index - b.index;
+        });
+
+      // 同点の最終タイブレークは「先に現れた候補」を採用する
+      closestWord = boostedScored[0]?.candidateWord ?? closestWord;
+      score = boostedScored[0]?.boostedSimilarity ?? score;
+      algorithmName = 'Jaro-Winkler(boosted)';
     }
   }
   
@@ -264,6 +224,8 @@ const nearTokenMatch = (tokenStr, option = { isJaroWinklerDistance: false, v: fa
   log.debug('tokenStr', tokenStr);
   
   let tokens = [...tokenStr];
+  // bestMatch: 現時点での全体最良候補（文字列）
+  // bestDistance: bestMatchと入力の距離（小さいほど良い）
   let bestMatch = null;
   let bestDistance = Infinity;
   
@@ -279,7 +241,7 @@ const nearTokenMatch = (tokenStr, option = { isJaroWinklerDistance: false, v: fa
       let bestKanji = kanji;
       let bestLocalDistance = Infinity;
       
-      // この位置の漢字の各候補を評価
+      // この位置だけを差し替えた候補文字列を作り、局所的に最良の漢字を選ぶ
       for (const result of fkm.maxTfidfSocres(kanji)) {
         let newKanji = result.kanji;
         let testTokens = [...currentTokens];
@@ -307,10 +269,10 @@ const nearTokenMatch = (tokenStr, option = { isJaroWinklerDistance: false, v: fa
         }
       }
       
-      // この位置で最適な漢字を採用
+      // 局所最適だった漢字を採用して、次の位置の探索に引き継ぐ
       currentTokens[i] = bestKanji;
       
-      // 現在の最良のマッチを更新
+      // 採用後の全文字列で再評価し、グローバル最良候補を更新する
       let currentText = currentTokens.join('');
       let currentBestMatch = findClosestWord(currentText, fkm.allWord, option.Levenshtein, option);
       let currentDistance = calculateSimilarity(currentText, currentBestMatch, option.Levenshtein);
@@ -322,12 +284,12 @@ const nearTokenMatch = (tokenStr, option = { isJaroWinklerDistance: false, v: fa
     }
   }
   
-  // 最適な候補が見つかった場合はそれを使用、そうでなければ元の文字列を使用
+  // 逐次探索で最良候補が得られていれば、それを最終結果として返す
   if (bestMatch !== null) {
     return bestMatch;
   }
   
-  // 最終的に文字列全体に対して最適なマッチを見つける
+  // 漢字置換が1回も走らなかった場合のフォールバック（元文字列を直接マッチ）
   return findClosestWord(tokens.join(''), fkm.allWord, option.Levenshtein, option);
 };
 
@@ -356,6 +318,8 @@ const organizeUnknownTokens = (ntokens, option = { v: false, Vv: false }) => {
     if (
       list.length === 0 ||
       (last.adverb === true && adverb === false) ||
+      // 動詞の直後に名詞が来た場合は連結しない
+      (last.pos === '動詞' && token.pos === '名詞') ||
       (last.i + last.v.length !== token.word_position) ||
       ((/^[\p{scx=Han}]+$/u).test(token.pos) &&
         last.length >= 2 &&
