@@ -1,3 +1,9 @@
+## [6.0.2](https://github.com/amanoese/yukichant/compare/v6.0.1...v6.0.2) (2026-03-22)
+
+### Bug Fixes
+
+* demoで誤字修正初期化前のデコード実行を防止 ([c11b3f8](https://github.com/amanoese/yukichant/commit/c11b3f8616d98e128085eba7027dd1f40bc29ec2))
+
 ## [6.0.1](https://github.com/amanoese/yukichant/compare/v6.0.0...v6.0.1) (2026-03-22)
 
 ### Bug Fixes
