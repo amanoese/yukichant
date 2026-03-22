@@ -1,4 +1,4 @@
-name: Release Preview
+name: Release Version Preview
 
 on:
   pull_request:
@@ -78,7 +78,7 @@ jobs:
               ? `v${current} → **v${next}**`
               : `v${current}（変更なし）`;
 
-            let body = `### リリースプレビュー\n\n`;
+            let body = `### リリースバージョンプレビュー\n\n`;
             body += `| 項目 | 状態 |\n`;
             body += `| --- | --- |\n`;
             body += `| バージョン | ${version} |\n`;
@@ -89,7 +89,7 @@ jobs:
               issue_number: context.issue.number,
             });
             const previews = comments
-              .filter(c => c.body.includes('### リリースプレビュー'))
+              .filter(c => c.body.includes('### リリースバージョンプレビュー'))
               .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
             const latest = previews[0];
 
