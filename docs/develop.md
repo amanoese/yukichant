@@ -19,6 +19,32 @@ $ npm run dev unko | npm run dev -- -d
 $ npm run json-generate
 ```
 
+## ブランチ運用フロー（develop経由）
+
+リリース回数を適切にまとめるため、通常開発は `develop` を統合先にします。
+
+1. `develop` から `feature/*` または `fix/*` を作成して作業する
+2. 作業完了後、`feature/*` / `fix/*` から `develop` へPRを作成してマージする
+3. 複数の修正を `develop` に集約し、リリース単位を整える
+4. リリース時に `develop`（必要なら `release/*`）から `master` へPRを作成する
+5. `master` へのマージ時に semantic-release が実行され、公開が行われる
+
+```mermaid
+flowchart LR
+    A[feature/*<br/>fix/*] -->|PR| B[develop]
+    B -->|リリース準備| C[release/* 任意]
+    B -->|PR| D[master]
+    C -->|PR| D
+    D --> E[semantic-release<br/>npm公開・タグ・GitHub Release]
+    F[hotfix/*<br/>from master] -->|PR| D
+    F -->|反映| B
+```
+
+### hotfix の扱い
+
+- 緊急修正は `master` から `hotfix/*` を作成して対応する
+- `hotfix/*` を `master` に反映してリリースした後、同じ変更を `develop` にも取り込む
+
 ## 誤字修正アルゴリズム
 
 ### 概要
