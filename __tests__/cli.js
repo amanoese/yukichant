@@ -24,7 +24,7 @@ describe('chant',()=>{
 describe('CLIオプション', () => {
   const plainText = 'unko'
   const correctSpell = '破滅を御前に意に従い借り。'
-  const typoSpell = '破滅を御前に意に従い借リ。'
+  const typoSpell = '破滅を御前に意に従い借ろ。'
 
   test('-d: 正しい呪文をデコードできる', () => {
     const result = runCli(['-d'], correctSpell)
