@@ -1,3 +1,10 @@
+## [6.0.1](https://github.com/amanoese/yukichant/compare/v6.0.0...v6.0.1) (2026-03-22)
+
+### Bug Fixes
+
+* Jaro-Winklerの曖昧候補判定を改善 ([e4b2e78](https://github.com/amanoese/yukichant/commit/e4b2e78ca2ba9113475411927c9ccc7da83d4a3c))
+* v6.0.1リリースを再トリガー ([50e6c79](https://github.com/amanoese/yukichant/commit/50e6c79476030cf7d223f3d1f059387da2dc9b7f))
+
 ## [6.0.0](https://github.com/amanoese/yukichant/compare/v5.0.1...v6.0.0) (2026-03-21)
 
 ### ⚠ BREAKING CHANGES
