@@ -60,12 +60,15 @@ async function doDecode() {
     setStatus('')
     return
   }
+  // 誤字修正が有効なときは、誤字修正モジュールの初期化完了を待つ
+  if (typoCorrection.value && !chantFull.value) {
+    setStatus('誤字修正機能はまだ読み込み中です...', 'info')
+    return
+  }
+
   const chant = chantFull.value || chantLight.value
   if (!chant) { setStatus('初期化中です...', 'info'); return }
   try {
-    if (typoCorrection.value && !chantFull.value) {
-      setStatus('誤字修正機能はまだ読み込み中です...', 'info')
-    }
     const option = {}
     if (!typoCorrection.value) option.s = true
     if (algorithm.value === 'levenshtein') option.Levenshtein = true
@@ -106,6 +109,12 @@ watch(textInput, () => { if (isEncode.value) debouncedEncode() })
 watch(spellInput, () => { if (!isEncode.value) debouncedDecode() })
 watch(typoCorrection, () => { if (!isEncode.value && spellInput.value.trim()) debouncedDecode() })
 watch(algorithm, () => { if (!isEncode.value && spellInput.value.trim()) debouncedDecode() })
+watch(chantFull, (next, prev) => {
+  // バックグラウンド初期化完了後に、現在の入力を誤字修正ありで再評価する
+  if (!prev && next && !isEncode.value && typoCorrection.value && spellInput.value.trim()) {
+    debouncedDecode()
+  }
+})
 
 function copyText() {
   if (!textInput.value) return
