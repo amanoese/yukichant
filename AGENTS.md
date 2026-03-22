@@ -178,7 +178,10 @@ Enigma機を模した暗号化アルゴリズム
 
 ### ブランチ運用と修正ルール
 - **`master`ブランチへの直接プッシュは禁止されています。**
-- すべての修正は機能ブランチ（feature/fix等）で行い、**Pull Request (PR)** を通じて`master`にマージしてください。
+- **通常の開発は`develop`ブランチを集約先にします。**
+- すべての修正は `feature/*` または `fix/*` ブランチで行い、**Pull Request (PR)** を通じて `develop` にマージしてください。
+- リリース時のみ、`develop`（または `release/*`）から `master` へPRを作成してマージします。
+- 緊急修正は `hotfix/*` を `master` から作成し、`master` へ反映後に `develop` にも同内容を取り込みます。
 - PRが作成されると、GitHub Actionsによってテストが自動実行されます。
 
 ### コーディング規約
@@ -442,9 +445,10 @@ BREAKING CHANGE: 既存の呪文との互換性がなくなります
 
 バージョン管理とnpm公開はsemantic-releaseにより完全自動化されている。
 
-1. 開発者がブランチで作業し、Conventional Commits形式でコミット
-2. PRを作成すると、GitHub Actionsがdry-runでバージョン予告をPRにコメント
-3. PRをmasterにマージすると、semantic-releaseが自動的に:
+1. 開発者が `feature/*` / `fix/*` で作業し、Conventional Commits形式でコミット
+2. `feature/*` / `fix/*` を `develop` へPRマージして変更を集約
+3. リリース対象がまとまったら `develop`（または `release/*`）から `master` へPRを作成
+4. PRを `master` にマージすると、semantic-releaseが自動的に:
    - コミットメッセージからバージョンを決定
    - `package.json`のバージョンを更新
    - `CHANGELOG.md`を生成
@@ -565,7 +569,7 @@ ChatGPT APIを使用したプロンプトベースの誤字修正テストも利
 
 ---
 
-**最終更新日: 2026-03-02**
+**最終更新日: 2026-03-22**
 
 **このドキュメントは、AIエージェントがプロジェクトを理解し、コンテキストに沿った提案を行うためのガイドです。人間の開発者が読む場合は、まず[README.md](./README.md)と[develop.md](./docs/develop.md)を参照してください。**
 
