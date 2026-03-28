@@ -1,3 +1,9 @@
+## [6.0.3](https://github.com/amanoese/yukichant/compare/v6.0.2...v6.0.3) (2026-03-28)
+
+### Bug Fixes
+
+* Node環境で辞書パス解決を安定化 ([c5b6c43](https://github.com/amanoese/yukichant/commit/c5b6c43bb0c566e33f25f4f6d0d2a5b77c4df8a3))
+
 ## [6.0.2](https://github.com/amanoese/yukichant/compare/v6.0.1...v6.0.2) (2026-03-22)
 
 ### Bug Fixes
